@@ -92,10 +92,14 @@ class Inference:
         self._pipeline: InferencePipelinePointMap = instantiate(config)
 
     def merge_mask_to_rgba(self, image, mask):
-        mask = mask.astype(np.uint8) * 255
-        mask = mask[..., None]
+        mask = mask.astype(np.uint8) * 255 # Converts boolean [0, 1] to uint8 [0, 255]
+        mask = mask[..., None] # Add a new axis at the end: (H, W) → (H, W, 1)
+        # [..., None] is shorthand for [..., np.newaxis]
+
         # embed mask in alpha channel
         rgba_image = np.concatenate([image[..., :3], mask], axis=-1)
+        # Takes first three channels of image (RGB) and concatenates mask
+        # (H, W, 3) + (H, W, 1) → (H, W, 4) = RGBA(lpha)
         return rgba_image
 
     def __call__(
@@ -104,13 +108,14 @@ class Inference:
         mask: Optional[Union[None, Image.Image, np.ndarray]],
         seed: Optional[int] = None,
         pointmap=None,
+        stage1_only: bool = False,
     ) -> dict:
         image = self.merge_mask_to_rgba(image, mask)
         return self._pipeline.run(
             image,
             None,
             seed,
-            stage1_only=False,
+            stage1_only=stage1_only,
             with_mesh_postprocess=False,
             with_texture_baking=False,
             with_layout_postprocess=False,

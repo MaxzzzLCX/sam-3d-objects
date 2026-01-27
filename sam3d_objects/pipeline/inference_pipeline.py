@@ -714,6 +714,8 @@ class InferencePipeline:
                 logger.info(
                     f"Downsampled coords from {original_shape[0]} to {coords.shape[0]}"
                 )
+
+                return_dict["occupancy_grid"] = ss.squeeze() # for occupancy grid export
                 return_dict["coords"] = coords
                 return_dict["downsample_factor"] = downsample_factor
 

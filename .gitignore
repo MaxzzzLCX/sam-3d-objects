@@ -1,1 +1,6 @@
 __pycache__
+*.ply
+layout_check_view_1.png
+layout_check_view_2.png
+apple/
+*.npz

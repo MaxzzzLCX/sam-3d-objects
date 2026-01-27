@@ -14,7 +14,7 @@ inference = Inference(config_path, compile=False)
 image = load_image("notebook/images/shutterstock_stylish_kidsroom_1640806567/image.png")
 mask = load_single_mask("notebook/images/shutterstock_stylish_kidsroom_1640806567", index=14)
 
-# run model
+# run model (generates a map)
 output = inference(image, mask, seed=42)
 
 # export gaussian splat

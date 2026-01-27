@@ -535,6 +535,15 @@ class InferencePipelinePointMap(InferencePipeline):
         return x.squeeze(0)
 
     def estimate_plane(self, pointmap_dict, image, ground_area_threshold=0.25, min_points=100):
+        """
+        Estimates a plane mesh where the object rests on
+        
+        :param self: Description
+        :param pointmap_dict: Description
+        :param image: Description
+        :param ground_area_threshold: Description
+        :param min_points: Description
+        """
         assert image.shape[-1] == 4  # rgba format
         # Extract mask from alpha channel
         floor_mask = type(self)._down_sample_img(torch.from_numpy(image[..., -1]).float().unsqueeze(0))[0] > 0.5
