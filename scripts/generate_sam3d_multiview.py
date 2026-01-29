@@ -35,17 +35,21 @@ def generate_sam3d_outputs(image_paths, mask_paths, output_dir="sam3d_outputs"):
         scale = output["scale"].cpu().numpy().squeeze()
         shift = output["translation"].cpu().numpy().squeeze()
         coords_original = output["coords_original"].cpu().numpy()[:, 1:]  # Remove batch index
+        occupancy_grid = output["occupancy_grid"].cpu().numpy().squeeze()  # Full probability grid
         
         # save outputs
         view_file = os.path.join(output_dir, f"view_{i+1:02d}.npz")
         np.savez(view_file, 
                 coords=coords_original,
+                occupancy_grid=occupancy_grid,  # Save full probability grid
                 scale=scale, 
                 shift=shift,
                 image_path=img_path,
                 mask_path=mask_path)
         
-        print(f"  Saved {len(coords_original)} voxels to {view_file}")
+        print(f"  Saved {len(coords_original)} occupied voxels to {view_file}")
+        print(f"  Occupancy grid shape: {occupancy_grid.shape}")
+        print(f"  Occupancy values: min={occupancy_grid.min():.6f}, max={occupancy_grid.max():.6f}, mean={occupancy_grid.mean():.6f}")
         print(f"  Scale: {scale}, Shift: {shift}")
 
 if __name__ == "__main__":
