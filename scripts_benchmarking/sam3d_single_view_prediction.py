@@ -17,8 +17,11 @@ from PIL import Image
 import json
 from pathlib import Path
 
-# Set GPU
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+# Only set GPU if not already set by environment
+if "CUDA_VISIBLE_DEVICES" not in os.environ:
+    os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+else:
+    print(f"Using GPU from environment: CUDA_VISIBLE_DEVICES={os.environ['CUDA_VISIBLE_DEVICES']}")
 
 # Import SAM3D inference code
 sys.path.append("/scratch/cl927/sam-3d-objects/notebook")
@@ -179,15 +182,54 @@ def save_voxel_predictions(voxel_coords, output_dir, raw_voxel_coords=None, file
         print(f"  Extent: {voxel_coords.max(axis=0) - voxel_coords.min(axis=0)}")
         print(f"  Center: {(voxel_coords.min(axis=0) + voxel_coords.max(axis=0)) / 2}")
 
-def create_comparison_visualization(normalized_voxels, ground_truth_mesh_path, output_dir):
+def sample_points_from_voxels(voxel_coords, n_points, voxel_size=None):
+    """
+    Sample points from voxels by adding uniform noise to voxel centers
+    
+    Args:
+        voxel_coords: Nx3 numpy array of voxel center coordinates
+        n_points: Number of points to sample
+        voxel_size: Size of voxel grid. If None, estimate from coordinate range
+        
+    Returns:
+        np.ndarray: Sampled points (n_points, 3)
+    """
+    if len(voxel_coords) == 0:
+        return np.array([]).reshape(0, 3)
+    
+    # Estimate voxel size if not provided
+    if voxel_size is None:
+        # Assume normalized coordinates span [-0.5, 0.5] with 64^3 grid
+        voxel_size = 1.0 / 64.0  # Grid spacing
+    
+    # Sample with replacement if we need more points than available voxels
+    if n_points <= len(voxel_coords):
+        # Sample without replacement
+        indices = np.random.choice(len(voxel_coords), size=n_points, replace=False)
+        selected_voxels = voxel_coords[indices]
+    else:
+        # Sample with replacement
+        indices = np.random.choice(len(voxel_coords), size=n_points, replace=True)
+        selected_voxels = voxel_coords[indices]
+    
+    # Add uniform noise in [-s/2, s/2] for each dimension
+    noise = np.random.uniform(-voxel_size/2, voxel_size/2, size=(n_points, 3))
+    sampled_points = selected_voxels + noise
+    
+    return sampled_points
+
+
+def create_comparison_visualization(normalized_voxels, ground_truth_mesh_path, output_dir, sampling_strategy='fixed_n', n_points=10000):
     """
     Create visualization comparing SAM3D voxels with ground truth mesh surface points
     Both are saved as point clouds with different colors in the same file
     
     Args:
-        normalized_voxels: Nx3 numpy array of normalized voxel coordinates
+        normalized_voxels: Nx3 numpy array of normalized voxel coordinates  
         ground_truth_mesh_path: Path to ground truth normalized_mesh.obj
         output_dir: Directory to save comparison visualization
+        sampling_strategy: 'fixed_n' (sample N points from both) or 'adaptive' (old method)
+        n_points: Number of points to sample when using 'fixed_n' strategy
     """
     os.makedirs(output_dir, exist_ok=True)
     
@@ -201,14 +243,39 @@ def create_comparison_visualization(normalized_voxels, ground_truth_mesh_path, o
         print(f"Error loading ground truth mesh: {e}")
         return
     
-    # Sample points from mesh surface
-    n_surface_points = min(10000, len(normalized_voxels) * 2) if len(normalized_voxels) > 0 else 10000
-    try:
-        surface_points, _ = trimesh.sample.sample_surface(gt_mesh, n_surface_points)
-        print(f"Sampled {len(surface_points)} points from mesh surface")
-    except Exception as e:
-        print(f"Error sampling mesh surface, using vertices instead: {e}")
-        surface_points = gt_mesh.vertices
+    # Sample points based on strategy
+    if sampling_strategy == 'fixed_n':
+        # New method: Fixed N points from both sources
+        print(f"Using 'fixed_n' sampling strategy with {n_points} points each")
+        
+        # Sample N points from mesh surface
+        try:
+            surface_points, _ = trimesh.sample.sample_surface(gt_mesh, n_points)
+            print(f"Sampled {len(surface_points)} points from mesh surface")
+        except Exception as e:
+            print(f"Error sampling mesh surface, using vertices instead: {e}")
+            surface_points = gt_mesh.vertices[:n_points] if len(gt_mesh.vertices) >= n_points else gt_mesh.vertices
+        
+        # Sample N points from voxels with uniform noise
+        if len(normalized_voxels) > 0:
+            voxel_points = sample_points_from_voxels(normalized_voxels, n_points)
+            print(f"Sampled {len(voxel_points)} points from voxels with noise")
+        else:
+            voxel_points = normalized_voxels
+            
+    else:
+        # Old adaptive method
+        print("Using 'adaptive' sampling strategy")
+        n_surface_points = min(10000, len(normalized_voxels) * 2) if len(normalized_voxels) > 0 else 10000
+        try:
+            surface_points, _ = trimesh.sample.sample_surface(gt_mesh, n_surface_points)
+            print(f"Sampled {len(surface_points)} points from mesh surface")
+        except Exception as e:
+            print(f"Error sampling mesh surface, using vertices instead: {e}")
+            surface_points = gt_mesh.vertices
+        
+        # Use voxels as-is
+        voxel_points = normalized_voxels
     
     # Print coordinate statistics for debugging orientation issues
     print("\n=== COORDINATE SYSTEM ANALYSIS ===")
@@ -218,23 +285,23 @@ def create_comparison_visualization(normalized_voxels, ground_truth_mesh_path, o
     print(f"  Z range: [{surface_points[:, 2].min():.3f}, {surface_points[:, 2].max():.3f}]")
     print(f"  Center: [{surface_points[:, 0].mean():.3f}, {surface_points[:, 1].mean():.3f}, {surface_points[:, 2].mean():.3f}]")
     
-    if len(normalized_voxels) > 0:
-        print("SAM3D Predicted Voxels:")
-        print(f"  X range: [{normalized_voxels[:, 0].min():.3f}, {normalized_voxels[:, 0].max():.3f}]")
-        print(f"  Y range: [{normalized_voxels[:, 1].min():.3f}, {normalized_voxels[:, 1].max():.3f}]")
-        print(f"  Z range: [{normalized_voxels[:, 2].min():.3f}, {normalized_voxels[:, 2].max():.3f}]")
-        print(f"  Center: [{normalized_voxels[:, 0].mean():.3f}, {normalized_voxels[:, 1].mean():.3f}, {normalized_voxels[:, 2].mean():.3f}]")
+    if len(voxel_points) > 0:
+        print("SAM3D Predicted Points:")
+        print(f"  X range: [{voxel_points[:, 0].min():.3f}, {voxel_points[:, 0].max():.3f}]")
+        print(f"  Y range: [{voxel_points[:, 1].min():.3f}, {voxel_points[:, 1].max():.3f}]")
+        print(f"  Z range: [{voxel_points[:, 2].min():.3f}, {voxel_points[:, 2].max():.3f}]")
+        print(f"  Center: [{voxel_points[:, 0].mean():.3f}, {voxel_points[:, 1].mean():.3f}, {voxel_points[:, 2].mean():.3f}]")
         
         # Check for potential 90-degree rotation patterns
         print("\nPOTENTIAL COORDINATE SYSTEM ISSUES:")
         # Check if voxel Y matches mesh Z (common XY<->XZ rotation)
-        if abs(normalized_voxels[:, 1].mean() - surface_points[:, 2].mean()) < 0.1:
+        if abs(voxel_points[:, 1].mean() - surface_points[:, 2].mean()) < 0.1:
             print("  WARNING: Voxel Y ≈ Mesh Z (possible XY-plane vs XZ-plane issue)")
-        if abs(normalized_voxels[:, 2].mean() - surface_points[:, 1].mean()) < 0.1:
+        if abs(voxel_points[:, 2].mean() - surface_points[:, 1].mean()) < 0.1:
             print("  WARNING: Voxel Z ≈ Mesh Y (possible coordinate axis swap)")
             
         # Check extent alignment
-        voxel_extents = normalized_voxels.max(axis=0) - normalized_voxels.min(axis=0)
+        voxel_extents = voxel_points.max(axis=0) - voxel_points.min(axis=0)
         mesh_extents = surface_points.max(axis=0) - surface_points.min(axis=0)
         print(f"Mesh extents (X,Y,Z): [{mesh_extents[0]:.3f}, {mesh_extents[1]:.3f}, {mesh_extents[2]:.3f}]")
         print(f"Voxel extents (X,Y,Z): [{voxel_extents[0]:.3f}, {voxel_extents[1]:.3f}, {voxel_extents[2]:.3f}]")
@@ -249,9 +316,9 @@ def create_comparison_visualization(normalized_voxels, ground_truth_mesh_path, o
     all_colors.append(mesh_colors)
     
     # Add SAM3D voxel points (red)
-    if len(normalized_voxels) > 0:
-        all_points.append(normalized_voxels)
-        voxel_colors = np.tile([255, 0, 0, 255], (len(normalized_voxels), 1))  # Red
+    if len(voxel_points) > 0:
+        all_points.append(voxel_points)
+        voxel_colors = np.tile([255, 0, 0, 255], (len(voxel_points), 1))  # Red
         all_colors.append(voxel_colors)
     
     # Combine all points and colors
@@ -266,8 +333,8 @@ def create_comparison_visualization(normalized_voxels, ground_truth_mesh_path, o
         
         print(f"\nSaved comparison point clouds to: {comparison_path}")
         print(f"  Blue points: {len(surface_points)} ground truth surface points")
-        if len(normalized_voxels) > 0:
-            print(f"  Red points: {len(normalized_voxels)} SAM3D predicted voxels")
+        if len(voxel_points) > 0:
+            print(f"  Red points: {len(voxel_points)} SAM3D predicted points")
     
     # Also save separate point clouds for individual analysis
     gt_pc = trimesh.PointCloud(vertices=surface_points)
@@ -275,11 +342,11 @@ def create_comparison_visualization(normalized_voxels, ground_truth_mesh_path, o
     gt_pc.export(gt_path)
     print(f"Saved ground truth surface points to: {gt_path}")
     
-    if len(normalized_voxels) > 0:
-        voxel_pc = trimesh.PointCloud(vertices=normalized_voxels)
+    if len(voxel_points) > 0:
+        voxel_pc = trimesh.PointCloud(vertices=voxel_points)
         voxel_path = os.path.join(output_dir, "sam3d_voxels_pointcloud.ply")
         voxel_pc.export(voxel_path)
-        print(f"Saved SAM3D voxels to: {voxel_path}")
+        print(f"Saved SAM3D points to: {voxel_path}")
         
     # Save original mesh for reference
     gt_separate_path = os.path.join(output_dir, "ground_truth_mesh_reference.ply")
@@ -288,7 +355,7 @@ def create_comparison_visualization(normalized_voxels, ground_truth_mesh_path, o
     
     print("=" * 40)
 
-def process_single_image(image_path, food_item_dir, config_path):
+def process_single_image(image_path, food_item_dir, config_path, sampling_strategy='fixed_n'):
     """
     Process a single rendered image through the SAM3D pipeline
     
@@ -296,6 +363,7 @@ def process_single_image(image_path, food_item_dir, config_path):
         image_path: Path to rendered image
         food_item_dir: Path to food item directory (contains normalized_mesh.obj)
         config_path: Path to SAM3D config file
+        sampling_strategy: 'fixed_n' (default) or 'adaptive' sampling method
     """
     print(f"Processing: {image_path}")
     
@@ -357,7 +425,7 @@ def process_single_image(image_path, food_item_dir, config_path):
     ground_truth_path = os.path.join(food_item_dir, "normalized_mesh.obj")
     if os.path.exists(ground_truth_path):
         print("Creating comparison visualization...")
-        create_comparison_visualization(normalized_voxels, ground_truth_path, output_dir)
+        create_comparison_visualization(normalized_voxels, ground_truth_path, output_dir, sampling_strategy)
     else:
         print(f"Warning: Ground truth mesh not found at {ground_truth_path}")
     
@@ -378,15 +446,19 @@ def process_single_image(image_path, food_item_dir, config_path):
     
     return normalized_voxels, output_dir
 
-def main():
-    # Configuration
-    config_path = "/scratch/cl927/sam-3d-objects/checkpoints/hf/pipeline.yaml"
+def run_sam3d_prediction(food_item_dir, rendered_image_path, config_path, sampling_strategy='fixed_n'):
+    """
+    Run SAM3D prediction for a single image
     
-    # Example: Process second rendered image (render_001.png) which has different viewpoint
-    food_item_dir = "/scratch/cl927/nutritionverse-3d-new/id-1-salad-chicken-strip-7g"
-    # food_item_dir = "/scratch/cl927/nutritionverse-3d-new/id-11-red-apple-145g"
-    rendered_image_path = os.path.join(food_item_dir, "rendered-test-example", "render_000.png")
+    Args:
+        food_item_dir: Path to food item directory (contains normalized_mesh.obj)
+        rendered_image_path: Path to rendered image
+        config_path: Path to SAM3D config file
+        sampling_strategy: 'fixed_n' (new default) or 'adaptive' (old method)
     
+    Returns:
+        tuple: (normalized_voxels, output_dir) or (None, None) if failed
+    """
     print("SAM3D Single View Prediction")
     print("=" * 60)
     print(f"Food item directory: {food_item_dir}")
@@ -396,23 +468,47 @@ def main():
     # Check if files exist
     if not os.path.exists(rendered_image_path):
         print(f"Error: Rendered image not found at {rendered_image_path}")
-        print("Run the rendering script first!")
-        return
+        return None, None
     
     if not os.path.exists(config_path):
         print(f"Error: SAM3D config not found at {config_path}")
-        return
+        return None, None
     
     # Process the image
     try:
         normalized_voxels, output_dir = process_single_image(
-            rendered_image_path, food_item_dir, config_path
+            rendered_image_path, food_item_dir, config_path, sampling_strategy
         )
         
         print("\n" + "=" * 60)
         print("SUCCESS!")
         print(f"Generated {len(normalized_voxels)} normalized voxels")
         print(f"Results saved to: {output_dir}")
+        
+        return normalized_voxels, output_dir
+        
+    except Exception as e:
+        print(f"Error processing image: {e}")
+        import traceback
+        traceback.print_exc()
+        return None, None
+
+
+def main():
+    """
+    Main function for standalone execution
+    """
+    # Configuration
+    config_path = "/scratch/cl927/sam-3d-objects/checkpoints/hf/pipeline.yaml"
+    
+    # Example: Process second rendered image (render_001.png) which has different viewpoint
+    food_item_dir = "/scratch/cl927/nutritionverse-3d-new/id-1-salad-chicken-strip-7g"
+    # food_item_dir = "/scratch/cl927/nutritionverse-3d-new/id-11-red-apple-145g"
+    rendered_image_path = os.path.join(food_item_dir, "rendered-test-example", "render_000.png")
+    
+    normalized_voxels, output_dir = run_sam3d_prediction(food_item_dir, rendered_image_path, config_path, 'fixed_n')
+    
+    if normalized_voxels is not None:
         print("\nFiles generated:")
         print("- sam3d_voxels_normalized.ply (normalized voxel point cloud)")
         print("- sam3d_voxels_normalized.npy (normalized numpy array)")
@@ -423,11 +519,6 @@ def main():
         print("- sam3d_voxels_pointcloud.ply (voxels as point cloud)")
         print("- ground_truth_mesh_reference.ply (ground truth mesh)")
         print("- sam3d_inference_metadata.json (inference details)")
-        
-    except Exception as e:
-        print(f"Error processing image: {e}")
-        import traceback
-        traceback.print_exc()
 
 if __name__ == "__main__":
     main()

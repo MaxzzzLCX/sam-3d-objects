@@ -40,58 +40,65 @@ def load_point_cloud(ply_path):
 
 def calculate_chamfer_distance(gt_points, pred_points):
     """
-    Calculate Chamfer distance using PyTorch3D
+    Calculate both bidirectional and unidirectional Chamfer distances using PyTorch3D
     
     Args:
         gt_points: Ground truth points (N, 3)
         pred_points: Predicted points (M, 3)
     
     Returns:
-        float: Chamfer distance
+        dict: Dictionary containing:
+            - bidirectional_chamfer: Standard bidirectional Chamfer distance
+            - unidirectional_chamfer: Distance from GT to prediction (sensitive to missing regions)
     """
     # Convert to PyTorch tensors
     gt_tensor = torch.tensor(gt_points, dtype=torch.float32).unsqueeze(0)  # (1, N, 3)
     pred_tensor = torch.tensor(pred_points, dtype=torch.float32).unsqueeze(0)  # (1, M, 3)
     
-    # Calculate Chamfer distance
-    chamfer_dist, _ = chamfer_distance(gt_tensor, pred_tensor)
-    return chamfer_dist.item()
+    # Calculate bidirectional Chamfer distance (default)
+    bidirectional_dist, _ = chamfer_distance(gt_tensor, pred_tensor, single_directional=False)
+    
+    # Calculate unidirectional Chamfer distance (GT -> prediction)
+    # This measures how well each GT point is represented in the prediction
+    # Higher values indicate missing regions in the prediction
+    unidirectional_dist, _ = chamfer_distance(gt_tensor, pred_tensor, single_directional=True)
+    
+    return {
+        'bidirectional_chamfer': bidirectional_dist.item(),
+        'unidirectional_chamfer': unidirectional_dist.item()
+    }
 
 
-def main():
-    parser = argparse.ArgumentParser(description='Calculate Chamfer distance between ground truth and prediction point clouds')
-    parser.add_argument('--gt_path', type=str, required=True, help='Path to ground truth PLY file')
-    parser.add_argument('--pred_path', type=str, required=True, help='Path to prediction PLY file')
-    parser.add_argument('--output_dir', type=str, help='Directory to save results')
+def calculate_chamfer_distance_for_files(gt_path, pred_path, output_dir=None):
+    """
+    Calculate Chamfer distance between ground truth and prediction point clouds
     
-    args = parser.parse_args()
+    Args:
+        gt_path: Path to ground truth PLY file
+        pred_path: Path to prediction PLY file
+        output_dir: Directory to save results (defaults to same as gt_path)
     
+    Returns:
+        dict: Results dictionary with chamfer distance and metadata, or None if failed
+    """
     # Load point clouds
-    print(f"Loading ground truth: {args.gt_path}")
-    print(f"Loading prediction: {args.pred_path}")
-    
-    gt_points = load_point_cloud(args.gt_path)
-    pred_points = load_point_cloud(args.pred_path)
+    gt_points = load_point_cloud(gt_path)
+    pred_points = load_point_cloud(pred_path)
     
     if gt_points is None or pred_points is None:
         print("Failed to load point clouds")
-        return
+        return None
     
-    print(f"Ground Truth Points: {len(gt_points):,}")
-    print(f"Prediction Points: {len(pred_points):,}")
-    
-    # Calculate Chamfer distance
-    print("Calculating Chamfer distance...")
+    # Calculate Chamfer distances
     start_time = time.time()
-    chamfer_dist = calculate_chamfer_distance(gt_points, pred_points)
+    chamfer_results = calculate_chamfer_distance(gt_points, pred_points)
     calc_time = time.time() - start_time
-    
-    print(f"Chamfer Distance: {chamfer_dist:.6f}")
-    print(f"Calculation time: {calc_time:.2f} seconds")
     
     # Prepare results
     results = {
-        "chamfer_distance": chamfer_dist,
+        "chamfer_distance": chamfer_results['bidirectional_chamfer'],  # Keep backward compatibility
+        "bidirectional_chamfer_distance": chamfer_results['bidirectional_chamfer'],
+        "unidirectional_chamfer_distance": chamfer_results['unidirectional_chamfer'],
         "calculation_time_seconds": calc_time,
         "gt_points_count": len(gt_points),
         "pred_points_count": len(pred_points),
@@ -106,14 +113,47 @@ def main():
     }
     
     # Set output directory
-    output_dir = Path(args.output_dir) if args.output_dir else Path(args.gt_path).parent
+    if output_dir is None:
+        output_dir = Path(gt_path).parent
+    else:
+        output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     
     # Save results
     results_file = output_dir / 'chamfer_distance_results.json'
     with open(results_file, 'w') as f:
         json.dump(results, f, indent=2)
-    print(f"Results saved to: {results_file}")
+    
+    return results
+
+
+def main():
+    """
+    Main function for standalone execution
+    """
+    parser = argparse.ArgumentParser(description='Calculate Chamfer distance between ground truth and prediction point clouds')
+    parser.add_argument('--gt_path', type=str, required=True, help='Path to ground truth PLY file')
+    parser.add_argument('--pred_path', type=str, required=True, help='Path to prediction PLY file')
+    parser.add_argument('--output_dir', type=str, help='Directory to save results')
+    
+    args = parser.parse_args()
+    
+    print(f"Loading ground truth: {args.gt_path}")
+    print(f"Loading prediction: {args.pred_path}")
+    
+    results = calculate_chamfer_distance_for_files(args.gt_path, args.pred_path, args.output_dir)
+    
+    if results:
+        print(f"Ground Truth Points: {results['gt_points_count']:,}")
+        print(f"Prediction Points: {results['pred_points_count']:,}")
+        print("Calculating Chamfer distances...")
+        print(f"Bidirectional Chamfer Distance: {results['bidirectional_chamfer_distance']:.6f}")
+        print(f"Unidirectional Chamfer Distance (GT→Pred): {results['unidirectional_chamfer_distance']:.6f}")
+        print(f"Calculation time: {results['calculation_time_seconds']:.2f} seconds")
+        
+        output_dir = Path(args.output_dir) if args.output_dir else Path(args.gt_path).parent
+        results_file = output_dir / 'chamfer_distance_results.json'
+        print(f"Results saved to: {results_file}")
 
 
 if __name__ == "__main__":
