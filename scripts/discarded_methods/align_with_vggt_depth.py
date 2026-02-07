@@ -82,7 +82,7 @@ def align_with_vggt_depth():
     print(f"VGGT-depth corrected scale2: {scale2_corr}, shift2: {shift2_corr}")
     
     # Use corrected layout in alignment
-    from scripts.multiview_alignment_vggt import align_multiview_voxels
+    from scripts.alignment_raw_layout_predictions import align_multiview_voxels
     
     align_multiview_voxels(
         view1_voxels=view1_data['coords'],

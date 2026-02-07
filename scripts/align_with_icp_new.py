@@ -168,62 +168,80 @@ def align_with_open3d_surface(method="surface_voxels"):
     
     print(f"Using surface extraction method: {method}")
     
+    """
     # Load data
     vggt_data = np.load("/scratch/cl927/nutritionverse-3d-new/_test_id-11-red-apple-145g/SAM3D_multiview_prediction/vggt_camera_poses.npz")
     vggt_points_3d = vggt_data['points_3d']
     print(f"Loaded OLD VGGT points: {vggt_points_3d.shape}")
 
     # DEBUG: Save the loaded VGGT points for debugging
-    # Reshape and combine all VGGT points into a single point cloud
-    if len(vggt_points_3d.shape) == 4:  # (num_views, height, width, 3)
-        combined_vggt_points = vggt_points_3d.reshape(-1, 3)
-    elif len(vggt_points_3d.shape) == 3:  # (num_views, num_points, 3)
-        combined_vggt_points = vggt_points_3d.reshape(-1, 3)
-    else:
-        combined_vggt_points = vggt_points_3d.reshape(-1, 3)
+    # (N, 518, 518, 3) -> (N*518*518, 3)
+    combined_vggt_points = vggt_points_3d.reshape(-1, 3)
     
     # Remove invalid points (NaN, inf, or zeros)
     # valid_mask = np.isfinite(combined_vggt_points).all(axis=1) & (np.abs(combined_vggt_points).sum(axis=1) > 1e-6)
     # combined_vggt_points = combined_vggt_points[valid_mask]
     
+    print(f"Shape of combined VGGT points: {combined_vggt_points.shape}")
     print(f"Valid points after filtering: {len(combined_vggt_points)}")
     
-    vggt_pcd = o3d.geometry.PointCloud()
-    vggt_pcd.points = o3d.utility.Vector3dVector(combined_vggt_points)
-    o3d.io.write_point_cloud("NEW_debug_vggt_points.ply", vggt_pcd)
+    # vggt_pcd = o3d.geometry.PointCloud()
+    # vggt_pcd.points = o3d.utility.Vector3dVector(combined_vggt_points)
+    # o3d.io.write_point_cloud("NEW_debug_vggt_points.ply", vggt_pcd)
+    pc = trimesh.PointCloud(combined_vggt_points)
+    pc.export("NEW_debug_vggt_points.ply")
     print(f"Saved debug VGGT points to 'NEW_debug_vggt_points.ply'")
     raise NotImplementedError("Debugging VGGT points - stop here")
+    """
 
+    vggt_data = o3d.io.read_point_cloud("/scratch/cl927/nutritionverse-3d-new/_test_id-11-red-apple-145g/SAM3D_multiview_prediction/VGGT_view_0-1_masked_unscaled_conf0.0/points.ply")
+    vggt_points_3d = np.asarray(vggt_data.points)  # numpy array
+    print(f"Loaded VGGT points: {vggt_points_3d.shape}")
 
-    # vggt_data = o3d.io.read_point_cloud("/scratch/cl927/nutritionverse-3d-new/_test_id-11-red-apple-145g/SAM3D_multiview_prediction/VGGT_view_0-1_masked_unscaled_conf0.0/points.ply")
-    # vggt_points_3d = np.asarray(vggt_data.points)  # numpy array
-    # print(f"Loaded VGGT points: {vggt_points_3d.shape}")
+    # DEBUG: Save the loaded VGGT points for debugging
+    pc = trimesh.PointCloud(vggt_points_3d)
+    pc.export("NEWMETHOD_debug_vggt_points.ply")
+    print(f"Saved debug VGGT points to 'NEWMETHOD_debug_vggt_points.ply'")
+    # raise NotImplementedError("Debugging VGGT points - stop here")
     
     view1_data = np.load("/scratch/cl927/nutritionverse-3d-new/_test_id-11-red-apple-145g/SAM3D_singleview_prediction/000/sam3d_voxels_normalized.npy")
     view2_data = np.load("/scratch/cl927/nutritionverse-3d-new/_test_id-11-red-apple-145g/SAM3D_singleview_prediction/001/sam3d_voxels_normalized.npy")
     
-    # Denormalize the SAM3D voxel coordinates to [0, 63]
+    # Redo the rotation when we saved the SAM3D voxels
+    # The rotation before was -90˚ around X; so we apply +90˚ here 
+    rotation_matrix = np.array([
+        [1,  0,  0],
+        [0,  0,  -1],
+        [0, 1,  0]
+    ], dtype=float)
+    view1_data = view1_data @ rotation_matrix.T
+    view2_data = view2_data @ rotation_matrix.T
+    
+
+    # # Denormalize the SAM3D voxel coordinates to [0, 63]
     view1_data = ((view1_data + 0.5) * 63.0).astype(int)
     view2_data = ((view2_data + 0.5) * 63.0).astype(int)
 
-    # Load masks
-    from PIL import Image as PILImage
-    mask1 = np.array(PILImage.open("/scratch/cl927/scenes_sam3dvggt/apple_new/masks/resized_01_mask_1.png").convert('L')) > 128
-    mask2 = np.array(PILImage.open("/scratch/cl927/scenes_sam3dvggt/apple_new/masks/resized_02_mask_1.png").convert('L')) > 128
+    # # Load masks
+    # from PIL import Image as PILImage
+    # mask1 = np.array(PILImage.open("/scratch/cl927/scenes_sam3dvggt/apple_new/masks/resized_01_mask_1.png").convert('L')) > 128
+    # mask2 = np.array(PILImage.open("/scratch/cl927/scenes_sam3dvggt/apple_new/masks/resized_02_mask_1.png").convert('L')) > 128
     
-    mask1_resized = np.array(PILImage.fromarray(mask1.astype(np.uint8) * 255).resize((518, 518), PILImage.NEAREST)) > 128
-    mask2_resized = np.array(PILImage.fromarray(mask2.astype(np.uint8) * 255).resize((518, 518), PILImage.NEAREST)) > 128
+    # mask1_resized = np.array(PILImage.fromarray(mask1.astype(np.uint8) * 255).resize((518, 518), PILImage.NEAREST)) > 128
+    # mask2_resized = np.array(PILImage.fromarray(mask2.astype(np.uint8) * 255).resize((518, 518), PILImage.NEAREST)) > 128
     
-    # Extract VGGT surface points
-    vggt_surface1 = vggt_points_3d[0][mask1_resized]
-    vggt_surface2 = vggt_points_3d[1][mask2_resized]
+    # # Extract VGGT surface points
+    # vggt_surface1 = vggt_points_3d[0][mask1_resized]
+    # vggt_surface2 = vggt_points_3d[1][mask2_resized]
+    # vggt_surfaces_all = np.vstack([vggt_surface1, vggt_surface2])
+    vggt_surfaces_all = vggt_points_3d
     
-    print(f"VGGT surface points: View1={len(vggt_surface1)}, View2={len(vggt_surface2)}")
+    # print(f"Total VGGT points after masking: {len(vggt_surfaces_all)}")
     
     # Process each SAM3D view
     results = []
     
-    for view_idx, (view_data, vggt_surface) in enumerate([(view1_data, vggt_surface1), (view2_data, vggt_surface2)]):
+    for view_idx, view_data in enumerate([view1_data, view2_data]):
         print(f"\nProcessing view {view_idx + 1}:")
         print(f"Original voxels: {len(view_data)}")
         # print(f"  Original voxels: {len(view_data['coords'])}")
@@ -249,11 +267,11 @@ def align_with_open3d_surface(method="surface_voxels"):
         
         # Debug coordinate ranges
         print(f"  SAM3D surface_norm range: [{surface_norm.min(axis=0)}, {surface_norm.max(axis=0)}]")
-        print(f"  VGGT surface range: [{vggt_surface.min(axis=0)}, {vggt_surface.max(axis=0)}]")
+        print(f"  VGGT surface range: [{vggt_surfaces_all.min(axis=0)}, {vggt_surfaces_all.max(axis=0)}]")
         
         # Initial scale estimation
         sam3d_size = surface_norm.max(axis=0) - surface_norm.min(axis=0) 
-        vggt_size = vggt_surface.max(axis=0) - vggt_surface.min(axis=0)
+        vggt_size = vggt_surfaces_all.max(axis=0) - vggt_surfaces_all.min(axis=0)
         
         print(f"  SAM3D size: {sam3d_size}")
         print(f"  VGGT size: {vggt_size}")
@@ -270,7 +288,7 @@ def align_with_open3d_surface(method="surface_voxels"):
         
         # Check distance between centroids
         sam3d_centroid = surface_scaled.mean(axis=0)
-        vggt_centroid = vggt_surface.mean(axis=0)
+        vggt_centroid = vggt_surfaces_all.mean(axis=0)
         centroid_distance = np.linalg.norm(sam3d_centroid - vggt_centroid)
         
         print(f"  SAM3D centroid: {sam3d_centroid}")
@@ -279,7 +297,7 @@ def align_with_open3d_surface(method="surface_voxels"):
         
         # Try centering both point clouds first
         surface_centered = surface_scaled - sam3d_centroid
-        vggt_centered = vggt_surface - vggt_centroid
+        vggt_centered = vggt_surfaces_all - vggt_centroid
         
         print(f"  After centering - SAM3D range: [{surface_centered.min(axis=0)}, {surface_centered.max(axis=0)}]")
         print(f"  After centering - VGGT range: [{vggt_centered.min(axis=0)}, {vggt_centered.max(axis=0)}]")
@@ -290,8 +308,8 @@ def align_with_open3d_surface(method="surface_voxels"):
             icp_method = "point_to_point"
             # Use much smaller threshold for precision - around 2-5% of object size
             object_size = max(np.linalg.norm(vggt_size), np.linalg.norm(sam3d_size * initial_scale))
-            threshold = object_size * 0.01  # 1% of object size for tight alignment
-            threshold = max(0.01, min(threshold, 0.05))  # Clamp between 0.01 and 0.05
+            threshold = object_size * 0.10  # 10% of object size for tight alignment
+            threshold = max(0.005, min(threshold, 0.2))  # Clamp between 0.005 and 0.1
             print(f"  Using ICP threshold: {threshold} (object size: {object_size})")
             
             aligned_surface_points, transformation = open3d_icp_alignment(
@@ -367,9 +385,9 @@ def align_with_open3d_surface(method="surface_voxels"):
         
         # Save individual view alignments for visualization
         # View 1 + VGGT
-        view1_vggt_points = np.vstack([results[0], vggt_surface1])
+        view1_vggt_points = np.vstack([results[0], vggt_surfaces_all])
         view1_sam3d_colors = np.tile([255, 0, 0], (len(results[0]), 1))  # Red for SAM3D
-        view1_vggt_colors = np.tile([0, 255, 0], (len(vggt_surface1), 1))  # Green for VGGT
+        view1_vggt_colors = np.tile([0, 255, 0], (len(vggt_surfaces_all), 1))  # Green for VGGT
         view1_vggt_combined_colors = np.vstack([view1_sam3d_colors, view1_vggt_colors]).astype(np.uint8)
         
         pc_view1_vggt = trimesh.PointCloud(view1_vggt_points, colors=view1_vggt_combined_colors)
@@ -377,9 +395,9 @@ def align_with_open3d_surface(method="surface_voxels"):
         pc_view1_vggt.export(view1_vggt_path)
         
         # View 2 + VGGT
-        view2_vggt_points = np.vstack([results[1], vggt_surface2])
+        view2_vggt_points = np.vstack([results[1], vggt_surfaces_all])
         view2_sam3d_colors = np.tile([0, 0, 255], (len(results[1]), 1))  # Blue for SAM3D
-        view2_vggt_colors = np.tile([0, 255, 0], (len(vggt_surface2), 1))  # Green for VGGT
+        view2_vggt_colors = np.tile([0, 255, 0], (len(vggt_surfaces_all), 1))  # Green for VGGT
         view2_vggt_combined_colors = np.vstack([view2_sam3d_colors, view2_vggt_colors]).astype(np.uint8)
         
         pc_view2_vggt = trimesh.PointCloud(view2_vggt_points, colors=view2_vggt_combined_colors)

@@ -91,7 +91,7 @@ def align_with_corrected_layout():
     print(f"Original shift2: {view2_data['shift']}, corrected: {shift2_corr}")
     
     # Now use the corrected layout in the alignment function
-    from scripts.multiview_alignment_vggt import align_multiview_voxels
+    from scripts.alignment_raw_layout_predictions import align_multiview_voxels
     
     align_multiview_voxels(
         view1_voxels=view1_data['coords'],

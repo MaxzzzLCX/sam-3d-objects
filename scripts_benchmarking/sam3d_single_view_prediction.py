@@ -378,9 +378,24 @@ def process_single_image(image_path, food_item_dir, config_path, sampling_strate
     output = run_sam3d_inference(image_path, mask_path, config_path)
     
     # Extract voxel coordinates
-    coords_original = output["coords_original"].cpu().numpy()
-    coords_original = coords_original[:, 1:]  # Keep only x, y, z coordinates
+    # coords_original = output["coords_original"].cpu().numpy()
+    # occupancy_grid = output["occupancy_grid"].cpu().numpy().squeeze() # The full occupancy grid (raw logits)
+    # coords_original = coords_original[:, 1:]  # Keep only x, y, z coordinates
     
+    # extract outputs
+    scale = output["scale"].cpu().numpy().squeeze()
+    shift = output["translation"].cpu().numpy().squeeze()
+    coords_original = output["coords_original"].cpu().numpy()[:, 1:]  # Remove batch index
+    occupancy_grid = output["occupancy_grid"].cpu().numpy().squeeze()  # Full probability grid
+
+    # Convert from voxel indices [0, 63] to world coordinates [-0.5, 0.5] (like demo_occupancy.py)
+    coords_normalized = (coords_original / 63.0) - 0.5
+
+    print(f"  {len(coords_original)} occupied voxels")
+    print(f"  Occupancy grid shape: {occupancy_grid.shape}")
+    print(f"  Occupancy values: min={occupancy_grid.min():.6f}, max={occupancy_grid.max():.6f}, mean={occupancy_grid.mean():.6f}")
+    print(f"  Scale: {scale}, Shift: {shift}")
+
     print(f"\n=== SAM3D COORDINATE SYSTEM ANALYSIS ===")
     print("Raw SAM3D coordinates (voxel indices [0,63]):")
     print(f"  Shape: {coords_original.shape}")
@@ -388,17 +403,16 @@ def process_single_image(image_path, food_item_dir, config_path, sampling_strate
     print(f"  Y range: [{coords_original[:, 1].min():.1f}, {coords_original[:, 1].max():.1f}]") 
     print(f"  Z range: [{coords_original[:, 2].min():.1f}, {coords_original[:, 2].max():.1f}]")
     
-    # Convert from voxel indices [0, 63] to world coordinates [-0.5, 0.5] (like demo_occupancy.py)
-    voxels_world = (coords_original / 63.0) - 0.5
+    print(f"  Scale: {scale}, Shift: {shift}")
     
     print("SAM3D world coordinates ([-0.5, 0.5]):")
-    print(f"  X range: [{voxels_world[:, 0].min():.3f}, {voxels_world[:, 0].max():.3f}]")
-    print(f"  Y range: [{voxels_world[:, 1].min():.3f}, {voxels_world[:, 1].max():.3f}]")
-    print(f"  Z range: [{voxels_world[:, 2].min():.3f}, {voxels_world[:, 2].max():.3f}]")
+    print(f"  X range: [{coords_normalized[:, 0].min():.3f}, {coords_normalized[:, 0].max():.3f}]")
+    print(f"  Y range: [{coords_normalized[:, 1].min():.3f}, {coords_normalized[:, 1].max():.3f}]")
+    print(f"  Z range: [{coords_normalized[:, 2].min():.3f}, {coords_normalized[:, 2].max():.3f}]")
     
     # Check SAM3D convention - which axis is "up"?
-    center = voxels_world.mean(axis=0)
-    extents = voxels_world.max(axis=0) - voxels_world.min(axis=0)
+    center = coords_normalized.mean(axis=0)
+    extents = coords_normalized.max(axis=0) - coords_normalized.min(axis=0)
     print(f"SAM3D voxel center: [{center[0]:.3f}, {center[1]:.3f}, {center[2]:.3f}]")
     print(f"SAM3D voxel extents: [{extents[0]:.3f}, {extents[1]:.3f}, {extents[2]:.3f}]")
     
@@ -407,9 +421,11 @@ def process_single_image(image_path, food_item_dir, config_path, sampling_strate
     axis_names = ['X', 'Y', 'Z']
     print(f"Dominant axis: {axis_names[dominant_axis]} (extent: {extents[dominant_axis]:.3f})")
     print("=" * 50)
+
+    
     
     # Further normalize to match ground truth normalization (bounding box centered, unit cube)
-    normalized_voxels = normalize_voxel_coordinates(voxels_world)
+    normalized_voxels = normalize_voxel_coordinates(coords_normalized)
     
     print(f"SAM3D prediction: {len(normalized_voxels)} occupied voxels")
     
@@ -418,9 +434,28 @@ def process_single_image(image_path, food_item_dir, config_path, sampling_strate
     view_id = image_name.split('_')[-1]  # Extract "001" from "render_001"
     output_dir = os.path.join(food_item_dir, "SAM3D_singleview_prediction", view_id)
     
+
+    output_file = os.path.join(output_dir, f"_output.npz")
+    os.makedirs(output_dir, exist_ok=True)
+    np.savez(output_file, 
+            coords_original=coords_original,
+            coords_normalized=coords_normalized,
+            occupancy_grid=occupancy_grid,  # Save full probability grid
+            scale=scale, 
+            shift=shift,
+            image_path=image_path,
+            mask_path=mask_path)
+
+
+    raise NotImplementedError("Debugging: check if .npz file is generated correctly")
+
     # Save voxel predictions (both raw world coordinates and normalized)
-    save_voxel_predictions(normalized_voxels, output_dir, raw_voxel_coords=voxels_world)
+    save_voxel_predictions(normalized_voxels, output_dir, raw_voxel_coords=coords_normalized)
     
+
+
+
+
     # Create comparison with ground truth
     ground_truth_path = os.path.join(food_item_dir, "normalized_mesh.obj")
     if os.path.exists(ground_truth_path):
@@ -502,10 +537,11 @@ def main():
     config_path = "/scratch/cl927/sam-3d-objects/checkpoints/hf/pipeline.yaml"
     
     # Example: Process second rendered image (render_001.png) which has different viewpoint
-    food_item_dir = "/scratch/cl927/nutritionverse-3d-new/id-1-salad-chicken-strip-7g"
-    # food_item_dir = "/scratch/cl927/nutritionverse-3d-new/id-11-red-apple-145g"
+    # food_item_dir = "/scratch/cl927/nutritionverse-3d-new/id-1-salad-chicken-strip-7g"
+    food_item_dir = "/scratch/cl927/nutritionverse-3d-new/_NEWCODE_test_id-11-red-apple"
     rendered_image_path = os.path.join(food_item_dir, "rendered-test-example", "render_000.png")
     
+
     normalized_voxels, output_dir = run_sam3d_prediction(food_item_dir, rendered_image_path, config_path, 'fixed_n')
     
     if normalized_voxels is not None:

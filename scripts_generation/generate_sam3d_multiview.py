@@ -1,6 +1,8 @@
 # Copyright (c) Meta Platforms, Inc. and affiliates.
 
 import os
+import argparse
+
 if "CUDA_VISIBLE_DEVICES" not in os.environ:
     os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 else:
@@ -34,13 +36,15 @@ def generate_sam3d_outputs(object_path, image_paths, mask_paths):
         
         # run model
         output = inference(image, mask, seed=42, stage1_only=True)
-        
+    
         # extract outputs
         scale = output["scale"].cpu().numpy().squeeze()
         shift = output["translation"].cpu().numpy().squeeze()
+        rotation = output["6drotation_normalized"].cpu().numpy().squeeze()
         coords_original = output["coords_original"].cpu().numpy()[:, 1:]  # Remove batch index
         occupancy_grid = output["occupancy_grid"].cpu().numpy().squeeze()  # Full probability grid
         
+
         # Convert from voxel indices [0, 63] to world coordinates [-0.5, 0.5] (like demo_occupancy.py)
         coords_normalized = (coords_original / 63.0) - 0.5
         print(f" Mean of original coords: {coords_original.mean(axis=0)}; Max: {coords_original.max(axis=0)}; Min: {coords_original.min(axis=0)}")
@@ -57,6 +61,7 @@ def generate_sam3d_outputs(object_path, image_paths, mask_paths):
                 occupancy_grid=occupancy_grid,  # Save full probability grid
                 scale=scale, 
                 shift=shift,
+                rotation=rotation,
                 image_path=img_path,
                 mask_path=mask_path)
 
@@ -73,18 +78,41 @@ def generate_sam3d_outputs(object_path, image_paths, mask_paths):
         print(f"  Scale: {scale}, Shift: {shift}")
 
 def main():
+
+    argparser = argparse.ArgumentParser(description="Generate SAM3D multiview outputs")
+
+
     # For dataset
-    object_path = "/scratch/cl927/nutritionverse-3d-new/_NEWCODE_test_id-11-red-apple"
+    # object_path = "/scratch/cl927/nutritionverse-3d-new/_NEWCODE_test_id-11-red-apple"
+    # object_path = "/scratch/cl927/nutritionverse-3d-new/_NEWCODE_id-26-chicken-leg-133g"
+    object_path = "/scratch/cl927/Toys4k/renders/_test"
     
     # Generate SAM3D outputs for first two views
+    # image_paths = [
+    #     "/scratch/cl927/nutritionverse-3d-new/_NEWCODE_test_id-11-red-apple/rendered-test-example/render_000.png",
+    #     "/scratch/cl927/nutritionverse-3d-new/_NEWCODE_test_id-11-red-apple/rendered-test-example/render_001.png"
+    # ]
+    # image_paths = [
+    #     "/scratch/cl927/nutritionverse-3d-new/_NEWCODE_id-26-chicken-leg-133g/rendered-test-example/render_000.png",
+    #     "/scratch/cl927/nutritionverse-3d-new/_NEWCODE_id-26-chicken-leg-133g/rendered-test-example/render_001.png"
+    # ]
     image_paths = [
-        "/scratch/cl927/nutritionverse-3d-new/_NEWCODE_test_id-11-red-apple/rendered-test-example/render_000.png",
-        "/scratch/cl927/nutritionverse-3d-new/_NEWCODE_test_id-11-red-apple/rendered-test-example/render_001.png"
+        "/scratch/cl927/Toys4k/renders/_test/000.png",
+        "/scratch/cl927/Toys4k/renders/_test/001.png"
     ]
+
     # Use image as mask for now
+    # mask_paths = [
+    #     "/scratch/cl927/nutritionverse-3d-new/_NEWCODE_test_id-11-red-apple/rendered-test-example/render_000.png", 
+    #     "/scratch/cl927/nutritionverse-3d-new/_NEWCODE_test_id-11-red-apple/rendered-test-example/render_001.png"
+    # ]
+    # mask_paths = [
+    #     "/scratch/cl927/nutritionverse-3d-new/_NEWCODE_id-26-chicken-leg-133g/rendered-test-example/render_000.png", 
+    #     "/scratch/cl927/nutritionverse-3d-new/_NEWCODE_id-26-chicken-leg-133g/rendered-test-example/render_001.png"
+    # ]
     mask_paths = [
-        "/scratch/cl927/nutritionverse-3d-new/_NEWCODE_test_id-11-red-apple/rendered-test-example/render_000.png", 
-        "/scratch/cl927/nutritionverse-3d-new/_NEWCODE_test_id-11-red-apple/rendered-test-example/render_001.png"
+        "/scratch/cl927/Toys4k/renders/_test/000.png", 
+        "/scratch/cl927/Toys4k/renders/_test/001.png"
     ]
     
     generate_sam3d_outputs(object_path, image_paths, mask_paths)
