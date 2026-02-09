@@ -53,7 +53,7 @@ def generate_sam3d_outputs(object_path, image_paths, mask_paths):
 
         # Save output data
         image_name = img_path.split("/")[-1].split(".")[0]
-        data_file = os.path.join(output_dir, f"{image_name}.npz")
+        data_file = os.path.join(output_dir, f"{image_name}_sam3d_outputs.npz")
         os.makedirs(os.path.dirname(data_file), exist_ok=True)
         np.savez(data_file, 
                 coords_original=coords_original,
@@ -76,12 +76,29 @@ def generate_sam3d_outputs(object_path, image_paths, mask_paths):
         print(f"  Occupancy grid shape: {occupancy_grid.shape}")
         print(f"  Occupancy values: min={occupancy_grid.min():.6f}, max={occupancy_grid.max():.6f}, mean={occupancy_grid.mean():.6f}")
         print(f"  Scale: {scale}, Shift: {shift}")
+    
+    results = {
+        "num_views": len(image_paths),
+        "output_dir": output_dir,
+    }
+    return results
 
 def main():
 
     argparser = argparse.ArgumentParser(description="Generate SAM3D multiview outputs")
+    argparser.add_argument("--object_path", type=str, required=True, help="Path to object folder containing images and masks")
+    argparser.add_argument("--image_folder", type=str, required=True, help="Folder path containing input images")
 
+    args = argparser.parse_args()
 
+    image_paths = sorted([os.path.join(args.image_folder, f) for f in os.listdir(args.image_folder) if f.endswith(".png")])
+    masks_paths = image_paths
+
+    generate_sam3d_outputs(args.object_path, image_paths, masks_paths)
+
+    
+
+    """
     # For dataset
     # object_path = "/scratch/cl927/nutritionverse-3d-new/_NEWCODE_test_id-11-red-apple"
     # object_path = "/scratch/cl927/nutritionverse-3d-new/_NEWCODE_id-26-chicken-leg-133g"
@@ -116,7 +133,7 @@ def main():
     ]
     
     generate_sam3d_outputs(object_path, image_paths, mask_paths)
-
+    """
 
 if __name__ == "__main__":
     main()

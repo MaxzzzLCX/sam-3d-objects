@@ -41,11 +41,10 @@ def main():
 
     gt_mesh = o3d.io.read_triangle_mesh(args.gt_path)
     gt_points = sample_points_from_mesh(gt_mesh, num_points=num_points)
-    np.save(f"{args.output_dir}/gt_points.npy", gt_points)
+    np.save(f"{args.output_dir}/chamfer/gt_points.npy", gt_points)
     pc = o3d.geometry.PointCloud()
     pc.points = o3d.utility.Vector3dVector(gt_points)
-    o3d.io.write_point_cloud(f"{args.output_dir}/gt_points.ply", pc)
-    print(f"Saved ground truth points to {args.output_dir}/gt_points.npy and {args.output_dir}/gt_points.ply")
-
+    o3d.io.write_point_cloud(f"{args.output_dir}/chamfer/gt_points.ply", pc)
+    print(f"Saved ground truth points to {args.output_dir}/chamfer/gt_points.npy and {args.output_dir}/chamfer/gt_points.ply")
 if __name__ == "__main__":
     main()

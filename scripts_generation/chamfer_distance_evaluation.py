@@ -8,6 +8,7 @@ using PyTorch3D implementation.
 
 import os
 import numpy as np
+from sympy import rotations
 import trimesh
 import argparse
 import json
@@ -114,48 +115,108 @@ def icp_alignment(gt_points, pred_points, max_iterations=50, tolerance=1e-6):
     return gt_points, aligned_pred_points
 
 
-def calculate_chamfer_distance_for_files(gt_path, pred_path, output_dir=None):
+def chamfer_distance_evaluation(gt_points, pred_points, output_dir, debug=False):
     """
-    Calculate Chamfer distance between ground truth and prediction point clouds
-    
-    Args:
-        gt_path: Path to ground truth PLY file
-        pred_path: Path to prediction PLY file
-        output_dir: Directory to save results (defaults to same as gt_path)
-    
-    Returns:
-        dict: Results dictionary with chamfer distance and metadata, or None if failed
+    The function that does full evaluation of Chamfer distance.
     """
-    # Load point clouds
-    gt_points = load_point_cloud(gt_path)
-    pred_points = load_point_cloud(pred_path)
-    
-    if gt_points is None or pred_points is None:
-        print("Failed to load point clouds")
-        return None
-    
+
     # Rescale point clouds to unit cube
     gt_points = rescale_points(gt_points)
     pred_points = rescale_points(pred_points)
 
+    ## NOTE: The generation from the model will be in global canonical coordinates. So alignment with GT is not necessary
+    # Thus, we try multiple initializations, and pick the one with best initial Chamfer distance.
+
+    best_chamfer_distance = float('inf')
+    best_eval_results = {}
+    best_initial_rotation = None
+
+    initial_rotations = []
+    rotation0 = np.eye(3)
+    # +90 around X-axis: The "Blender Fix" (Y-up -> Z-up)
+    rotation1 = np.array([
+        [1,  0,  0],
+        [0,  0,  -1],
+        [0,  1,  0]
+    ], dtype=float)
+    # -90 around X-axis: The Inverse Fix (Z-up -> Y-up)
+    rotation2 = np.array([
+        [0,  0,  1],
+        [0,  1,  0],
+        [-1, 0,  0]
+    ], dtype=float)
+
+    # +90 around Y
+    # Maps Z -> X, X -> -Z
+    rotation3 = np.array([
+        [ 0,  0,  1],
+        [ 0,  1,  0],
+        [-1,  0,  0]
+    ])
+
+    # -90 around Y
+    # Maps Z -> -X, X -> Z
+    rotation4 = np.array([
+        [ 0,  0, -1],
+        [ 0,  1,  0],
+        [ 1,  0,  0]
+    ])
+
+    # +90 around Z
+    # Maps X -> Y, Y -> -X
+    rotation5 = np.array([
+        [ 0, -1,  0],
+        [ 1,  0,  0],
+        [ 0,  0,  1]
+    ])
+
+    # -90 around Z
+    # Maps X -> -Y, Y -> X
+    rotation6 = np.array([
+        [ 0,  1,  0],
+        [-1,  0,  0],
+        [ 0,  0,  1]
+    ])
+
+    initial_rotations = [rotation0, rotation1, rotation2, rotation3, rotation4, rotation5, rotation6]
+    
+    for i, rotation in enumerate(initial_rotations):
+        # Apply initial rotation to predicted points
+        pred_points_rotated = pred_points @ rotation.T
+        
+        # Calculate Chamfer distance after ICP
+        chamfer_distance = calculate_chamfer_distance(gt_points, pred_points_rotated)
+        
+        if chamfer_distance['bidirectional_chamfer'] < best_chamfer_distance:
+            best_chamfer_distance = chamfer_distance['bidirectional_chamfer']
+            best_eval_results = chamfer_distance
+            best_initial_rotation = rotation
+        
+        print(f"Rotation {i}: Chamfer Distance = {chamfer_distance['bidirectional_chamfer']:.6f}")
+    
+    print(f"Best initial rotation:\n{best_initial_rotation}")
+    pred_points_best_initial = pred_points @ best_initial_rotation.T
 
     # Calculate Chamfer distances (Pre ICP)
-    chamfer_results = calculate_chamfer_distance(gt_points, pred_points)
+    chamfer_results = calculate_chamfer_distance(gt_points, pred_points_best_initial)
 
     # Visualize pre-ICP alignment of two point clouds
-    pc = trimesh.PointCloud(np.concatenate([gt_points, pred_points], axis=0))
-    pc_path = f"{output_dir}/pre_icp_alignment.ply"
-    os.makedirs(os.path.dirname(pc_path), exist_ok=True)
-    pc.export(pc_path)
+    if debug:
+        pc = trimesh.PointCloud(np.concatenate([gt_points, pred_points_best_initial], axis=0))
+        pc_path = f"{output_dir}/pre_icp_alignment.ply"
+        os.makedirs(os.path.dirname(pc_path), exist_ok=True)
+        pc.export(pc_path)
+
 
     # Performs ICP alignment for two point clouds now
-    gt_points_aligned, pred_points_aligned = icp_alignment(gt_points, pred_points)
+    gt_points_aligned, pred_points_aligned = icp_alignment(gt_points, pred_points_best_initial)
 
     # Visualize the post-ICP alignment of two point clouds
-    pc_aligned = trimesh.PointCloud(np.concatenate([gt_points_aligned, pred_points_aligned], axis=0))
-    pc_aligned_path = f"{output_dir}/post_icp_alignment.ply"
-    os.makedirs(os.path.dirname(pc_aligned_path), exist_ok=True)
-    pc_aligned.export(pc_aligned_path)
+    if debug:
+        pc_aligned = trimesh.PointCloud(np.concatenate([gt_points_aligned, pred_points_aligned], axis=0))
+        pc_aligned_path = f"{output_dir}/post_icp_alignment.ply"
+        os.makedirs(os.path.dirname(pc_aligned_path), exist_ok=True)
+        pc_aligned.export(pc_aligned_path)
 
     # Calculate Chamfer distances after ICP alignment
     chamfer_results_icp = calculate_chamfer_distance(gt_points_aligned, pred_points_aligned)
@@ -167,38 +228,67 @@ def calculate_chamfer_distance_for_files(gt_path, pred_path, output_dir=None):
     # Prepare results
     results = {
         "chamfer_distance": chamfer_results_icp['bidirectional_chamfer'], # Default CD (Post-ICP, bidirectional)
+        "num_points": len(pred_points),
         "bidirectional_chamfer_distance": chamfer_results_icp['bidirectional_chamfer'],
         "unidirectional_chamfer_distance": chamfer_results_icp['unidirectional_chamfer'],
-        "chamfer_distance_pre_icp": chamfer_results['bidirectional_chamfer'],
-        "chamfer_distance_post_icp": chamfer_results_icp['bidirectional_chamfer'],
-        "ICP_improvement_percentage": improvement,
-        "chamfer_distance_pre_icp_unidirectional": chamfer_results['unidirectional_chamfer'], # How well is GT represented in prediction
-        "chamfer_distance_post_icp_unidirectional": chamfer_results_icp['unidirectional_chamfer'],
+        "pre_icp_bidirectional_chamfer_distance": chamfer_results['bidirectional_chamfer'],
+        "post_icp_bidirectional_chamfer_distance": chamfer_results_icp['bidirectional_chamfer'],
+        "CD_ICP_improvement_percentage": improvement,
+        "pre_icp_unidirectional_chamfer_distance": chamfer_results['unidirectional_chamfer'], # How well is GT represented in prediction
+        "post_icp_unidirectional_chamfer_distance": chamfer_results_icp['unidirectional_chamfer'],
         "gt_points_count": len(gt_points),
-        "pred_points_count": len(pred_points),
+        "pred_points_count": len(pred_points_best_initial),
         "gt_bounds": {
             "min": np.min(gt_points, axis=0).tolist(),
             "max": np.max(gt_points, axis=0).tolist()
         },
         "pred_bounds": {
-            "min": np.min(pred_points, axis=0).tolist(),
-            "max": np.max(pred_points, axis=0).tolist()
+            "min": np.min(pred_points_best_initial, axis=0).tolist(),
+            "max": np.max(pred_points_best_initial, axis=0).tolist()
         }
     }
     
     # Set output directory
-    if output_dir is None:
-        output_dir = Path(gt_path).parent
-    else:
-        output_dir = Path(output_dir)
-    output_dir.mkdir(parents=True, exist_ok=True)
+    os.makedirs(output_dir, exist_ok=True)
     
-    # Save results
-    results_file = output_dir / 'chamfer_distance_results.json'
-    with open(results_file, 'w') as f:
-        json.dump(results, f, indent=2)
+    # Save results for the individual viewpoint evaluation stats
+    if debug:
+        results_file = os.path.join(output_dir, 'chamfer_distance_results.json')
+        with open(results_file, 'w') as f:
+            json.dump(results, f, indent=2)
     
     return results
+
+
+def chamfer_distance_evaluation_from_files(gt_path, pred_path, output_dir, debug=False):
+    """
+    A wrapper function that loads point clouds from files,
+    performs Chamfer distance evaluation, and saves results.
+    
+    Args:
+        gt_path: Path to ground truth PLY file
+        pred_path: Path to prediction PLY file
+        output_dir: Directory to save results
+    
+    Returns:
+        dict: Results dictionary with chamfer distance and metadata, or None if failed
+    """
+
+    output_dir = f"{output_dir}/chamfer"
+
+    # Load point clouds
+    gt_points = load_point_cloud(gt_path)
+    pred_points = load_point_cloud(pred_path)
+    
+    if gt_points is None or pred_points is None:
+        print("Failed to load point clouds")
+        return None
+    
+    results = chamfer_distance_evaluation(gt_points, pred_points, output_dir, debug)
+
+    return results
+    
+    
 
 
 def main():
@@ -209,13 +299,14 @@ def main():
     parser.add_argument('--gt_path', type=str, required=True, help='Path to ground truth PLY file')
     parser.add_argument('--pred_path', type=str, required=True, help='Path to prediction PLY file')
     parser.add_argument('--output_dir', type=str, help='Directory to save results')
+    parser.add_argument('--debug', action='store_true', help='Enable debug mode with verbose output')
     
     args = parser.parse_args()
     
     print(f"Loading ground truth: {args.gt_path}")
     print(f"Loading prediction: {args.pred_path}")
     
-    results = calculate_chamfer_distance_for_files(args.gt_path, args.pred_path, args.output_dir)
+    results = chamfer_distance_evaluation_from_files(args.gt_path, args.pred_path, args.output_dir, args.debug)
     
     if results:
         print(f"Ground Truth Points: {results['gt_points_count']:,}")

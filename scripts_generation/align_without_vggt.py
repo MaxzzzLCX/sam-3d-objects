@@ -29,7 +29,7 @@ def normalize_point_cloud(points):
     return points
 
 
-def icp_alignment(voxel_one_path, voxel_two_path, output_dir, threshold=0.15, max_iterations=100):
+def icp_alignment(voxel_one_path, voxel_two_path, output_dir, view1, view2, threshold=0.15, max_iterations=100):
     """
     Perform ICP alignment of predicted points to ground truth points.
     """
@@ -74,7 +74,7 @@ def icp_alignment(voxel_one_path, voxel_two_path, output_dir, threshold=0.15, ma
     print(f"Chamfer distance after ICP: {chamfer_results['bidirectional_chamfer']}")
 
     # Save as combined point cloud
-    icp_alignment_path = f"{output_dir}/icp_aligned_combined.ply"
+    icp_alignment_path = f"{output_dir}/icp_aligned_combined_views{view1}_{view2}.ply"
     os.makedirs(os.path.dirname(icp_alignment_path), exist_ok=True)
 
     combined_points = np.concatenate([voxel_one, voxel_two_aligned], axis=0)
@@ -143,18 +143,29 @@ def trilinear_interpolate_grid(source_grid, transformation_matrix, target_grid_s
 
 def fuse_by_average(grid_one, grid_two):
     
+    # Clip logits to prevent overflow in exp()
+    grid_one = np.clip(grid_one, -500, 500)
+    grid_two = np.clip(grid_two, -500, 500)
+    
     # grid_one and grid_two are logits
     # Average their probability with numerical stability
     prob_one = 1 / (1 + np.exp(-grid_one))
     prob_two = 1 / (1 + np.exp(-grid_two))
+    
+    # Handle NaN/inf values before further processing
+    prob_one = np.nan_to_num(prob_one, nan=0.5, posinf=1.0, neginf=0.0)
+    prob_two = np.nan_to_num(prob_two, nan=0.5, posinf=1.0, neginf=0.0)
+    
     avg_prob = (prob_one + prob_two) / 2
     
     # Clip to avoid division by zero when converting back to logits
     epsilon = 1e-7
     avg_prob = np.clip(avg_prob, epsilon, 1 - epsilon)
     
-    # Convert back to logits
+    # Convert back to logits with clipping to prevent overflow
     avg_logit = np.log(avg_prob / (1 - avg_prob))
+    avg_logit = np.clip(avg_logit, -500, 500)
+    
     return avg_logit
 
 def fuse_by_min_entropy(grid_one, grid_two):
@@ -170,9 +181,17 @@ def fuse_by_min_entropy(grid_one, grid_two):
     """
     print("Performing minimum entropy fusion...")
     
+    # Clip logits to prevent overflow in exp()
+    grid_one = np.clip(grid_one, -500, 500)
+    grid_two = np.clip(grid_two, -500, 500)
+    
     # Convert logits to probabilities
     prob1 = 1.0 / (1.0 + np.exp(-grid_one))  # sigmoid
     prob2 = 1.0 / (1.0 + np.exp(-grid_two))  # sigmoid
+    
+    # Handle NaN/inf values BEFORE clipping
+    prob1 = np.nan_to_num(prob1, nan=0.5, posinf=1.0, neginf=0.0)
+    prob2 = np.nan_to_num(prob2, nan=0.5, posinf=1.0, neginf=0.0)
     
     # Clip probabilities to avoid log(0)
     prob1_clipped = np.clip(prob1, 1e-7, 1-1e-7)
@@ -198,16 +217,82 @@ def fuse_by_min_entropy(grid_one, grid_two):
     
     return fused_grid
 
+def two_view_fusion(voxel_one_path, voxel_two_path, voxel_one_npz_path, voxel_two_npz_path, output_dir, view1, view2, debug=False,):
+    """
+    Main function to perform two-view fusion without VGGT, using ICP for alignment and then fusing occupancy grids.
+    
+    Args:
+        voxel_one_path: Path to first view's voxel point cloud (PLY)
+        voxel_two_path: Path to second view's voxel point cloud (PLY)
+        voxel_one_npz_path: Path to first view's SAM3D output NPZ file
+        voxel_two_npz_path: Path to second view's SAM3D output NPZ file
+        output_dir: Directory to save outputs
+        view1: Index of the first view for fusion
+        view2: Index of the second view for fusion
+        debug: Whether to run in debug mode with visualizations
+    """
+
+    # Check output_dir exist
+    os.makedirs(output_dir, exist_ok=True)
+
+    # For debugging, just visualize the voxel with the VGGT predictions
+    # Save them in one file, use different colors to denote points
+    voxel_one, voxel_two_aligned, transformation = icp_alignment(voxel_one_path, voxel_two_path, output_dir, view1, view2)
+
+    # Fusion
+    # Extract raw occupancy grids from npz files
+    voxel_one_data = np.load(voxel_one_npz_path)
+    voxel_two_data = np.load(voxel_two_npz_path)
+    occupancy_grid_one = voxel_one_data['occupancy_grid']
+    occupancy_grid_two = voxel_two_data['occupancy_grid']
+
+    occupancy_grid_two_interpolated = trilinear_interpolate_grid(occupancy_grid_two, transformation)
+
+    # Visualize the two voxel grids after interpolation
+    # Grid values are logits
+    if debug:
+        active_voxels_coords = np.argwhere(occupancy_grid_two_interpolated > 0.0)
+        pc = o3d.geometry.PointCloud()
+        pc.points = o3d.utility.Vector3dVector(active_voxels_coords)
+        o3d.io.write_point_cloud(f"{output_dir}/view_{view2}_interpolated_wrt_view{view1}.ply", pc)
+        print(f"Saved interpolated voxel two point cloud to {output_dir}/view_{view2}_interpolated_wrt_view{view1}.ply")
+    
+    # Fuse by averaging probabilities
+    fused_occupancy_grid = fuse_by_average(occupancy_grid_one, occupancy_grid_two_interpolated)
+    # Save fused point clouds
+    fused_active_voxels_coords = np.argwhere(fused_occupancy_grid > 0.0)
+    pc_fused = o3d.geometry.PointCloud()
+    pc_fused.points = o3d.utility.Vector3dVector(fused_active_voxels_coords)
+    o3d.io.write_point_cloud(f"{output_dir}/fused_average_voxels_views{view1}_{view2}.ply", pc_fused)
+    print(f"Saved fused voxel point cloud to {output_dir}/fused_average_voxels_views{view1}_{view2}.ply")
+
+    # Fuse by minimum entropy
+    fused_occupancy_grid_min_entropy = fuse_by_min_entropy(occupancy_grid_one, occupancy_grid_two_interpolated)
+    # Save fused point clouds
+    fused_active_voxels_coords_min_entropy = np.argwhere(fused_occupancy_grid_min_entropy > 0.0)
+    pc_fused_min_entropy = o3d.geometry.PointCloud()
+    pc_fused_min_entropy.points = o3d.utility.Vector3dVector(fused_active_voxels_coords_min_entropy)
+    o3d.io.write_point_cloud(f"{output_dir}/fused_min_entropy_voxels_views{view1}_{view2}.ply", pc_fused_min_entropy)
+    print(f"Saved fused (min entropy) voxel point cloud to {output_dir}/fused_min_entropy_voxels_views{view1}_{view2}.ply")
+
+    return output_dir
+
 
 def main():
     parser = argparse.ArgumentParser(description="Align with ICP")
+    parser.add_argument("--view1", type=int, required=True, help="Which view to use the first view for fusion (starting from 0)")
+    parser.add_argument("--view2", type=int, required=True, help="Which view to use the second view for fusion (starting from 0)")
     parser.add_argument("--voxel_one", type=str, required=True, help="Path to view one PLY file")
     parser.add_argument("--voxel_two", type=str, required=True, help="Path to view two PLY file")
     parser.add_argument("--voxel_one_npz", type=str, required=True, help="Path to view one voxel npz file")
     parser.add_argument("--voxel_two_npz", type=str, required=True, help="Path to view two voxel npz file")
     parser.add_argument("--output_dir", type=str, required=True, help="Output directory to save aligned point clouds")
+    parser.add_argument("--debug", action='store_true', help="Whether to run in debug mode with visualizations")
     args = parser.parse_args() 
 
+    two_view_fusion(args.voxel_one, args.voxel_two, args.voxel_one_npz, args.voxel_two_npz, args.output_dir, args.view1, args.view2, debug=args.debug)
+
+    """
     # For debugging, just visualize the voxel with the VGGT predictions
     # Save them in one file, use different colors to denote points
     voxel_one, voxel_two_aligned, transformation = icp_alignment(args.voxel_one, args.voxel_two, args.output_dir)
@@ -246,6 +331,7 @@ def main():
     pc_fused_min_entropy.points = o3d.utility.Vector3dVector(fused_active_voxels_coords_min_entropy)
     o3d.io.write_point_cloud(f"{args.output_dir}/fused_min_entropy_voxels.ply", pc_fused_min_entropy)
     print(f"Saved fused (min entropy) voxel point cloud to {args.output_dir}/fused_min_entropy_voxels.ply")
+    """
 
 if __name__ == "__main__":
     main()
