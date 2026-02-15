@@ -131,55 +131,38 @@ def chamfer_distance_evaluation(gt_points, pred_points, output_dir, debug=False)
     best_eval_results = {}
     best_initial_rotation = None
 
-    initial_rotations = []
-    rotation0 = np.eye(3)
-    # +90 around X-axis: The "Blender Fix" (Y-up -> Z-up)
-    rotation1 = np.array([
-        [1,  0,  0],
-        [0,  0,  -1],
-        [0,  1,  0]
-    ], dtype=float)
-    # -90 around X-axis: The Inverse Fix (Z-up -> Y-up)
-    rotation2 = np.array([
-        [0,  0,  1],
-        [0,  1,  0],
-        [-1, 0,  0]
-    ], dtype=float)
-
-    # +90 around Y
-    # Maps Z -> X, X -> -Z
-    rotation3 = np.array([
-        [ 0,  0,  1],
-        [ 0,  1,  0],
-        [-1,  0,  0]
-    ])
-
-    # -90 around Y
-    # Maps Z -> -X, X -> Z
-    rotation4 = np.array([
-        [ 0,  0, -1],
-        [ 0,  1,  0],
-        [ 1,  0,  0]
-    ])
-
-    # +90 around Z
-    # Maps X -> Y, Y -> -X
-    rotation5 = np.array([
-        [ 0, -1,  0],
-        [ 1,  0,  0],
-        [ 0,  0,  1]
-    ])
-
-    # -90 around Z
-    # Maps X -> -Y, Y -> X
-    rotation6 = np.array([
-        [ 0,  1,  0],
-        [-1,  0,  0],
-        [ 0,  0,  1]
-    ])
-
-    initial_rotations = [rotation0, rotation1, rotation2, rotation3, rotation4, rotation5, rotation6]
+    # Generate all 24 possible 90° axis-aligned rotations
+    # Method: For each of 6 faces (+X, -X, +Y, -Y, +Z, -Z), 
+    # apply 4 rotations (0°, 90°, 180°, 270°) = 6 × 4 = 24
     
+    initial_rotations = []
+    
+    # Define which axis points "forward" (6 possibilities)
+    forward_directions = [
+        np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),   # +Z forward (identity base)
+        np.array([[1, 0, 0], [0, -1, 0], [0, 0, -1]]),  # -Z forward (180° around X)
+        np.array([[0, 0, 1], [0, 1, 0], [-1, 0, 0]]),  # +X forward (90° around Y)
+        np.array([[0, 0, -1], [0, 1, 0], [1, 0, 0]]),  # -X forward (-90° around Y)
+        np.array([[1, 0, 0], [0, 0, -1], [0, 1, 0]]),  # +Y forward (90° around X)
+        np.array([[1, 0, 0], [0, 0, 1], [0, -1, 0]]),  # -Y forward (-90° around X)
+    ]
+    
+    # For each forward direction, rotate around the Z-axis (0°, 90°, 180°, 270°)
+    for base in forward_directions:
+        for angle in [0, 90, 180, 270]:
+            if angle == 0:
+                rotation_z = np.eye(3)
+            elif angle == 90:
+                rotation_z = np.array([[0, -1, 0], [1, 0, 0], [0, 0, 1]])
+            elif angle == 180:
+                rotation_z = np.array([[-1, 0, 0], [0, -1, 0], [0, 0, 1]])
+            else:  # 270
+                rotation_z = np.array([[0, 1, 0], [-1, 0, 0], [0, 0, 1]])
+            
+            initial_rotations.append(rotation_z @ base)
+    
+    print(f"Testing {len(initial_rotations)} possible orientations...")
+
     for i, rotation in enumerate(initial_rotations):
         # Apply initial rotation to predicted points
         pred_points_rotated = pred_points @ rotation.T
@@ -257,7 +240,7 @@ def chamfer_distance_evaluation(gt_points, pred_points, output_dir, debug=False)
         with open(results_file, 'w') as f:
             json.dump(results, f, indent=2)
     
-    return results
+    return results, best_initial_rotation
 
 
 def chamfer_distance_evaluation_from_files(gt_path, pred_path, output_dir, debug=False):
@@ -284,7 +267,7 @@ def chamfer_distance_evaluation_from_files(gt_path, pred_path, output_dir, debug
         print("Failed to load point clouds")
         return None
     
-    results = chamfer_distance_evaluation(gt_points, pred_points, output_dir, debug)
+    results, _ = chamfer_distance_evaluation(gt_points, pred_points, output_dir, debug)
 
     return results
     
