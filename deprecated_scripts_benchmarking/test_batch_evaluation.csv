@@ -1,0 +1,2 @@
+food_item,view,sam3d_success,num_voxels,chamfer_distance,gt_points_count,pred_points_count,calculation_time,error,output_dir
+id-1-salad-chicken-strip-7g,render_000,True,4952,0.00332113285548985,9904,4952,0.4256107807159424,,/scratch/cl927/nutritionverse-3d-new/id-1-salad-chicken-strip-7g/SAM3D_singleview_prediction/000

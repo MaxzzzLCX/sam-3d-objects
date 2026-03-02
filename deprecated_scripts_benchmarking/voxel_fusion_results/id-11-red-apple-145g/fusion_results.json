@@ -1,0 +1,37 @@
+{
+  "food_item": "id-11-red-apple-145g",
+  "view1_path": "/scratch/cl927/nutritionverse-3d-new/id-11-red-apple-145g/SAM3D_singleview_prediction/000/sam3d_voxels_normalized.npy",
+  "view2_path": "/scratch/cl927/nutritionverse-3d-new/id-11-red-apple-145g/SAM3D_singleview_prediction/001/sam3d_voxels_normalized.npy",
+  "fusion_time_seconds": 0.5266048908233643,
+  "center_distance": 0.06972424053165259,
+  "methods": {
+    "union": {
+      "input1_count": 18248,
+      "input2_count": 18148,
+      "fused_count": 35618,
+      "overlap_count": 778,
+      "overlap_ratio": 4.286973771214459
+    },
+    "arithmetic_average": {
+      "input1_count": 18248,
+      "input2_count": 18148,
+      "fused_count": 34156,
+      "overlap_count": 2240,
+      "mean_confidence": 0.6999999999999998,
+      "confidence_std": 1.1102230246251565e-16,
+      "threshold": 0.6
+    },
+    "min_entropy": {
+      "input1_count": 18248,
+      "input2_count": 18148,
+      "fused_count": 34156,
+      "overlap_count": 2240,
+      "only_view1_count": 16008,
+      "only_view2_count": 15908,
+      "mean_confidence": 0.6196744349455439,
+      "mean_entropy": 0.6501939988483508,
+      "overlap_confidence": 0.9,
+      "single_confidence": 0.6
+    }
+  }
+}

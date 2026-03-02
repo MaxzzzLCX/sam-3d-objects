@@ -1,6 +1,12 @@
 __pycache__
 *.ply
+*.glb
 layout_check_view_1.png
 layout_check_view_2.png
 apple/
 *.npz
+
+# Dataset
+scripts_volume/real_dataset/
+scripts_volume/real_data_multiview/
+scripts_volume/real_data_multiview_new/

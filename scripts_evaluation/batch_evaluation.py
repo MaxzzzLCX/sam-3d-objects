@@ -123,6 +123,9 @@ def main():
                 initial_transforms=initial_rotations,
                 evaluate_iou = True,
             )
+        
+        ## Volume Evaluation
+        # Placeholder
 
     print(f"FINISHED (start_idx {args.start_index}, end_idx {args.end_index}) at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 

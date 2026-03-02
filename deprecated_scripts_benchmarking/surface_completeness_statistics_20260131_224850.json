@@ -1,0 +1,1003 @@
+{
+  "total_evaluations": 492,
+  "successful_evaluations": 492,
+  "success_rate": 100.0,
+  "raw_completeness_rate": 64.22764227642277,
+  "norm_completeness_rate": 64.22764227642277,
+  "contradictions_count": 0,
+  "contradiction_rate": 0.0,
+  "raw_method_discrete_rate": 100.0,
+  "norm_method_discrete_rate": 100.0,
+  "per_object_stats": [
+    {
+      "food_item": "id-1-salad-chicken-strip-7g",
+      "total_views": 5,
+      "raw_complete_count": 5,
+      "norm_complete_count": 5,
+      "contradiction_count": 0,
+      "raw_complete_rate": 100.0,
+      "norm_complete_rate": 100.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-10-nature-valley-granola-bar-18g",
+      "total_views": 5,
+      "raw_complete_count": 1,
+      "norm_complete_count": 1,
+      "contradiction_count": 0,
+      "raw_complete_rate": 20.0,
+      "norm_complete_rate": 20.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-100-steak-153g",
+      "total_views": 5,
+      "raw_complete_count": 5,
+      "norm_complete_count": 5,
+      "contradiction_count": 0,
+      "raw_complete_rate": 100.0,
+      "norm_complete_rate": 100.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-101-steak-piece-28g",
+      "total_views": 5,
+      "raw_complete_count": 4,
+      "norm_complete_count": 4,
+      "contradiction_count": 0,
+      "raw_complete_rate": 80.0,
+      "norm_complete_rate": 80.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-102-steak-piece-13g",
+      "total_views": 5,
+      "raw_complete_count": 3,
+      "norm_complete_count": 3,
+      "contradiction_count": 0,
+      "raw_complete_rate": 60.0,
+      "norm_complete_rate": 60.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-103-steak-piece-14g",
+      "total_views": 5,
+      "raw_complete_count": 3,
+      "norm_complete_count": 3,
+      "contradiction_count": 0,
+      "raw_complete_rate": 60.0,
+      "norm_complete_rate": 60.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-104-chocolate-granola-bar-35g",
+      "total_views": 5,
+      "raw_complete_count": 3,
+      "norm_complete_count": 3,
+      "contradiction_count": 0,
+      "raw_complete_rate": 60.0,
+      "norm_complete_rate": 60.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-105-stack-of-tofu-4pc-96g",
+      "total_views": 5,
+      "raw_complete_count": 5,
+      "norm_complete_count": 5,
+      "contradiction_count": 0,
+      "raw_complete_rate": 100.0,
+      "norm_complete_rate": 100.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-11-red-apple-145g",
+      "total_views": 5,
+      "raw_complete_count": 5,
+      "norm_complete_count": 5,
+      "contradiction_count": 0,
+      "raw_complete_rate": 100.0,
+      "norm_complete_rate": 100.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-12-carrot-9g",
+      "total_views": 5,
+      "raw_complete_count": 3,
+      "norm_complete_count": 3,
+      "contradiction_count": 0,
+      "raw_complete_rate": 60.0,
+      "norm_complete_rate": 60.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-13-salad-beef-strip-1g",
+      "total_views": 4,
+      "raw_complete_count": 2,
+      "norm_complete_count": 2,
+      "contradiction_count": 0,
+      "raw_complete_rate": 50.0,
+      "norm_complete_rate": 50.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-14-salad-beef-strip-7g",
+      "total_views": 3,
+      "raw_complete_count": 3,
+      "norm_complete_count": 3,
+      "contradiction_count": 0,
+      "raw_complete_rate": 100.0,
+      "norm_complete_rate": 100.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-15-salad-beef-strip-9g",
+      "total_views": 5,
+      "raw_complete_count": 5,
+      "norm_complete_count": 5,
+      "contradiction_count": 0,
+      "raw_complete_rate": 100.0,
+      "norm_complete_rate": 100.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-16-salad-beef-strip-10g",
+      "total_views": 5,
+      "raw_complete_count": 5,
+      "norm_complete_count": 5,
+      "contradiction_count": 0,
+      "raw_complete_rate": 100.0,
+      "norm_complete_rate": 100.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-17-salad-beef-strip-12g",
+      "total_views": 5,
+      "raw_complete_count": 4,
+      "norm_complete_count": 4,
+      "contradiction_count": 0,
+      "raw_complete_rate": 80.0,
+      "norm_complete_rate": 80.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-18-salad-beef-strip-13g",
+      "total_views": 5,
+      "raw_complete_count": 4,
+      "norm_complete_count": 4,
+      "contradiction_count": 0,
+      "raw_complete_rate": 80.0,
+      "norm_complete_rate": 80.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-19-cucumber-piece-10g",
+      "total_views": 5,
+      "raw_complete_count": 5,
+      "norm_complete_count": 5,
+      "contradiction_count": 0,
+      "raw_complete_rate": 100.0,
+      "norm_complete_rate": 100.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-2-salad-chicken-strip-9g",
+      "total_views": 5,
+      "raw_complete_count": 4,
+      "norm_complete_count": 4,
+      "contradiction_count": 0,
+      "raw_complete_rate": 80.0,
+      "norm_complete_rate": 80.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-20-cucumber-piece-46g",
+      "total_views": 5,
+      "raw_complete_count": 3,
+      "norm_complete_count": 3,
+      "contradiction_count": 0,
+      "raw_complete_rate": 60.0,
+      "norm_complete_rate": 60.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-21-chicken-wing-27g",
+      "total_views": 5,
+      "raw_complete_count": 2,
+      "norm_complete_count": 2,
+      "contradiction_count": 0,
+      "raw_complete_rate": 40.0,
+      "norm_complete_rate": 40.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-22-half-bread-loaf-51g",
+      "total_views": 5,
+      "raw_complete_count": 4,
+      "norm_complete_count": 4,
+      "contradiction_count": 0,
+      "raw_complete_rate": 80.0,
+      "norm_complete_rate": 80.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-23-captain-crunch-granola-bar-27g",
+      "total_views": 5,
+      "raw_complete_count": 3,
+      "norm_complete_count": 3,
+      "contradiction_count": 0,
+      "raw_complete_rate": 60.0,
+      "norm_complete_rate": 60.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-24-near-whole-chicken-680g",
+      "total_views": 5,
+      "raw_complete_count": 2,
+      "norm_complete_count": 2,
+      "contradiction_count": 0,
+      "raw_complete_rate": 40.0,
+      "norm_complete_rate": 40.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-25-chicken-breast-128g",
+      "total_views": 5,
+      "raw_complete_count": 3,
+      "norm_complete_count": 3,
+      "contradiction_count": 0,
+      "raw_complete_rate": 60.0,
+      "norm_complete_rate": 60.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-26-chicken-leg-133g",
+      "total_views": 5,
+      "raw_complete_count": 0,
+      "norm_complete_count": 0,
+      "contradiction_count": 0,
+      "raw_complete_rate": 0.0,
+      "norm_complete_rate": 0.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-27-chicken-leg-77g",
+      "total_views": 5,
+      "raw_complete_count": 4,
+      "norm_complete_count": 4,
+      "contradiction_count": 0,
+      "raw_complete_rate": 80.0,
+      "norm_complete_rate": 80.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-28-chicken-breast-97g",
+      "total_views": 5,
+      "raw_complete_count": 4,
+      "norm_complete_count": 4,
+      "contradiction_count": 0,
+      "raw_complete_rate": 80.0,
+      "norm_complete_rate": 80.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-29-meatloaf-678g",
+      "total_views": 5,
+      "raw_complete_count": 3,
+      "norm_complete_count": 3,
+      "contradiction_count": 0,
+      "raw_complete_rate": 60.0,
+      "norm_complete_rate": 60.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-3-salad-chicken-strip-10g",
+      "total_views": 5,
+      "raw_complete_count": 5,
+      "norm_complete_count": 5,
+      "contradiction_count": 0,
+      "raw_complete_rate": 100.0,
+      "norm_complete_rate": 100.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-30-meatloaf-338g",
+      "total_views": 5,
+      "raw_complete_count": 5,
+      "norm_complete_count": 5,
+      "contradiction_count": 0,
+      "raw_complete_rate": 100.0,
+      "norm_complete_rate": 100.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-31-meatloaf-161g",
+      "total_views": 5,
+      "raw_complete_count": 3,
+      "norm_complete_count": 3,
+      "contradiction_count": 0,
+      "raw_complete_rate": 60.0,
+      "norm_complete_rate": 60.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-32-meatloaf-86g",
+      "total_views": 5,
+      "raw_complete_count": 3,
+      "norm_complete_count": 3,
+      "contradiction_count": 0,
+      "raw_complete_rate": 60.0,
+      "norm_complete_rate": 60.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-33-asian-pear-217g",
+      "total_views": 5,
+      "raw_complete_count": 5,
+      "norm_complete_count": 5,
+      "contradiction_count": 0,
+      "raw_complete_rate": 100.0,
+      "norm_complete_rate": 100.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-34-costco-egg-54g",
+      "total_views": 5,
+      "raw_complete_count": 3,
+      "norm_complete_count": 3,
+      "contradiction_count": 0,
+      "raw_complete_rate": 60.0,
+      "norm_complete_rate": 60.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-35-red-yellow-apple-84g",
+      "total_views": 5,
+      "raw_complete_count": 5,
+      "norm_complete_count": 5,
+      "contradiction_count": 0,
+      "raw_complete_rate": 100.0,
+      "norm_complete_rate": 100.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-36-costco-salad-sushi-roll-1-30g",
+      "total_views": 5,
+      "raw_complete_count": 3,
+      "norm_complete_count": 3,
+      "contradiction_count": 0,
+      "raw_complete_rate": 60.0,
+      "norm_complete_rate": 60.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-37-costco-cucumber-sushi-roll-1-16g",
+      "total_views": 5,
+      "raw_complete_count": 2,
+      "norm_complete_count": 2,
+      "contradiction_count": 0,
+      "raw_complete_rate": 40.0,
+      "norm_complete_rate": 40.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-38-costco-shrimp-sushi-roll-1-31g",
+      "total_views": 5,
+      "raw_complete_count": 1,
+      "norm_complete_count": 1,
+      "contradiction_count": 0,
+      "raw_complete_rate": 20.0,
+      "norm_complete_rate": 20.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-39-costco-california-sushi-roll-1-27g",
+      "total_views": 5,
+      "raw_complete_count": 2,
+      "norm_complete_count": 2,
+      "contradiction_count": 0,
+      "raw_complete_rate": 40.0,
+      "norm_complete_rate": 40.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-4-salad-chicken-strip-12g",
+      "total_views": 5,
+      "raw_complete_count": 4,
+      "norm_complete_count": 4,
+      "contradiction_count": 0,
+      "raw_complete_rate": 80.0,
+      "norm_complete_rate": 80.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-40-costco-shrimp-sushi-roll-2-35g",
+      "total_views": 5,
+      "raw_complete_count": 4,
+      "norm_complete_count": 4,
+      "contradiction_count": 0,
+      "raw_complete_rate": 80.0,
+      "norm_complete_rate": 80.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-41-costco-salad-sushi-roll-2-28g",
+      "total_views": 5,
+      "raw_complete_count": 4,
+      "norm_complete_count": 4,
+      "contradiction_count": 0,
+      "raw_complete_rate": 80.0,
+      "norm_complete_rate": 80.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-42-costco-california-sushi-roll-2-27g",
+      "total_views": 5,
+      "raw_complete_count": 4,
+      "norm_complete_count": 4,
+      "contradiction_count": 0,
+      "raw_complete_rate": 80.0,
+      "norm_complete_rate": 80.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-43-costco-california-sushi-roll-3-28g",
+      "total_views": 5,
+      "raw_complete_count": 2,
+      "norm_complete_count": 2,
+      "contradiction_count": 0,
+      "raw_complete_rate": 40.0,
+      "norm_complete_rate": 40.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-44-costco-california-sushi-roll-4-27g",
+      "total_views": 5,
+      "raw_complete_count": 3,
+      "norm_complete_count": 3,
+      "contradiction_count": 0,
+      "raw_complete_rate": 60.0,
+      "norm_complete_rate": 60.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-45-costco-california-sushi-roll-5-24g",
+      "total_views": 5,
+      "raw_complete_count": 0,
+      "norm_complete_count": 0,
+      "contradiction_count": 0,
+      "raw_complete_rate": 0.0,
+      "norm_complete_rate": 0.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-46-costco-salad-sushi-roll-3-29g",
+      "total_views": 5,
+      "raw_complete_count": 5,
+      "norm_complete_count": 5,
+      "contradiction_count": 0,
+      "raw_complete_rate": 100.0,
+      "norm_complete_rate": 100.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-47-costco-salad-sushi-roll-4-30g",
+      "total_views": 5,
+      "raw_complete_count": 2,
+      "norm_complete_count": 2,
+      "contradiction_count": 0,
+      "raw_complete_rate": 40.0,
+      "norm_complete_rate": 40.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-48-costco-salad-sushi-roll-5-31g",
+      "total_views": 5,
+      "raw_complete_count": 2,
+      "norm_complete_count": 2,
+      "contradiction_count": 0,
+      "raw_complete_rate": 40.0,
+      "norm_complete_rate": 40.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-49-costco-shrimp-sushi-roll-3-33g",
+      "total_views": 5,
+      "raw_complete_count": 3,
+      "norm_complete_count": 3,
+      "contradiction_count": 0,
+      "raw_complete_rate": 60.0,
+      "norm_complete_rate": 60.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-5-salad-chicken-strip-15g",
+      "total_views": 5,
+      "raw_complete_count": 5,
+      "norm_complete_count": 5,
+      "contradiction_count": 0,
+      "raw_complete_rate": 100.0,
+      "norm_complete_rate": 100.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-50-costco-salad-sushi-roll-6-31g",
+      "total_views": 5,
+      "raw_complete_count": 4,
+      "norm_complete_count": 4,
+      "contradiction_count": 0,
+      "raw_complete_rate": 80.0,
+      "norm_complete_rate": 80.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-51-costco-shrimp-sushi-roll-4-28g",
+      "total_views": 5,
+      "raw_complete_count": 1,
+      "norm_complete_count": 1,
+      "contradiction_count": 0,
+      "raw_complete_rate": 20.0,
+      "norm_complete_rate": 20.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-52-costco-tuna-rice-ball-37g",
+      "total_views": 5,
+      "raw_complete_count": 4,
+      "norm_complete_count": 4,
+      "contradiction_count": 0,
+      "raw_complete_rate": 80.0,
+      "norm_complete_rate": 80.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-53-meatloaf-345g",
+      "total_views": 5,
+      "raw_complete_count": 5,
+      "norm_complete_count": 5,
+      "contradiction_count": 0,
+      "raw_complete_rate": 100.0,
+      "norm_complete_rate": 100.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-54-meatloaf-171g",
+      "total_views": 5,
+      "raw_complete_count": 5,
+      "norm_complete_count": 5,
+      "contradiction_count": 0,
+      "raw_complete_rate": 100.0,
+      "norm_complete_rate": 100.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-55-hamburger-695g",
+      "total_views": 5,
+      "raw_complete_count": 0,
+      "norm_complete_count": 0,
+      "contradiction_count": 0,
+      "raw_complete_rate": 0.0,
+      "norm_complete_rate": 0.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-56-chicken-sandwich-456g",
+      "total_views": 5,
+      "raw_complete_count": 1,
+      "norm_complete_count": 1,
+      "contradiction_count": 0,
+      "raw_complete_rate": 20.0,
+      "norm_complete_rate": 20.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-57-plain-toast-43g",
+      "total_views": 5,
+      "raw_complete_count": 4,
+      "norm_complete_count": 4,
+      "contradiction_count": 0,
+      "raw_complete_rate": 80.0,
+      "norm_complete_rate": 80.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-58-toast-with-strawberry-jam-66g",
+      "total_views": 5,
+      "raw_complete_count": 3,
+      "norm_complete_count": 3,
+      "contradiction_count": 0,
+      "raw_complete_rate": 60.0,
+      "norm_complete_rate": 60.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-59-rib-98g",
+      "total_views": 5,
+      "raw_complete_count": 3,
+      "norm_complete_count": 3,
+      "contradiction_count": 0,
+      "raw_complete_rate": 60.0,
+      "norm_complete_rate": 60.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-6-salad-chicken-strip-18g",
+      "total_views": 5,
+      "raw_complete_count": 5,
+      "norm_complete_count": 5,
+      "contradiction_count": 0,
+      "raw_complete_rate": 100.0,
+      "norm_complete_rate": 100.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-60-rib-101g",
+      "total_views": 5,
+      "raw_complete_count": 4,
+      "norm_complete_count": 4,
+      "contradiction_count": 0,
+      "raw_complete_rate": 80.0,
+      "norm_complete_rate": 80.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-61-rib-88g",
+      "total_views": 5,
+      "raw_complete_count": 3,
+      "norm_complete_count": 3,
+      "contradiction_count": 0,
+      "raw_complete_rate": 60.0,
+      "norm_complete_rate": 60.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-62-lasagna-390g",
+      "total_views": 5,
+      "raw_complete_count": 2,
+      "norm_complete_count": 2,
+      "contradiction_count": 0,
+      "raw_complete_rate": 40.0,
+      "norm_complete_rate": 40.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-64-shrimp-salad-roll-131g",
+      "total_views": 5,
+      "raw_complete_count": 5,
+      "norm_complete_count": 5,
+      "contradiction_count": 0,
+      "raw_complete_rate": 100.0,
+      "norm_complete_rate": 100.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-67-half-minced-shrimp-36g",
+      "total_views": 5,
+      "raw_complete_count": 4,
+      "norm_complete_count": 4,
+      "contradiction_count": 0,
+      "raw_complete_rate": 80.0,
+      "norm_complete_rate": 80.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-68-chicken-leg-36g",
+      "total_views": 5,
+      "raw_complete_count": 2,
+      "norm_complete_count": 2,
+      "contradiction_count": 0,
+      "raw_complete_rate": 40.0,
+      "norm_complete_rate": 40.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-69-chicken-leg-30g",
+      "total_views": 5,
+      "raw_complete_count": 5,
+      "norm_complete_count": 5,
+      "contradiction_count": 0,
+      "raw_complete_rate": 100.0,
+      "norm_complete_rate": 100.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-7-salad-chicken-strip-31g",
+      "total_views": 5,
+      "raw_complete_count": 4,
+      "norm_complete_count": 4,
+      "contradiction_count": 0,
+      "raw_complete_rate": 80.0,
+      "norm_complete_rate": 80.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-70-chicken-leg-31g",
+      "total_views": 5,
+      "raw_complete_count": 2,
+      "norm_complete_count": 2,
+      "contradiction_count": 0,
+      "raw_complete_rate": 40.0,
+      "norm_complete_rate": 40.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-71-chicken-leg-40g",
+      "total_views": 5,
+      "raw_complete_count": 3,
+      "norm_complete_count": 3,
+      "contradiction_count": 0,
+      "raw_complete_rate": 60.0,
+      "norm_complete_rate": 60.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-72-chicken-leg-32g",
+      "total_views": 5,
+      "raw_complete_count": 1,
+      "norm_complete_count": 1,
+      "contradiction_count": 0,
+      "raw_complete_rate": 20.0,
+      "norm_complete_rate": 20.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-73-chicken-leg-25g",
+      "total_views": 5,
+      "raw_complete_count": 3,
+      "norm_complete_count": 3,
+      "contradiction_count": 0,
+      "raw_complete_rate": 60.0,
+      "norm_complete_rate": 60.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-74-crispy-pork-rib-36g",
+      "total_views": 5,
+      "raw_complete_count": 1,
+      "norm_complete_count": 1,
+      "contradiction_count": 0,
+      "raw_complete_rate": 20.0,
+      "norm_complete_rate": 20.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-75-crispy-pork-rib-27g",
+      "total_views": 5,
+      "raw_complete_count": 1,
+      "norm_complete_count": 1,
+      "contradiction_count": 0,
+      "raw_complete_rate": 20.0,
+      "norm_complete_rate": 20.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-76-crispy-pork-rib-27g",
+      "total_views": 5,
+      "raw_complete_count": 4,
+      "norm_complete_count": 4,
+      "contradiction_count": 0,
+      "raw_complete_rate": 80.0,
+      "norm_complete_rate": 80.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-77-crispy-pork-rib-24g",
+      "total_views": 5,
+      "raw_complete_count": 5,
+      "norm_complete_count": 5,
+      "contradiction_count": 0,
+      "raw_complete_rate": 100.0,
+      "norm_complete_rate": 100.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-78-crispy-pork-rib-29g",
+      "total_views": 5,
+      "raw_complete_count": 5,
+      "norm_complete_count": 5,
+      "contradiction_count": 0,
+      "raw_complete_rate": 100.0,
+      "norm_complete_rate": 100.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-79-crispy-pork-rib-25g",
+      "total_views": 5,
+      "raw_complete_count": 4,
+      "norm_complete_count": 4,
+      "contradiction_count": 0,
+      "raw_complete_rate": 80.0,
+      "norm_complete_rate": 80.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-8-nature-valley-granola-bar-1g",
+      "total_views": 5,
+      "raw_complete_count": 4,
+      "norm_complete_count": 4,
+      "contradiction_count": 0,
+      "raw_complete_rate": 80.0,
+      "norm_complete_rate": 80.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-80-crispy-pork-rib-21g",
+      "total_views": 5,
+      "raw_complete_count": 2,
+      "norm_complete_count": 2,
+      "contradiction_count": 0,
+      "raw_complete_rate": 40.0,
+      "norm_complete_rate": 40.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-81-crispy-pork-rib-23g",
+      "total_views": 5,
+      "raw_complete_count": 3,
+      "norm_complete_count": 3,
+      "contradiction_count": 0,
+      "raw_complete_rate": 60.0,
+      "norm_complete_rate": 60.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-82-pork-feet-49g",
+      "total_views": 5,
+      "raw_complete_count": 3,
+      "norm_complete_count": 3,
+      "contradiction_count": 0,
+      "raw_complete_rate": 60.0,
+      "norm_complete_rate": 60.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-83-pork-feet-92g",
+      "total_views": 5,
+      "raw_complete_count": 3,
+      "norm_complete_count": 3,
+      "contradiction_count": 0,
+      "raw_complete_rate": 60.0,
+      "norm_complete_rate": 60.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-84-pork-feet-180g",
+      "total_views": 5,
+      "raw_complete_count": 0,
+      "norm_complete_count": 0,
+      "contradiction_count": 0,
+      "raw_complete_rate": 0.0,
+      "norm_complete_rate": 0.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-85-pork-feet-116g",
+      "total_views": 5,
+      "raw_complete_count": 2,
+      "norm_complete_count": 2,
+      "contradiction_count": 0,
+      "raw_complete_rate": 40.0,
+      "norm_complete_rate": 40.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-86-lamb-shank-226g",
+      "total_views": 5,
+      "raw_complete_count": 3,
+      "norm_complete_count": 3,
+      "contradiction_count": 0,
+      "raw_complete_rate": 60.0,
+      "norm_complete_rate": 60.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-87-veal-kebab-piece-23g",
+      "total_views": 5,
+      "raw_complete_count": 2,
+      "norm_complete_count": 2,
+      "contradiction_count": 0,
+      "raw_complete_rate": 40.0,
+      "norm_complete_rate": 40.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-88-chicken-wing-34g",
+      "total_views": 5,
+      "raw_complete_count": 1,
+      "norm_complete_count": 1,
+      "contradiction_count": 0,
+      "raw_complete_rate": 20.0,
+      "norm_complete_rate": 20.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-89-chicken-wing-33g",
+      "total_views": 5,
+      "raw_complete_count": 2,
+      "norm_complete_count": 2,
+      "contradiction_count": 0,
+      "raw_complete_rate": 40.0,
+      "norm_complete_rate": 40.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-9-nature-valley-granola-bar-13g",
+      "total_views": 5,
+      "raw_complete_count": 2,
+      "norm_complete_count": 2,
+      "contradiction_count": 0,
+      "raw_complete_rate": 40.0,
+      "norm_complete_rate": 40.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-91-chicken-wing-33g",
+      "total_views": 5,
+      "raw_complete_count": 2,
+      "norm_complete_count": 2,
+      "contradiction_count": 0,
+      "raw_complete_rate": 40.0,
+      "norm_complete_rate": 40.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-92-chicken-wing-34g",
+      "total_views": 5,
+      "raw_complete_count": 4,
+      "norm_complete_count": 4,
+      "contradiction_count": 0,
+      "raw_complete_rate": 80.0,
+      "norm_complete_rate": 80.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-93-chicken-wing-22g",
+      "total_views": 5,
+      "raw_complete_count": 4,
+      "norm_complete_count": 4,
+      "contradiction_count": 0,
+      "raw_complete_rate": 80.0,
+      "norm_complete_rate": 80.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-94-chicken-wing-27g",
+      "total_views": 5,
+      "raw_complete_count": 4,
+      "norm_complete_count": 4,
+      "contradiction_count": 0,
+      "raw_complete_rate": 80.0,
+      "norm_complete_rate": 80.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-95-chicken-wing-26g",
+      "total_views": 5,
+      "raw_complete_count": 4,
+      "norm_complete_count": 4,
+      "contradiction_count": 0,
+      "raw_complete_rate": 80.0,
+      "norm_complete_rate": 80.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-97-french-fry-6g",
+      "total_views": 5,
+      "raw_complete_count": 5,
+      "norm_complete_count": 5,
+      "contradiction_count": 0,
+      "raw_complete_rate": 100.0,
+      "norm_complete_rate": 100.0,
+      "contradiction_rate": 0.0
+    },
+    {
+      "food_item": "id-98-lobster-75g",
+      "total_views": 5,
+      "raw_complete_count": 1,
+      "norm_complete_count": 1,
+      "contradiction_count": 0,
+      "raw_complete_rate": 20.0,
+      "norm_complete_rate": 20.0,
+      "contradiction_rate": 0.0
+    }
+  ]
+}

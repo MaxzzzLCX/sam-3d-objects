@@ -1,3 +1,6 @@
+"""
+Temporary script just to fix individual segmentation imperfections.
+"""
 import os
 
 import torch
@@ -65,11 +68,11 @@ def segment_image(
         # Get results and save plate masks
         masks, boxes, scores = output["masks"], output["boxes"], output["scores"]
         print(f"mask shape: {masks.shape}, box shape: {boxes.shape}, scores shape: {scores.shape}")
-        if masks.shape[0] >  0:
-            mask_image = Image.fromarray(masks[0].squeeze().cpu().numpy().astype("uint8") * 255)
-            mask_image.save(f"{mask_folder}/{idx}.png")
+        if idx == 1:
+            mask_image = Image.fromarray(masks[2].squeeze().cpu().numpy().astype("uint8") * 255)
         else:
-            print(f"No masks found for prompt '{prompt}' in image '{image_path}'.")
+            mask_image = Image.fromarray(masks[0].squeeze().cpu().numpy().astype("uint8") * 255)
+        mask_image.save(f"{mask_folder}/{idx}_new.png")
     
     # Clean up GPU memory after processing
     if torch.cuda.is_available():
@@ -86,56 +89,17 @@ def batch_segment_images(image_folder, prompts):
     """
     Batch segment images in a folder.
     """
-    image_paths = sorted([os.path.join(image_folder, f) for f in os.listdir(image_folder) if f.endswith(".jpg") or f.endswith(".JPG") or f.endswith(".jpeg") or f.endswith(".png")])
+    image_paths = sorted([os.path.join(image_folder, f) for f in os.listdir(image_folder) if f.endswith(".jpg") or f.endswith(".JPG")])
     for image_path in image_paths:
         segment_image(image_path, prompts)
 
 
 def main():
     
-    image_folders = [
-        # "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview/orange_plate/images",
-        # "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview/orange_bowl/images",
-        # "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview/mango_plate/images",
-        # "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview/mango_bowl/images",
-        # "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview/box_plate/images",
-        # "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview/box_bowl/images",
-    #     "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview/gum_plate/images",
-    #     "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview/gum_bowl/images",
-        "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview/avocado_bowl/images",
-        "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview/avocado_plate/images",
-        "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview/egg_bowl/images",
-        "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview/egg_plate/images",
-        "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview/pepper_bowl/images",
-        "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview/pepper_plate/images",
-        "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview/potato_bowl/images",
-        "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview/potato_plate/images"
-    ]
-    dataset_prompts = [
-        # ["plate", "orange"],
-        # ["bowl", "orange"],
-        # ["plate", "mango"],
-        # ["bowl", "mango"],
-        # ["plate", "box on the plate"],
-        # ["white bowl", "box in the bowl"],
-        # ["plate", "gum bottle"],
-        # ["bowl", "gum bottle"],
-        ["bowl", "avocado"],
-        ["plate", "avocado"],
-        ["bowl", "egg"],
-        ["plate", "egg"],
-        ["bowl", "pepper"],
-        ["plate", "pepper"],
-        ["bowl", "potato"],
-        ["plate", "potato"]
-    ]
-
-    for image_folder, prompts in zip(image_folders, dataset_prompts):
-        print(f"Segmenting images in {image_folder} with prompts {prompts}...")
-        batch_segment_images(
-            image_folder=image_folder,
-            prompts=prompts
-        )
+    segment_image(
+        image_path="/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview/box_plate/resized_images/4.png",
+        prompts=["plate", "box"],
+    )
 
 if __name__ == "__main__":
     main()

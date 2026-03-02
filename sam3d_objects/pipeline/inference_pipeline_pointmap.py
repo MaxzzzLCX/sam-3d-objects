@@ -259,13 +259,18 @@ class InferencePipelinePointMap(InferencePipeline):
 
         return revised_scale
 
-    def compute_pointmap(self, image, pointmap=None):
+    def compute_pointmap(self, image, pointmap=None, intrinsics=None):
         loaded_image = self.image_to_float(image)
         loaded_image = torch.from_numpy(loaded_image)
         loaded_mask = loaded_image[..., -1]
         loaded_image = loaded_image.permute(2, 0, 1).contiguous()[:3]
 
         if pointmap is None:
+            if self.depth_model is None:
+                raise ValueError(
+                    "No pointmap provided and depth_model is None. "
+                    "Either provide a pointmap or load the pipeline with a depth model."
+                )
             with torch.no_grad():
                 with torch.autocast(device_type="cuda", dtype=self.dtype):
                     output = self.depth_model(loaded_image)
@@ -277,18 +282,50 @@ class InferencePipelinePointMap(InferencePipeline):
             )
             points_tensor = camera_convention_transform.transform_points(pointmaps)
             intrinsics = output.get("intrinsics", None)
+            logger.info("Using MoGE depth model for pointmap generation")
         else:
             output = {}
+            # VGGT pointmaps come in [H, W, 3] format, need to match loaded_image [3, H, W]
             points_tensor = pointmap.to(self.device)
-            if loaded_image.shape != points_tensor.shape:
-                # Interpolate points_tensor to match loaded_image size
-                # loaded_image has shape [3, H, W], we need H and W
-                points_tensor = torch.nn.functional.interpolate(
-                    points_tensor.permute(2, 0, 1).unsqueeze(0),
-                    size=(loaded_image.shape[1], loaded_image.shape[2]),
-                    mode="nearest",
-                ).squeeze(0).permute(1, 2, 0)
-            intrinsics = None
+            logger.info(f"Using precomputed pointmap: shape={points_tensor.shape}, dtype={points_tensor.dtype}")
+            logger.info(f"loaded_image.shape: {loaded_image.shape}, points_tensor.shape: {points_tensor.shape}")
+            
+            # Handle dimension mismatch - pointmap is [H, W, 3], loaded_image is [3, H, W]
+            if points_tensor.dim() == 3 and points_tensor.shape[-1] == 3:
+                # Pointmap is in [H, W, 3] format - this is expected from VGGT
+                if (loaded_image.shape[1] != points_tensor.shape[0] or 
+                    loaded_image.shape[2] != points_tensor.shape[1]):
+                    logger.warning(
+                        f"Spatial dimension mismatch: image=[{loaded_image.shape[1]}, {loaded_image.shape[2]}], "
+                        f"pointmap=[{points_tensor.shape[0]}, {points_tensor.shape[1]}]. Resizing pointmap..."
+                    )
+                    # Interpolate points_tensor to match loaded_image size
+                    points_tensor = torch.nn.functional.interpolate(
+                        points_tensor.permute(2, 0, 1).unsqueeze(0),
+                        size=(loaded_image.shape[1], loaded_image.shape[2]),
+                        mode="nearest",
+                    ).squeeze(0).permute(1, 2, 0)
+                    logger.info(f"Resized pointmap to {points_tensor.shape}")
+            elif points_tensor.dim() == 3 and points_tensor.shape[0] == 3:
+                # Pointmap is already in [3, H, W] format - permute to [H, W, 3] for consistency
+                logger.info("Pointmap is in [3, H, W] format, permuting to [H, W, 3]")
+                points_tensor = points_tensor.permute(1, 2, 0)
+            
+            # CRITICAL FIX: VGGT outputs world coordinates in OpenCV convention
+            # We need to transform to PyTorch3D camera convention like MoGE does
+            # This ensures consistency in the pipeline
+            logger.info("Applying camera convention transform (OpenCV/VGGT -> PyTorch3D)")
+            camera_convention_transform = (
+                Transform3d()
+                .rotate(camera_to_pytorch3d_camera(device=self.device).rotation)
+                .to(self.device)
+            )
+            # Transform expects [N, 3] or [B, N, 3], so reshape
+            original_shape = points_tensor.shape
+            points_flat = points_tensor.reshape(-1, 3)
+            points_flat_transformed = camera_convention_transform.transform_points(points_flat)
+            points_tensor = points_flat_transformed.reshape(original_shape)
+            logger.info(f"Coordinate transform applied. Point stats: min={points_tensor.min().item():.4f}, max={points_tensor.max().item():.4f}")
         
         # Prepare the point map tensor
         point_map_tensor = {
@@ -297,18 +334,34 @@ class InferencePipelinePointMap(InferencePipeline):
 
         # If depth model doesn't provide intrinsics, infer them
         if intrinsics is None:
+            logger.info("No intrinsics provided, inferring from pointmap")
             camera_convention_transform = (
                 Transform3d()
                 .rotate(camera_to_pytorch3d_camera(device=self.device).rotation)
                 .to(self.device)
             )
-            points_tensor_moge = camera_convention_transform.inverse().transform_points(points_tensor)
+            # Need to inverse transform back to MoGE convention for intrinsics inference
+            original_shape = points_tensor.shape
+            points_flat = points_tensor.reshape(-1, 3)
+            points_flat_moge = camera_convention_transform.inverse().transform_points(points_flat)
+            points_tensor_moge = points_flat_moge.reshape(original_shape)
+            
             intrinsics_result = infer_intrinsics_from_pointmap(
                 points_tensor_moge, device=self.device
             )
             point_map_tensor["intrinsics"] = intrinsics_result["intrinsics"]
+            logger.info(f"Inferred intrinsics: fx={intrinsics_result['intrinsics'][0,0]:.2f}, fy={intrinsics_result['intrinsics'][1,1]:.2f}")
         else:
-            point_map_tensor["intrinsics"] = intrinsics
+            # Use provided intrinsics (e.g., from VGGT)
+            if pointmap is not None:
+                logger.info("Using provided intrinsics from VGGT")
+            else:
+                logger.info("Using intrinsics from MoGE")
+                
+            if isinstance(intrinsics, np.ndarray):
+                intrinsics = torch.from_numpy(intrinsics).to(self.device)
+            point_map_tensor["intrinsics"] = intrinsics.float()
+            logger.info(f"Provided intrinsics: fx={intrinsics[0,0]:.2f}, fy={intrinsics[1,1]:.2f}")
 
         points_tensor = points_tensor.permute(2, 0, 1)
         points_tensor = self._clip_pointmap(points_tensor, loaded_mask)
@@ -397,12 +450,13 @@ class InferencePipelinePointMap(InferencePipeline):
         use_stage1_distillation=False,
         use_stage2_distillation=False,
         pointmap=None,
+        intrinsics=None,
         decode_formats=None,
         estimate_plane=False,
     ) -> dict:
         image = self.merge_image_and_mask(image, mask)
         with self.device: 
-            pointmap_dict = self.compute_pointmap(image, pointmap)
+            pointmap_dict = self.compute_pointmap(image, pointmap, intrinsics)
             pointmap = pointmap_dict["pointmap"]
             pts = type(self)._down_sample_img(pointmap)
             pts_colors = type(self)._down_sample_img(pointmap_dict["pts_color"])

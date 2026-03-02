@@ -109,6 +109,7 @@ class Inference:
         seed: Optional[int] = None,
         pointmap=None,
         stage1_only: bool = False,
+        intrinsics=None,
     ) -> dict:
         image = self.merge_mask_to_rgba(image, mask)
         return self._pipeline.run(
@@ -122,6 +123,7 @@ class Inference:
             use_vertex_color=True,
             stage1_inference_steps=None,
             pointmap=pointmap,
+            intrinsics=intrinsics,
         )
 
 

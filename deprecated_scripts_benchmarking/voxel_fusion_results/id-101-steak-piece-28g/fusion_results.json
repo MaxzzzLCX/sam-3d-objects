@@ -1,0 +1,67 @@
+{
+  "food_item": "id-101-steak-piece-28g",
+  "view1_path": "/scratch/cl927/nutritionverse-3d-new/id-101-steak-piece-28g/SAM3D_singleview_prediction/000/sam3d_voxels_normalized.npy",
+  "view2_path": "/scratch/cl927/nutritionverse-3d-new/id-101-steak-piece-28g/SAM3D_singleview_prediction/001/sam3d_voxels_normalized.npy",
+  "fusion_time_seconds": 0.014310121536254883,
+  "statistics": {
+    "original_count1": 7335,
+    "original_count2": 7044,
+    "total_combined": 14379,
+    "unique_count": 11533,
+    "overlap_count": 2846,
+    "overlap_ratio": 40.40318001135718,
+    "center_distance": 0.027725558606754644,
+    "bounds1": {
+      "min": [
+        -0.5,
+        -0.1349206349206349,
+        -0.18253968253968256
+      ],
+      "max": [
+        0.5,
+        0.1349206349206349,
+        0.18253968253968256
+      ],
+      "center": [
+        -0.016469200722778694,
+        -0.005705413271875385,
+        -0.0140087209616862
+      ]
+    },
+    "bounds2": {
+      "min": [
+        -0.5,
+        -0.1349206349206349,
+        -0.18253968253968256
+      ],
+      "max": [
+        0.5,
+        0.1349206349206349,
+        0.18253968253968256
+      ],
+      "center": [
+        0.009462066106017521,
+        -0.0005971534932352551,
+        -0.005631270111678951
+      ]
+    },
+    "bounds_combined": {
+      "min": [
+        -0.5,
+        -0.1349206349206349,
+        -0.18253968253968256
+      ],
+      "max": [
+        0.5,
+        0.1349206349206349,
+        0.18253968253968256
+      ],
+      "center": [
+        0.0006750814433127327,
+        4.610647981849942e-05,
+        -0.0049375222790639115
+      ]
+    },
+    "fusion_time_seconds": 0.014310121536254883
+  }
+}

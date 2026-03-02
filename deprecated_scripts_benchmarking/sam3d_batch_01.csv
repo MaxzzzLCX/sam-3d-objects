@@ -1,0 +1,6 @@
+food_item,view,sam3d_success,num_voxels,chamfer_distance,gt_points_count,pred_points_count,calculation_time,error,output_dir
+id-1-salad-chicken-strip-7g,render_000,True,4952,0.0033446475863456726,9904,4952,0.42638421058654785,,/scratch/cl927/nutritionverse-3d-new/id-1-salad-chicken-strip-7g/SAM3D_singleview_prediction/000
+id-10-nature-valley-granola-bar-18g,render_000,True,7581,0.0022622556425631046,10000,7581,0.6573286056518555,,/scratch/cl927/nutritionverse-3d-new/id-10-nature-valley-granola-bar-18g/SAM3D_singleview_prediction/000
+id-100-steak-153g,render_000,True,9439,0.005127206444740295,10000,9439,0.808847188949585,,/scratch/cl927/nutritionverse-3d-new/id-100-steak-153g/SAM3D_singleview_prediction/000
+id-101-steak-piece-28g,render_000,True,7335,0.05923299491405487,10000,7335,0.6366720199584961,,/scratch/cl927/nutritionverse-3d-new/id-101-steak-piece-28g/SAM3D_singleview_prediction/000
+id-102-steak-piece-13g,render_000,True,4143,0.004453478381037712,8286,4143,0.28879714012145996,,/scratch/cl927/nutritionverse-3d-new/id-102-steak-piece-13g/SAM3D_singleview_prediction/000
