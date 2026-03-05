@@ -18,9 +18,15 @@ SCENE_DIRS=(
     # "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview/pepper_plate"
     # "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview/potato_bowl"
     # "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview/potato_plate"
-    # "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/avocado_plate"
-    # "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/strawberry_bowl"
-    # "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/strawberry_plate"
+    # "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/egg_bowl"
+    # "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/egg_plate"
+    # "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/orange_bowl"
+    # "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/orange_plate"
+    # "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/potato_bowl"
+    # "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/potato_plate"
+    "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/avocado_plate"
+    "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/strawberry_bowl"
+    "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/strawberry_plate"
     "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/orange_bowl_manual"
 )
 
@@ -30,7 +36,8 @@ for scene_dir in "${SCENE_DIRS[@]}"; do
     python /scratch/cl927/sam-3d-objects/scripts_volume/vggt_inference.py \
         --scene_dir "$scene_dir" \
         --conf_thres_value 0 \
-        --generation
+        --mask \
+        --construct_scenes
     echo "Completed: $scene_dir"
     echo "---"
 done

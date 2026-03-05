@@ -48,6 +48,8 @@ def parse_args():
     parser.add_argument("--mask", action="store_true", default=False, help="Whether to use masks")
     parser.add_argument("--mask_dir", type=str, default="masks", help="Directory containing the mask images")
     parser.add_argument("--scale_pointcloud", action="store_true", default=False, help="Scale point cloud to real-world units")
+    parser.add_argument("--generation", action="store_true", default=False, help="Run viewwise generation (VGGT inference and point cloud saving)")
+    parser.add_argument("--construct_scenes", action="store_true", default=False, help="Construct COLMAP scenes from point clouds")
 
     parser.add_argument("--seed", type=int, default=42, help="Random seed for reproducibility")
     # Set use_ba default to False as it requires extra dependencies and is slow on CPU
@@ -219,6 +221,325 @@ def save_pointmap(point_maps, output_dir):
         o3d.io.write_point_cloud(pointmap_path, pcd)
         print(f"Saved point map to {pointmap_path}")
 
+def viewwise_generation(args):
+    # Print configuration
+    print("Arguments:", vars(args))
+
+    # Set seed for reproducibility
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
+    random.seed(args.seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed(args.seed)
+        torch.cuda.manual_seed_all(args.seed)  # for multi-GPU
+    print(f"Setting seed as: {args.seed}")
+
+    # Set device and dtype
+    # dtype = torch.bfloat16 if torch.cuda.get_device_capability()[0] >= 8 else torch.float16
+    dtype = torch.float16
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    print(f"Using device: {device}")
+    print(f"Using dtype: {dtype}")
+
+    # Run VGGT for camera and depth estimation
+    model = VGGT.from_pretrained("facebook/VGGT-1B").to(device)
+    # model = VGGT()
+    # _URL = "https://huggingface.co/facebook/VGGT-1B/resolve/main/model.pt"
+    # model.load_state_dict(torch.hub.load_state_dict_from_url(_URL))
+    # model.eval()
+    # model = model.to(device)
+    print(f"Model loaded")
+
+    # Get image paths and preprocess them
+    image_dir = os.path.join(args.scene_dir, "resized_images")
+    image_path_list = glob.glob(os.path.join(image_dir, "*"))
+    
+    if len(image_path_list) == 0:
+        raise ValueError(f"No images found in {image_dir}")
+    
+    # Sort image paths to ensure consistent ordering (resized_01.png, resized_02.png, etc.)
+    image_path_list.sort()
+    
+    base_image_path_list = [os.path.basename(path) for path in image_path_list]
+
+    # Load images and original coordinates
+    # Load Image in by its larger dimension of image's width and height, while running VGGT with 518
+    vggt_fixed_resolution = 518
+    # larger_dimension = max(img_load_resolution, vggt_fixed_resolution)
+    img_load_resolution = vggt_fixed_resolution
+    print(f"Loading images at resolution: {vggt_fixed_resolution}")
+
+    images, original_coords = load_and_preprocess_images_square(image_path_list, img_load_resolution)
+    images = images.to(device)
+    original_coords = original_coords.to(device)
+    print(f"Loaded {len(images)} images from {image_dir}")
+
+    # Run VGGT to estimate camera and depth
+    # Run with 518x518 images
+    extrinsic, intrinsic, depth_map, depth_conf = run_VGGT(model, images, dtype, device, vggt_fixed_resolution)
+    print(f"VGGT depth_map shape: {depth_map.shape}")
+    print(f"Shape of extrinsic: {extrinsic.shape}, intrinsic: {intrinsic.shape}")
+    # Extrinsic: (N, 3, 4), Intrinsic: (N, 3, 3)
+
+    assert extrinsic.shape[0] == len(images)
+    assert intrinsic.shape[0] == len(images)
+    
+    points_3d = unproject_depth_map_to_point_map(depth_map, extrinsic, intrinsic)
+
+    print(f"Unprojected point map shape: {points_3d.shape}")  # Should be (N, H, W, 3)
+
+    # Save pointmap of each view
+    point_map_output_dir = os.path.join(args.scene_dir, "pointmaps")
+    os.makedirs(point_map_output_dir, exist_ok=True)
+    save_pointmap(points_3d, point_map_output_dir)
+
+    
+    # Save VGGT predicted camera poses and point clouds
+    camera_pose_file_path = os.path.join(args.scene_dir, "vggt_camera_poses.npz")
+    np.savez(camera_pose_file_path, 
+             extrinsic=extrinsic, 
+             intrinsic=intrinsic,
+             image_names=base_image_path_list,
+             points_3d=points_3d,  # (N, H, W, 3) point clouds for each view
+             depth_map=depth_map,  # (N, H, W) depth maps  
+             depth_conf=depth_conf)  # (N, H, W) confidence maps
+    print(f"Saved VGGT camera predictions and point clouds to {camera_pose_file_path}")
+    print(f"Point cloud shape: {points_3d.shape}")
+
+def load_scene_masks(args, num_views, device, resolution):
+    """
+    Load the masks and prepare it into intended format for filtering.
+    For each view, loads both plate and food masks from masks_{i} folders,
+    and combines them with OR operation to keep both plate and food points.
+
+    Return the (i) combined masks (ii) food-only masks, and (iii) plate-only masks. 
+    
+    Args:
+        args: Arguments containing scene_dir
+        num_views: Number of views in the scene
+        device: Device to load tensors to
+        resolution: Target resolution to resize masks to
+    
+    Returns:
+        return_masks: dict containting:
+        - Combined Masks: Tensor of shape (num_views, H, W) with True where either plate or food mask is True
+        - Food-only Masks: Tensor of shape (num_views, H, W) with True where food mask is True
+        - Plate-only Masks: Tensor of shape (num_views, H, W) with True where plate mask is True
+    """
+    print(f"Loading scene masks from individual mask folders...")
+    
+    all_masks = {
+        "combined": [],
+        "food_only": [],
+        "plate_only": []
+    }
+    
+    for view_idx in range(num_views):
+        mask_folder = os.path.join(args.scene_dir, f"masks_{view_idx}")
+        
+        if not os.path.exists(mask_folder):
+            raise FileNotFoundError(f"Mask folder not found: {mask_folder}")
+        
+        # Find all PNG mask files in the folder
+        mask_files = sorted(glob.glob(os.path.join(mask_folder, "*.png")))
+        
+        if len(mask_files) == 0:
+            raise ValueError(f"No mask files found in {mask_folder}")
+        
+        print(f"View {view_idx}: Found {len(mask_files)} mask files in {mask_folder}")
+        
+        # Load and combine all masks for this view (plate + food)
+        view_mask = None
+        for mask_idx, mask_path in enumerate(mask_files):
+
+            # Load mask as grayscale
+            mask_pil = Image.open(mask_path).convert('L')
+            
+            # Resize to target resolution
+            mask_pil = mask_pil.resize((resolution, resolution), Image.NEAREST)
+            
+            # Convert to boolean (True for white/object, False for black/background)
+            mask_np = np.array(mask_pil) > 128
+            
+            # Combine with OR operation (union of plate and food)
+            if view_mask is None:
+                view_mask = mask_np
+            else:
+                view_mask = np.logical_or(view_mask, mask_np)
+
+            
+            # If mask_idx == 0, plate mask
+            if mask_idx == 0:
+                all_masks["plate_only"].append(torch.from_numpy(mask_np))
+            else:
+                all_masks["food_only"].append(torch.from_numpy(mask_np))
+        
+        all_masks["combined"].append(torch.from_numpy(view_mask))
+    
+    # Stack all view masks into a single tensor
+    combined_masks = torch.stack(all_masks["combined"]).to(device)
+    food_only_masks = torch.stack(all_masks["food_only"]).to(device)
+    plate_only_masks = torch.stack(all_masks["plate_only"]).to(device)
+    print(f"Loaded and combined masks for {num_views} views, shape: {combined_masks.shape}")
+    
+    return_masks = {
+        "combined": combined_masks,
+        "food_only": food_only_masks,
+        "plate_only": plate_only_masks
+    }
+    return return_masks
+
+def construct_scene_colmap(args):
+    """
+    Construct a VGGT scene from the individual view pointmaps.
+    Loads pre-computed pointmaps, applies masks, and creates a COLMAP reconstruction.
+    """
+    print("Constructing scene from individual pointmaps...")
+    print("Arguments:", vars(args))
+    
+    # Set device
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    
+    # Load camera poses and pointmaps from saved file
+    camera_pose_file_path = os.path.join(args.scene_dir, "vggt_camera_poses.npz")
+    if not os.path.exists(camera_pose_file_path):
+        raise FileNotFoundError(f"Camera poses file not found at {camera_pose_file_path}. Run viewwise generation first.")
+    
+    print(f"Loading camera poses from {camera_pose_file_path}")
+    vggt_data = np.load(camera_pose_file_path)
+    extrinsic = vggt_data['extrinsic']
+    intrinsic = vggt_data['intrinsic']
+    base_image_path_list = vggt_data['image_names'].tolist()
+    points_3d = vggt_data['points_3d']
+    depth_map = vggt_data['depth_map']
+    depth_conf = vggt_data['depth_conf']
+    
+    print(f"Loaded data for {len(base_image_path_list)} images")
+    print(f"Point cloud shape: {points_3d.shape}")
+    
+    # Load original coordinates for rescaling
+    image_dir = os.path.join(args.scene_dir, "resized_images")
+    image_path_list = sorted(glob.glob(os.path.join(image_dir, "*")))
+    vggt_fixed_resolution = 518
+    _, original_coords = load_and_preprocess_images_square(image_path_list, vggt_fixed_resolution)
+    
+    # Prepare RGB colors for points
+    images, _ = load_and_preprocess_images_square(image_path_list, vggt_fixed_resolution)
+    points_rgb = F.interpolate(
+        images, size=(vggt_fixed_resolution, vggt_fixed_resolution), mode="bilinear", align_corners=False
+    )
+    points_rgb = (points_rgb.cpu().numpy() * 255).astype(np.uint8)
+    points_rgb = points_rgb.transpose(0, 2, 3, 1)
+    
+    # Create pixel coordinate grid
+    num_frames, height, width, _ = points_3d.shape
+    points_xyf = create_pixel_coordinate_grid(num_frames, height, width)
+    
+    # Apply confidence mask
+    conf_thres_value = args.conf_thres_value
+    conf_mask = depth_conf >= conf_thres_value
+    print(f"Applying confidence mask with threshold {conf_thres_value}")
+    
+    # Prepare masks for reconstruction
+    if args.mask:
+        print(f"Loading masks for {num_frames} views...")
+        scene_masks = load_scene_masks(args, num_frames, device, vggt_fixed_resolution)
+        
+        # Combine each mask type with confidence mask
+        combined_masks = np.logical_and(scene_masks["combined"].cpu().numpy(), conf_mask)
+        food_masks = np.logical_and(scene_masks["food_only"].cpu().numpy(), conf_mask)
+        plate_masks = np.logical_and(scene_masks["plate_only"].cpu().numpy(), conf_mask)
+        
+        masks_to_reconstruct = [combined_masks, food_masks, plate_masks]
+        mask_names = ["combined", "food_only", "plate_only"]
+        print("Applied scene masks (combined, food_only, plate_only)")
+    else:
+        masks_to_reconstruct = [conf_mask]
+        mask_names = ["conf_mask_only"]
+    
+    # Optionally scale extrinsics using ground truth depth
+    extrinsic_to_use = extrinsic.copy()
+    if args.scale_pointcloud:
+        print("Scaling camera extrinsics to real-world units using GT depth maps...")
+        gt_depth_maps = load_gt_depthmap(image_path_list)
+        # Use combined mask (or first mask) for conversion factor calculation
+        conversion_factor = calculate_conversion_factor(depth_map, gt_depth_maps, masks_to_reconstruct[0])
+        extrinsic_to_use[:, :3, 3] *= conversion_factor
+    
+    # Process each mask and create separate reconstructions
+    for mask_name, mask in zip(mask_names, masks_to_reconstruct):
+        print(f"\n=== Processing mask: {mask_name} ===")
+        
+        # Limit number of points for COLMAP
+        max_points_for_colmap = 100000
+        mask_limited = randomly_limit_trues(mask.copy(), max_points_for_colmap)
+        
+        # Filter points based on mask
+        points_3d_filtered = points_3d[mask_limited]
+        points_xyf_filtered = points_xyf[mask_limited]
+        points_rgb_filtered = points_rgb[mask_limited]
+        
+        print(f"Filtered to {len(points_3d_filtered)} points")
+        
+        # Optionally scale point cloud to real-world units
+        if args.scale_pointcloud:
+            points_3d_filtered = points_3d_filtered * conversion_factor
+        
+        # Convert to COLMAP format
+        print("Converting to COLMAP format...")
+        image_size = np.array([vggt_fixed_resolution, vggt_fixed_resolution])
+        shared_camera = False
+        camera_type = "PINHOLE"
+        
+        reconstruction = batch_np_matrix_to_pycolmap_wo_track(
+            points_3d_filtered,
+            points_xyf_filtered,
+            points_rgb_filtered,
+            extrinsic_to_use,
+            intrinsic,
+            image_size,
+            shared_camera=shared_camera,
+            camera_type=camera_type,
+        )
+        
+        # Rescale and rename reconstruction
+        reconstruction = rename_colmap_recons_and_rescale_camera(
+            reconstruction,
+            base_image_path_list,
+            original_coords.cpu().numpy(),
+            img_size=vggt_fixed_resolution,
+            shift_point2d_to_original_res=True,
+            shared_camera=shared_camera,
+        )
+        
+        # Determine output folder name
+        folder_name = f"sparse_{mask_name}"
+        if args.mask:
+            folder_name += "_sam"
+        else:
+            folder_name += "_nosam"
+        if args.scale_pointcloud:
+            folder_name += "_scaled"
+        else:
+            folder_name += "_unscaled"
+        folder_name += f"_conf{conf_thres_value}"
+        
+        sparse_reconstruction_dir = os.path.join(args.scene_dir, folder_name)
+        os.makedirs(sparse_reconstruction_dir, exist_ok=True)
+        
+        # Save reconstruction
+        reconstruction.write(sparse_reconstruction_dir)
+        trimesh.PointCloud(points_3d_filtered, colors=points_rgb_filtered).export(
+            os.path.join(sparse_reconstruction_dir, "points.ply")
+        )
+        
+        print(f"Reconstruction saved to {sparse_reconstruction_dir}")
+    
+    print(f"\n=== All reconstructions completed ===")
+    print(f"Saved {len(mask_names)} reconstructions to {args.scene_dir}/sparse_*")
+    return True
+
+
 def demo_fn(args):
     # Print configuration
     print("Arguments:", vars(args))
@@ -306,7 +627,7 @@ def demo_fn(args):
 
     # Early stop
     return True
-    raise NotImplementedError("The rest of the demo function, including Bundle Adjustment and saving results, is still under development and not ready for use.")
+    # raise NotImplementedError("The rest of the demo function, including Bundle Adjustment and saving results, is still under development and not ready for use.")
 
     if args.use_ba:
         """
@@ -635,7 +956,10 @@ def rename_colmap_recons_and_rescale_camera(
 if __name__ == "__main__":
     args = parse_args()
     with torch.no_grad():
-        demo_fn(args)
+        if args.generation:
+            demo_fn(args)
+        if args.construct_scenes:
+            construct_scene_colmap(args)
 
 
 # Work in Progress (WIP)

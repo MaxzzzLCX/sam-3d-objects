@@ -10,3 +10,5 @@ apple/
 scripts_volume/real_dataset/
 scripts_volume/real_data_multiview/
 scripts_volume/real_data_multiview_new/
+scripts_volume/real_data_multiview_volume_vggt/
+scripts_volume/testing/

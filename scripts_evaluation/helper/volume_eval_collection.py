@@ -87,18 +87,20 @@ class Toys4kVolumeEvaluationCollector:
         print(f"Volume error distribution plot saved to {output_plot_path}")
 
 class RealDataVolumeEvaluationCollector:
-    def __init__(self, dataset_folder_path, gen_method, white_list_food, with_pointmaps):
+    def __init__(self, dataset_folder_path, gen_method, white_list_food, black_list_views, with_pointmaps):
         self.dataset_folder_path = dataset_folder_path
         self.gen_method = gen_method
         self.white_list_food = white_list_food
+        self.black_list_views = black_list_views
         self.with_pointmaps = with_pointmaps
     
-    def collect_volume_evaluation_results(self, json_file_name):
+    def collect_volume_evaluation_results(self, json_file_name, save_result_folder, with_blaclist_filtering=False):
         object_folder_paths = sorted(
             [os.path.join(self.dataset_folder_path, f) 
                 for f in os.listdir(self.dataset_folder_path) 
                 if os.path.isdir(os.path.join(self.dataset_folder_path, f)) and f.split("_")[0] in self.white_list_food]
             )
+
         
         all_errors = []
         all_errors_with_gt_scale = []
@@ -111,7 +113,7 @@ class RealDataVolumeEvaluationCollector:
         std_scale_error_percentages = []
         num_views_overall = []
 
-        for object_folder_path in object_folder_paths:
+        for object_folder_path in object_folder_paths:                
 
             gen_folder = os.path.join(object_folder_path, json_file_name)
 
@@ -122,6 +124,26 @@ class RealDataVolumeEvaluationCollector:
             errors = gen_results["errors"]
             errors_with_gt_scale = gen_results["errors_with_gt_relative_scale"]
             scale_errors = gen_results["relative_scale_errors"]
+
+            if with_blaclist_filtering:
+
+                # Filter out blacklisted views
+                object_name = os.path.basename(object_folder_path)
+                black_listed_views_for_object = self.black_list_views.get(object_name, [])
+                print(f"Object {object_name} has blacklisted views: {black_listed_views_for_object}")
+
+                filtered_errors = []
+                filtered_errors_with_gt_scale = []
+                filtered_scale_errors = []
+                for i, error in enumerate(errors):
+                    if i not in black_listed_views_for_object:
+                        filtered_errors.append(error)
+                        filtered_errors_with_gt_scale.append(errors_with_gt_scale[i])
+                        filtered_scale_errors.append(scale_errors[i])
+
+                errors = filtered_errors
+                errors_with_gt_scale = filtered_errors_with_gt_scale
+                scale_errors = filtered_scale_errors
 
             all_errors.extend(errors)
             all_errors_with_gt_scale.extend(errors_with_gt_scale)
@@ -152,9 +174,15 @@ class RealDataVolumeEvaluationCollector:
 
         # Save the DataFrame to a CSV file
         if self.with_pointmaps:
-            output_csv_path = os.path.join("/scratch/cl927/sam-3d-objects/results/realdata", f"foodlike_voxelized_{self.gen_method}_volume_evaluation_summary_with_pointmaps.csv")
+            if with_blaclist_filtering:
+                output_csv_path = os.path.join("/scratch/cl927/sam-3d-objects/results", save_result_folder, f"foodlike_voxelized_filtered_{self.gen_method}_volume_evaluation_summary_with_pointmaps.csv")
+            else:
+                output_csv_path = os.path.join("/scratch/cl927/sam-3d-objects/results", save_result_folder, f"foodlike_voxelized_{self.gen_method}_volume_evaluation_summary_with_pointmaps.csv")
         else:
-            output_csv_path = os.path.join("/scratch/cl927/sam-3d-objects/results/realdata", f"foodlike_voxelized_{self.gen_method}_volume_evaluation_summary.csv")
+            if with_blaclist_filtering:
+                output_csv_path = os.path.join("/scratch/cl927/sam-3d-objects/results", save_result_folder, f"foodlike_voxelized_filtered_{self.gen_method}_volume_evaluation_summary.csv")
+            else:
+                output_csv_path = os.path.join("/scratch/cl927/sam-3d-objects/results/", save_result_folder, f"foodlike_voxelized_{self.gen_method}_volume_evaluation_summary.csv")
         df.to_csv(output_csv_path, index=False)
         print(f"Volume evaluation summary saved to {output_csv_path}")
 
@@ -167,6 +195,14 @@ class RealDataVolumeEvaluationCollector:
         print(f"Volume estimation error with GT scale: {np.mean(mean_error_percentages_with_gt_scale)*100:.4f}% ± {np.std(mean_error_percentages_with_gt_scale)*100:.4f}%")
         print(f"Relative scale error: {np.mean(mean_scale_error_percentages)*100:.4f}% ± {np.std(mean_scale_error_percentages)*100:.4f}%")
 
+        # Save the overall stats to a text file
+        overall_stats_path = output_csv_path.replace(".csv", ".txt")
+        with open(overall_stats_path, "w") as f:
+            f.write(f"Overall Mean Percent Error for {self.gen_method}: {overall_mean_error*100:.4f}%\n")
+            f.write(f"Overall Std Percent Error (between objects) for {self.gen_method}: {overall_std_error*100:.4f}%\n")
+            f.write(f"Overall Std Percent Error (between samples) for {self.gen_method}: {np.std(all_errors)*100:.4f}%\n")
+            f.write(f"Volume estimation error with GT scale: {np.mean(mean_error_percentages_with_gt_scale)*100:.4f}% ± {np.std(mean_error_percentages_with_gt_scale)*100:.4f}%\n")
+            f.write(f"Relative scale error: {np.mean(mean_scale_error_percentages)*100:.4f}% ± {np.std(mean_scale_error_percentages)*100:.4f}%\n")
 
 
     def filter_and_collect_volume_evaluation_results(self, json_file_name):
@@ -267,26 +303,45 @@ if __name__ == "__main__":
     # toys4k_volume_collector.collect_volume_evaluation_results()
     # toys4k_volume_collector.dataset_volume_eval_stats()
 
-    real_data_folder_path = "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview"
+    real_data_folder_path = "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt"
     real_data_gen_method = "sam3d_singleview_predictions"
-    with_pointmaps = True
+    with_pointmaps = False
     if with_pointmaps:
         json_file = "voxelize_volume_estimation_results_with_pointmaps.json"
     else:        
         json_file = "voxelize_volume_estimation_results.json"
 
+    # Manual Filtering of bad views
+    black_list_views = {
+        "egg_bowl": [5],
+        "egg_plate": [],
+        "orange_bowl": [],
+        "orange_plate": [5],
+        # "pepper_bowl": [],
+        # "pepper_plate": [2, 4, 5],
+        "potato_bowl": [5],
+        "potato_plate": [5],
+        "strawberry_bowl": [],
+        "strawberry_plate": [],
+        "avocado_plate": [],
+    }
+
     real_data_volume_collector = RealDataVolumeEvaluationCollector(
         real_data_folder_path, 
         real_data_gen_method,
-        white_list_food=["box", "egg", "orange", "potato"],
+        white_list_food=["egg", "orange", "potato", "strawberry", "avocado"],
+        black_list_views=black_list_views,
         with_pointmaps=with_pointmaps
         # white_list_food=["box", "egg", "orange", "pepper", "potato"]
     )
 
-    # real_data_volume_collector.collect_volume_evaluation_results(
+    real_data_volume_collector.collect_volume_evaluation_results(
+        json_file_name=json_file,
+        save_result_folder="20250305",
+        with_blaclist_filtering=True
+    )
+
+
+    # real_data_volume_collector.filter_and_collect_volume_evaluation_results(
     #     json_file_name=json_file,
     # )
-
-    real_data_volume_collector.filter_and_collect_volume_evaluation_results(
-        json_file_name=json_file,
-    )

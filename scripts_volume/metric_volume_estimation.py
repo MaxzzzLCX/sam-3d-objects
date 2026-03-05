@@ -34,7 +34,7 @@ def run_volume_estimation_experiments(dataset_folder, volume_est_method, start_i
 
     
     # Initialize csv file to save results
-    csv_path = f"{dataset_folder}/volume_estimation_results.csv"
+    csv_path = f"{dataset_folder}/{volume_est_method}_volume_estimation_results.csv"
     with open(csv_path, "w", newline="") as csvfile:
         # fieldnames = ["image_name", "gt_volume_ml", "predicted_food_volume_ml(convex_hull)", "abs_error", "error_percent"]
         fieldnames = ["image_name", "gt_volume_ml", f"predicted_food_volume_ml({volume_est_method})", "volume_error", "error_percent", "volume_with_gt_relative_scale", "error_percent_with_gt_relative_scale", "relative_scale_error", "relative_scale_error_percent"]
@@ -218,7 +218,7 @@ def run_volume_estimation_experiments_with_pointmaps(dataset_folder, volume_est_
     print(f"FINISHED {len(image_paths)} EXPERIMENTS. RESULTS SAVED TO {csv_path}")
 
     # Save a json file
-    json_path = f"{dataset_folder}/volume_estimation_results_with_pointmaps.json"
+    json_path = f"{dataset_folder}/{volume_est_method}_volume_estimation_results_with_pointmaps.json"
     with open(json_path, "w") as f:
         json.dump({
             "dataset_folder": dataset_folder,
@@ -647,10 +647,15 @@ def main():
         # "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview/avocado_plate",
         # "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_new/egg_bowl",
         # "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_new/egg_plate",
-        "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_new/pepper_bowl",
+        # "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_new/pepper_bowl",
         # "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_new/pepper_plate",
         # "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_new/potato_bowl",
         # "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_new/potato_plate"
+        "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/avocado_plate",
+        "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/orange_bowl_manual",
+        "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/strawberry_bowl",
+        "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/strawberry_plate"
+
     ]
 
     for idx, dataset_folder in enumerate(dataset_folders):
@@ -663,16 +668,16 @@ def main():
             run_volume_estimation_experiments_with_pointmaps(
                 dataset_folder = dataset_folder,
                 volume_est_method = "voxelize",
-                start_index=0,
-                end_index=1
+                # start_index=0,
+                # end_index=1
             )            
         else:   
             print(f"RUNNING WITHOUT POINTMAP")
             run_volume_estimation_experiments(
                 dataset_folder = dataset_folder,
                 volume_est_method = "voxelize",
-                start_index=0,
-                end_index=1
+                # start_index=0,
+                # end_index=1
             )
 
     
@@ -700,10 +705,14 @@ def test():
         # "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview/avocado_plate",
         # "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview/egg_bowl",
         # "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview/egg_plate",
-        "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview/pepper_bowl",
+        # "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview/pepper_bowl",
         # "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview/pepper_plate",
         # "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview/potato_bowl",
         # "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview/potato_plate"
+        "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/avocado_plate",
+        # "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/orange_bowl_manual",
+        # "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/strawberry_bowl",
+        # "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/strawberry_plate"
     ]
 
     total_folders = len(dataset_folders)
@@ -762,5 +771,5 @@ if __name__ == "__main__":
     
     inference = Inference(config_path, compile=False)
 
-    # main()
-    test()
+    main()
+    # test()

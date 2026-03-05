@@ -1,0 +1,5 @@
+Overall Mean Percent Error for sam3d_singleview_predictions: 25.9996%
+Overall Std Percent Error (between objects) for sam3d_singleview_predictions: 12.6368%
+Overall Std Percent Error (between samples) for sam3d_singleview_predictions: 20.4177%
+Volume estimation error with GT scale: 35.1276% ± 25.3187%
+Relative scale error: 25.1517% ± 7.5889%
