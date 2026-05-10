@@ -1,0 +1,55 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/orange_bowl/images",
+  "num_views": 1,
+  "mode": "single_view_all_views_once",
+  "n_views_used": 6,
+  "model": "gemini-3.1-pro-preview",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "results": {
+    "volume_estimations": [
+      98.5,
+      105.0,
+      95.0,
+      96.0,
+      90.0,
+      180.0
+    ],
+    "volume_mean": 110.75,
+    "volume_std": 31.291305541992188,
+    "volume_error_mean": 0.2606666386127472,
+    "volume_error_std": 0.08783064782619476
+  },
+  "raw_results": {
+    "view_0": {
+      "reasoning": "Assuming the bowl containing the food is the reference 'plate' with a diameter of 16.8 cm. In the image, the bowl has a horizontal diameter of approximately 865 pixels. The mandarin has a horizontal diameter of about 295 pixels. The ratio of the mandarin's diameter to the bowl's diameter is 295 / 865 \u2248 0.341. This gives an estimated physical diameter for the mandarin of 16.8 cm * 0.341 \u2248 5.73 cm. Assuming the mandarin is roughly spherical, its radius is about 2.865 cm. The volume of a sphere is calculated as (4/3) * \u03c0 * r\u00b3, which yields approximately 98.5 cm\u00b3.",
+      "volume_cm3": 98.5,
+      "selected_image": "0.JPG"
+    },
+    "view_1": {
+      "reasoning": "Assuming the bowl is the reference 'plate' mentioned in the prompt, its diameter is 16.8 cm. In the image, the bowl's width is approximately 820 pixels, while the mandarin's width is about 290 pixels. This gives a ratio of roughly 0.35. Multiplying this ratio by the bowl's diameter gives the mandarin a diameter of about 5.9 cm. Assuming the mandarin is roughly spherical, its volume can be calculated using the formula for a sphere (4/3 * pi * r^3), which yields approximately 107 cm\u00b3. Accounting for a slightly oblate shape typical of mandarins, the volume is estimated to be around 105 cm\u00b3.",
+      "volume_cm3": 105.0,
+      "selected_image": "1.JPG"
+    },
+    "view_2": {
+      "reasoning": "The bowl has a known diameter of 16.8 cm. By comparing the width of the mandarin orange to the diameter of the bowl in the image, the orange appears to be roughly one-third the width of the bowl, or slightly larger, around 35%. This gives an estimated diameter for the orange of approximately 5.8 cm. Assuming the mandarin is roughly spherical, its radius would be about 2.9 cm. The volume of a sphere is calculated as (4/3) * pi * r^3. Plugging in the radius, we get (4/3) * 3.14159 * (2.9)^3, which is approximately 102 cubic centimeters. Given that mandarins are often slightly flattened (oblate), the actual volume might be slightly less, so an estimate of around 95 cm^3 is reasonable.",
+      "volume_cm3": 95.0,
+      "selected_image": "2.JPG"
+    },
+    "view_3": {
+      "reasoning": "The bowl's top rim is used as the reference with a diameter of 16.8 cm. In the image, the bowl's width is approximately 830 pixels, while the mandarin's width is about 296 pixels. This gives a ratio of 296/830 \u2248 0.357. The estimated diameter of the mandarin is therefore 0.357 * 16.8 cm \u2248 6.0 cm. Mandarins are typically oblate spheroids; assuming a height of about 5.1 cm (radius c \u2248 2.55 cm and equatorial radius a \u2248 3.0 cm), the volume can be calculated as (4/3) * \u03c0 * a\u00b2 * c \u2248 4.188 * 9 * 2.55 \u2248 96 cm\u00b3.",
+      "volume_cm3": 96.0,
+      "selected_image": "3.JPG"
+    },
+    "view_4": {
+      "reasoning": "Assuming the bowl holding the food is the 'plate' mentioned in the prompt, its outer diameter is 16.8 cm. In the image, the bowl's outer diameter measures approximately 710 pixels, while the horizontal diameter of the mandarin measures about 252 pixels. This gives a scale where the mandarin's physical diameter is roughly (252 / 710) * 16.8 cm \u2248 5.96 cm (equatorial radius of 2.98 cm). Mandarins are typically oblate spheroids; assuming its height is about 80% of its diameter, the height is approximately 4.77 cm (polar radius of 2.385 cm). The volume of an oblate spheroid is calculated as (4/3) * \u03c0 * r_eq\u00b2 * r_polar, which yields (4/3) * \u03c0 * (2.98)\u00b2 * 2.385 \u2248 88.6 cm\u00b3. Rounding to a reasonable estimate gives 90 cm\u00b3.",
+      "volume_cm3": 90.0,
+      "selected_image": "4.JPG"
+    },
+    "view_5": {
+      "reasoning": "The plate in the background has a known diameter of 16.8 cm. Accounting for perspective, the orange in the foreground bowl appears to have a diameter of approximately 7 cm. Assuming the orange is roughly spherical, the radius is 3.5 cm. The volume of a sphere is calculated as (4/3) * pi * r^3, which gives approximately 180 cm^3.",
+      "volume_cm3": 180.0,
+      "selected_image": "5.JPG"
+    }
+  }
+}

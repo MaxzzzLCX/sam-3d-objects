@@ -1,0 +1,24 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/real_dataset/real_data_multiview_volume_vggt/strawberry_bowl/images",
+  "num_views": 6,
+  "mode": "multi_view_repeats",
+  "model": "gemini-3.1-pro-preview",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "repeats": 1,
+  "results": {
+    "volume_estimations": [
+      5.7
+    ],
+    "volume_mean": 5.699999809265137,
+    "volume_std": 0.0,
+    "volume_error_mean": 0.7719999551773071,
+    "volume_error_std": 0.0
+  },
+  "raw_results": {
+    "trial_0": {
+      "reasoning": "The bowl has a known diameter of 16.8 cm. From the top-down images, the strawberry's length is approximately 1/6th of the bowl's diameter, equating to about 2.8 cm. Its width is roughly 1/8th of the bowl's diameter, or about 2.1 cm. The side views suggest the height is similar to the width, around 2.1 cm. Modeling the strawberry as a shape between an ellipsoid and a paraboloid with these dimensions gives an estimated volume of approximately 5.7 cubic centimeters.",
+      "volume_cm3": 5.7
+    }
+  }
+}

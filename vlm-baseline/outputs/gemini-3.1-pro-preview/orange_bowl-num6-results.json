@@ -1,0 +1,24 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/orange_bowl/images",
+  "num_views": 6,
+  "mode": "multi_view_repeats",
+  "model": "gemini-3.1-pro-preview",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "repeats": 1,
+  "results": {
+    "volume_estimations": [
+      100.0
+    ],
+    "volume_mean": 100.0,
+    "volume_std": 0.0,
+    "volume_error_mean": 0.20000000298023224,
+    "volume_error_std": 0.0
+  },
+  "raw_results": {
+    "trial_0": {
+      "reasoning": "Assuming the 16.8 cm reference applies to the bowl containing the fruit (as it matches standard cereal bowl sizes and yields realistic fruit dimensions). From top-down and angled views, the mandarin's diameter is approximately 36-38% of the bowl's diameter, giving a true diameter of about 6.3 cm after minor perspective corrections. The fruit is an oblate spheroid; side views show a height-to-width ratio of roughly 0.76, giving a height of about 4.8 cm. Using the volume formula for an ellipsoid (V = 4/3 * pi * r_eq^2 * r_pol), with an equatorial radius of 3.15 cm and a polar radius of 2.4 cm, the estimated volume is approximately 100 cm^3.",
+      "volume_cm3": 100.0
+    }
+  }
+}

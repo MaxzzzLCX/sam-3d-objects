@@ -1,0 +1,55 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/egg_bowl/images",
+  "num_views": 1,
+  "mode": "single_view_all_views_once",
+  "n_views_used": 6,
+  "model": "gemini-3.1-pro-preview",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "results": {
+    "volume_estimations": [
+      40.0,
+      42.0,
+      50.0,
+      55.0,
+      48.0,
+      50.8
+    ],
+    "volume_mean": 47.633331298828125,
+    "volume_std": 5.164515495300293,
+    "volume_error_mean": 0.085999995470047,
+    "volume_error_std": 0.07425183057785034
+  },
+  "raw_results": {
+    "view_0": {
+      "reasoning": "The food item is a single egg. Using the bowl's diameter of 16.8 cm as a reference, the egg's length is approximately one-third of the bowl's diameter, or about 5.6 cm. The width of the egg is roughly 3.7 cm. Approximating the egg's shape as an ellipsoid, the volume is calculated as (4/3) * pi * (5.6/2) * (3.7/2)^2, which yields approximately 40 cm\u00b3.",
+      "volume_cm3": 40.0,
+      "selected_image": "0.jpeg"
+    },
+    "view_1": {
+      "reasoning": "The bowl has a known diameter of 16.8 cm, which corresponds to about 570 pixels in the image. The egg measures approximately 155 pixels in length and 115 pixels in width. This gives uncorrected dimensions of 4.57 cm by 3.39 cm. Because the egg is at the bottom of the bowl and further from the camera than the rim, a perspective correction factor of roughly 1.15 is applied, resulting in corrected dimensions of 5.25 cm by 3.9 cm. Modeling the egg as an ellipsoid (Volume = \u03c0/6 * length * width\u00b2), the estimated volume is approximately 42 cm\u00b3.",
+      "volume_cm3": 42.0,
+      "selected_image": "1.jpeg"
+    },
+    "view_2": {
+      "reasoning": "The image shows a single whole egg in a bowl. The bowl has a known diameter of 16.8 cm. In the image, the egg's length appears to be about 1/4 of the bowl's diameter (approx 4.2 cm). However, because the egg is resting at the bottom of the bowl, it is further from the camera than the bowl's rim, making it appear smaller due to perspective. Adjusting for this depth, the egg's actual dimensions are consistent with a standard large chicken egg, which typically has a length of about 5.5 cm and a width of 4.2 cm. The volume of a standard large egg is approximately 50 cm\u00b3.",
+      "volume_cm3": 50.0,
+      "selected_image": "2.jpeg"
+    },
+    "view_3": {
+      "reasoning": "The bowl (used as the reference 'plate') has a known diameter of 16.8 cm. In the image, the bowl's horizontal diameter is approximately 512 pixels, while the egg's horizontal width is about 130 pixels. This gives a scale of roughly 0.0328 cm per pixel. The egg's physical width is therefore estimated at 4.26 cm. Assuming a standard egg shape where the length is about 1.35 times the width, the length is approximately 5.75 cm. Modeling the egg as an ellipsoid with semi-axes of 2.875 cm, 2.13 cm, and 2.13 cm, the volume is calculated as (4/3) * \u03c0 * 2.875 * 2.13^2 \u2248 54.6 cm\u00b3. This aligns well with the volume of a standard large egg.",
+      "volume_cm3": 55.0,
+      "selected_image": "3.jpeg"
+    },
+    "view_4": {
+      "reasoning": "Based on the reference plate's known diameter of 16.8 cm, the egg's dimensions can be estimated. Accounting for the perspective and depth of the bowl, the egg's length is roughly 5.5 cm and its width is about 4.1 cm. Approximating the egg's shape as a prolate spheroid, the volume is calculated as (\u03c0/6) * length * width^2, which gives approximately 48 cm\u00b3.",
+      "volume_cm3": 48.0,
+      "selected_image": "4.jpeg"
+    },
+    "view_5": {
+      "reasoning": "The image shows a single whole egg in a bowl. The bowl has a known diameter of 16.8 cm. Accounting for perspective, as the egg is at the bottom of the bowl and slightly further away than the front rim, it appears to be a standard-sized chicken egg. A typical large egg has dimensions of approximately 5.5 cm in length and 4.2 cm in diameter. Modeling the egg as an ellipsoid, the volume can be calculated using the formula V = (4/3) * \u03c0 * a * b\u00b2, where 'a' is half the length (2.75 cm) and 'b' is half the diameter (2.1 cm). This gives a volume of approximately (4/3) * 3.14159 * 2.75 * 2.1\u00b2 \u2248 50.8 cm\u00b3.",
+      "volume_cm3": 50.8,
+      "selected_image": "5.jpeg"
+    }
+  }
+}

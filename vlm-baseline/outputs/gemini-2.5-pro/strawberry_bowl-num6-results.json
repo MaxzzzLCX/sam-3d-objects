@@ -1,0 +1,24 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/strawberry_bowl/images",
+  "num_views": 6,
+  "mode": "multi_view_repeats",
+  "model": "gemini-2.5-pro",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "repeats": 1,
+  "results": {
+    "volume_estimations": [
+      14.4
+    ],
+    "volume_mean": 14.399999618530273,
+    "volume_std": 0.0,
+    "volume_error_mean": 0.4240000247955322,
+    "volume_error_std": 0.0
+  },
+  "raw_results": {
+    "trial_0": {
+      "reasoning": "The volume of the strawberry was estimated by modeling it as an ellipsoid. The dimensions were determined using the known bowl diameter of 16.8 cm as a scale reference. By analyzing the multiple images, the strawberry's length was estimated to be approximately 4.2 cm, its width 2.8 cm, and its height 2.6 cm. The volume of an ellipsoid is calculated with the formula V = (4/3) * \u03c0 * a * b * c, where a, b, and c are the semi-axes (half the length, width, and height). This calculation results in an initial volume of approximately 16.0 cm\u00b3. A small deduction was made to account for the volume of the cut-off top, leading to the final estimated volume.",
+      "volume_cm3": 14.4
+    }
+  }
+}

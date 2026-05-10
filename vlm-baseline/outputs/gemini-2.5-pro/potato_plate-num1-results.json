@@ -1,0 +1,55 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/potato_plate/images",
+  "num_views": 1,
+  "mode": "single_view_all_views_once",
+  "n_views_used": 6,
+  "model": "gemini-2.5-pro",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "results": {
+    "volume_estimations": [
+      165.5,
+      134.2,
+      177.5,
+      194.5,
+      145.0,
+      179.2
+    ],
+    "volume_mean": 165.98333740234375,
+    "volume_std": 20.701162338256836,
+    "volume_error_mean": 0.1014285683631897,
+    "volume_error_std": 0.07974978536367416
+  },
+  "raw_results": {
+    "view_0": {
+      "reasoning": "The volume of the potato was estimated by modeling it as an ellipsoid. The plate's known diameter of 20.5 cm was used as a scale reference. From the top-down image, the potato's length and width were measured relative to the plate's diameter, yielding estimates of approximately 9.3 cm and 6.4 cm, respectively. Since no side view was available, the height was assumed to be 85% of the width, approximately 5.4 cm. Using the volume formula for an ellipsoid, V = (4/3) * \u03c0 * (length/2) * (width/2) * (height/2), the calculated volume is approximately 165.5 cubic centimeters.",
+      "volume_cm3": 165.5,
+      "selected_image": "0.jpeg"
+    },
+    "view_1": {
+      "reasoning": "The food item is a single potato, which is modeled as an ellipsoid. The plate's diameter of 20.5 cm is used for scale. By comparing the potato's dimensions to the plate's diameter in the image, the potato's length is estimated to be approximately 8.5 cm, and its width and height are both estimated to be around 5.5 cm. The volume is calculated using the ellipsoid volume formula, V = (4/3) * \u03c0 * a * b * c, where a, b, and c are the semi-axes (half the dimensions). This calculation results in an estimated volume of approximately 134.2 cm\u00b3.",
+      "volume_cm3": 134.2,
+      "selected_image": "1.jpeg"
+    },
+    "view_2": {
+      "reasoning": "The volume of the food item, a single potato, was estimated by modeling it as an ellipsoid. The plate's known diameter of 20.5 cm was used as a scale reference to estimate the potato's dimensions. By comparing the potato to the plate, its length was estimated to be approximately 9.5 cm, its width 6.5 cm, and its height 5.5 cm. Using the formula for the volume of an ellipsoid, V = (4/3) * \u03c0 * (length/2) * (width/2) * (height/2), the volume was calculated.",
+      "volume_cm3": 177.5,
+      "selected_image": "2.jpeg"
+    },
+    "view_3": {
+      "reasoning": "The food item is a single potato, which is modeled as an ellipsoid. The plate's diameter of 20.5 cm is used as a scale reference. The plate appears as an ellipse in the image due to the viewing angle. The major axis of this ellipse is used to set the scale. The ratio of the minor to major axis is used to correct for perspective foreshortening on measurements along that axis. The potato's length is estimated to be 8.0 cm. Its width, after correcting for perspective, is estimated to be 7.2 cm. The height is assumed to be similar to the width, but slightly smaller, estimated at 6.5 cm. Using the formula for the volume of an ellipsoid, V = (\u03c0/6) * length * width * height, the total volume is calculated.",
+      "volume_cm3": 194.5,
+      "selected_image": "3.jpeg"
+    },
+    "view_4": {
+      "reasoning": "The volume of the food item, a single potato, was estimated by modeling it as an ellipsoid. The plate's known diameter of 20.5 cm was used as a scale reference. By measuring the potato's dimensions in the image relative to the plate's diameter, its real-world dimensions were estimated. The potato's length is approximately 37% of the plate's diameter (7.6 cm), its width is about 30% (6.2 cm), and its height is estimated to be slightly less than its width (5.8 cm) based on its shape. The volume was then calculated using the formula for an ellipsoid, V = (4/3) * \u03c0 * (length/2) * (width/2) * (height/2), resulting in an estimated volume of approximately 145 cubic centimeters.",
+      "volume_cm3": 145.0,
+      "selected_image": "4.jpeg"
+    },
+    "view_5": {
+      "reasoning": "The volume of the food item, a single potato, was estimated by modeling it as an ellipsoid. The dimensions of the potato were determined by using the provided plate diameter of 20.5 cm as a scale reference. From the image, the potato's longest axis (length) is estimated to be approximately 9.2 cm. Its other two axes (width and height) are estimated to be about 6.2 cm and 6.0 cm, respectively, based on visual comparison. Using the formula for the volume of an ellipsoid, V = (4/3) * \u03c0 * a * b * c, where a, b, and c are the semi-axes (half the lengths of the axes), the calculation is V = (4/3) * \u03c0 * (9.2/2) * (6.2/2) * (6.0/2) cm. This results in an estimated volume of approximately 179.2 cm\u00b3.",
+      "volume_cm3": 179.2,
+      "selected_image": "5.jpeg"
+    }
+  }
+}

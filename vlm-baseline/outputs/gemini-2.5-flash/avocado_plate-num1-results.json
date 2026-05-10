@@ -1,0 +1,55 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/avocado_plate/images",
+  "num_views": 1,
+  "mode": "single_view_all_views_once",
+  "n_views_used": 6,
+  "model": "gemini-2.5-flash",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "results": {
+    "volume_estimations": [
+      137.1,
+      174.9,
+      329.87,
+      321.0,
+      154.7,
+      318.09
+    ],
+    "volume_mean": 239.2766571044922,
+    "volume_std": 84.4936294555664,
+    "volume_error_mean": 0.6238443851470947,
+    "volume_error_std": 0.531367301940918
+  },
+  "raw_results": {
+    "view_0": {
+      "reasoning": "The plate's diameter of 20.5 cm is used as a scale reference. From the image, the avocado's length is estimated to be approximately 42% of the plate's diameter, and its width is approximately 27% of the plate's diameter. This translates to a length of 0.42 * 20.5 cm = 8.61 cm and a width of 0.27 * 20.5 cm = 5.535 cm. Approximating the avocado as an ellipsoid, and based on typical avocado dimensions where height is often similar to width, the height is estimated to be approximately 5.5 cm. The semi-axes for the ellipsoid are therefore: a = 8.61 cm / 2 = 4.305 cm, b = 5.535 cm / 2 = 2.7675 cm, and c = 5.5 cm / 2 = 2.75 cm. Using the formula for the volume of an ellipsoid, V = (4/3) * pi * a * b * c, the volume is calculated as (4/3) * 3.14159 * 4.305 * 2.7675 * 2.75 = 137.1 cm^3.",
+      "volume_cm3": 137.1,
+      "selected_image": "0.png"
+    },
+    "view_1": {
+      "reasoning": "The plate diameter of 20.5 cm is used as a scale reference. From the image, the avocado's length is estimated to be approximately 10.5 cm (about half the plate diameter). The avocado's maximum width is estimated to be approximately 6.5 cm (about one-third of the plate diameter). Given the top-down view, the height is estimated based on typical avocado proportions, roughly 4.9 cm. Approximating the avocado as an ellipsoid, the volume is calculated using the formula V = (4/3) * \u03c0 * (length/2) * (width/2) * (height/2). With L=10.5 cm, W=6.5 cm, and H=4.9 cm, the volume is (4/3) * \u03c0 * (5.25 cm) * (3.25 cm) * (2.45 cm) \u2248 174.9 cm\u00b3.",
+      "volume_cm3": 174.9,
+      "selected_image": "1.png"
+    },
+    "view_2": {
+      "reasoning": "The object is identified as a whole avocado. The plate has a known diameter of 20.5 cm, which is used as a scale reference. By visually comparing the avocado to the plate, its dimensions are estimated: length approximately 12 cm, width approximately 7.5 cm, and height/thickness approximately 7 cm. The avocado's shape is approximated as an ellipsoid. The volume is calculated using the formula V = (4/3) * \u03c0 * (length/2) * (width/2) * (height/2). With semi-axes of 6 cm, 3.75 cm, and 3.5 cm, the calculated volume is (4/3) * \u03c0 * 6 * 3.75 * 3.5 \u2248 329.87 cm^3. This value is consistent with the typical volume of a large avocado.",
+      "volume_cm3": 329.87,
+      "selected_image": "2.png"
+    },
+    "view_3": {
+      "reasoning": "The avocado's volume was estimated by first using the known plate diameter of 20.5 cm as a scale reference. Visually, the avocado's longest dimension (length) was estimated to be approximately 0.58 times the plate's diameter, resulting in a length of 11.89 cm. Its maximum width was estimated to be about 0.38 times the plate's diameter, yielding a width of 7.79 cm. The height (thickness) was then estimated as approximately 0.85 times its width, based on typical avocado proportions, giving a height of 6.62 cm. The avocado was approximated as an ellipsoid, and its volume was calculated using the formula V = (4/3) * \u03c0 * (length/2) * (width/2) * (height/2). With semi-axes a = 5.945 cm, b = 3.895 cm, and c = 3.31 cm, the calculated volume is approximately 321.0 cm\u00b3.",
+      "volume_cm3": 321.0,
+      "selected_image": "3.png"
+    },
+    "view_4": {
+      "reasoning": "The plate's known diameter of 20.5 cm is used as a scale reference. By measuring the visible major axis of the plate in pixels and the diameter of the food item in pixels from the image, a ratio is established. The plate's major axis measures approximately 200 pixels, and the food item's diameter measures approximately 65 pixels. This gives a ratio of 65/200 = 0.325. Therefore, the estimated diameter of the food item is 0.325 * 20.5 cm = 6.6625 cm. Assuming the food item is a sphere, its radius is 6.6625 cm / 2 = 3.33125 cm. The volume of a sphere is calculated using the formula V = (4/3) * \u03c0 * r^3. Plugging in the radius, V = (4/3) * \u03c0 * (3.33125 cm)^3 \u2248 154.7 cm^3.",
+      "volume_cm3": 154.7,
+      "selected_image": "4.png"
+    },
+    "view_5": {
+      "reasoning": "The plate has a known diameter of 20.5 cm, which is used as a scale reference. By visually comparing the avocado to the plate, its longest dimension (length) is estimated to be approximately 9 cm, and its height is estimated to be approximately 7.5 cm. Assuming the avocado can be approximated as an ellipsoid with semi-axes of 4.5 cm (length/2), 4.5 cm (width/2, assuming similar to length), and 3.75 cm (height/2), the volume is calculated using the formula V = (4/3) * pi * a * b * c.",
+      "volume_cm3": 318.09,
+      "selected_image": "5.png"
+    }
+  }
+}

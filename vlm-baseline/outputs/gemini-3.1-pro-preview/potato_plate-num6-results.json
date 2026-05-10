@@ -1,0 +1,24 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/potato_plate/images",
+  "num_views": 6,
+  "mode": "multi_view_repeats",
+  "model": "gemini-3.1-pro-preview",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "repeats": 1,
+  "results": {
+    "volume_estimations": [
+      105.0
+    ],
+    "volume_mean": 105.0,
+    "volume_std": 0.0,
+    "volume_error_mean": 0.4000000059604645,
+    "volume_error_std": 0.0
+  },
+  "raw_results": {
+    "trial_0": {
+      "reasoning": "By using the plate's known diameter of 20.5 cm as a reference, we can measure the potato's dimensions across different viewpoints. From the top-down view (Image 2), the plate's width in pixels gives a scale, yielding a raw potato length of ~8.9 cm. By analyzing the projected depth in Image 2 and the projected height in the side view (Image 5), and accounting for the respective viewing angles (approx. 54\u00b0 and 15\u00b0 from horizontal), we can model the potato as an ellipsoid and solve for its true width (~6.0 cm) and height (~4.3 cm). Given the estimated camera distance of ~40 cm (based on the plate's field of view), the potato is slightly closer to the lens than the plate's center, resulting in a ~5% perspective magnification. Applying this correction gives true dimensions of L \u2248 8.46 cm, W \u2248 5.71 cm, and H \u2248 4.12 cm. Using the ellipsoid volume formula (V = \u03c0/6 * L * W * H), the estimated volume is approximately 104 cm\u00b3. Rounding slightly to account for natural shape variations gives 105 cm\u00b3.",
+      "volume_cm3": 105.0
+    }
+  }
+}

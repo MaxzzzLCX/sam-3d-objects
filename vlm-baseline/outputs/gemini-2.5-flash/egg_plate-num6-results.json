@@ -1,0 +1,24 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/egg_plate/images",
+  "num_views": 6,
+  "mode": "multi_view_repeats",
+  "model": "gemini-2.5-flash",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "repeats": 1,
+  "results": {
+    "volume_estimations": [
+      68.1
+    ],
+    "volume_mean": 68.0999984741211,
+    "volume_std": 0.0,
+    "volume_error_mean": 0.3619999587535858,
+    "volume_error_std": 0.0
+  },
+  "raw_results": {
+    "trial_0": {
+      "reasoning": "The plate has a known diameter of 20.5 cm, which is used as a scale reference. From the top-down view (image 3), the plate's diameter was measured to be approximately 790 pixels. The egg's major axis (length) was measured at approximately 230 pixels, and its minor axis (width) at approximately 180 pixels. From a side view (image 1), the egg's height was measured at approximately 180 pixels. \n\nUsing the scale factor (20.5 cm / 790 pixels \u2248 0.02595 cm/pixel):\n- Egg Length (L) = 230 pixels * 0.02595 cm/pixel \u2248 5.97 cm\n- Egg Width (W) = 180 pixels * 0.02595 cm/pixel \u2248 4.67 cm\n- Egg Height (H) = 180 pixels * 0.02595 cm/pixel \u2248 4.67 cm\n\nApproximating the egg as an ellipsoid, its volume (V) is calculated using the formula V = (4/3) * \u03c0 * (L/2) * (W/2) * (H/2):\nV = (4/3) * \u03c0 * (5.97/2) * (4.67/2) * (4.67/2)\nV = (4/3) * \u03c0 * 2.985 * 2.335 * 2.335\nV = (4/3) * \u03c0 * 16.270 cm\u00b3\nV \u2248 1.333333 * 3.14159265 * 16.270\nV \u2248 68.12 cm\u00b3",
+      "volume_cm3": 68.1
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/egg_plate/images",
+  "num_views": 6,
+  "mode": "multi_view_repeats",
+  "model": "gemini-3.1-pro-preview",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "repeats": 1,
+  "results": {
+    "volume_estimations": [
+      39.0
+    ],
+    "volume_mean": 39.0,
+    "volume_std": 0.0,
+    "volume_error_mean": 0.2199999988079071,
+    "volume_error_std": 0.0
+  },
+  "raw_results": {
+    "trial_0": {
+      "reasoning": "To estimate the volume of the egg, I used the plate's known diameter of 20.5 cm as a scale reference. The top-down view (image 3) provides the most accurate perspective for measuring the egg's dimensions without foreshortening. In this image, the plate's diameter is approximately 1760 pixels. The egg measures about 460 pixels in length and 320 pixels in width. Using the scale factor (20.5 cm / 1760 px), the physical dimensions of the egg are calculated to be approximately 5.36 cm in length and 3.73 cm in width. Modeling the egg as an ellipsoid, the volume is calculated using the formula V = (4/3) * \u03c0 * (length/2) * (width/2)^2. Plugging in the dimensions gives V = (4/3) * \u03c0 * 2.68 * 1.865^2 \u2248 39.0 cm\u00b3.",
+      "volume_cm3": 39.0
+    }
+  }
+}

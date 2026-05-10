@@ -1,0 +1,55 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/orange_bowl/images",
+  "num_views": 1,
+  "mode": "single_view_all_views_once",
+  "n_views_used": 6,
+  "model": "gemini-2.5-flash",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "results": {
+    "volume_estimations": [
+      375.5,
+      446.3,
+      681.8,
+      466.6,
+      130.9,
+      180.0
+    ],
+    "volume_mean": 380.1833190917969,
+    "volume_std": 184.86451721191406,
+    "volume_error_mean": 2.04146671295166,
+    "volume_error_std": 1.4789161682128906
+  },
+  "raw_results": {
+    "view_0": {
+      "reasoning": "The volume of the orange was estimated by treating it as an oblate spheroid. The outer diameter of the bowl, stated as 16.8 cm, was used as the scale reference. By visual estimation from the main image, the orange's equatorial diameter was determined to be approximately 55% of the bowl's diameter, resulting in 9.24 cm. Its polar height was estimated to be approximately 50% of the bowl's diameter, resulting in 8.4 cm. Using these dimensions, the equatorial radius (a) is 4.62 cm and the polar radius (b) is 4.2 cm. The volume was calculated using the formula for an oblate spheroid, V = (4/3) * pi * a^2 * b.",
+      "volume_cm3": 375.5,
+      "selected_image": "0.JPG"
+    },
+    "view_1": {
+      "reasoning": "The outer diameter of the bowl's rim was measured from the main image to be approximately 602 pixels. Using the provided scale reference of 16.8 cm for the plate/bowl diameter, a scale factor of 16.8 cm / 602 pixels = 0.027907 cm/pixel was established. The orange's maximum width was measured at 350 pixels and its maximum height at 320 pixels. Converting these to centimeters: width = 350 * 0.027907 = 9.767 cm, and height = 320 * 0.027907 = 8.930 cm. Given that the width is greater than the height, the orange was modeled as an oblate spheroid. The equatorial radius (a) is half the width (4.8835 cm) and the polar radius (b) is half the height (4.465 cm). The volume of an oblate spheroid is calculated using the formula V = (4/3) * pi * a^2 * b. Plugging in the values: V = (4/3) * 3.14159 * (4.8835 cm)^2 * 4.465 cm = 446.3 cm^3.",
+      "volume_cm3": 446.3,
+      "selected_image": "1.JPG"
+    },
+    "view_2": {
+      "reasoning": "The plate has a known diameter of 16.8 cm. The orange is assumed to be approximately spherical. By visually comparing the orange's diameter to the plate's diameter in the main image, the orange's diameter is estimated to be about 0.65 times the plate's diameter. Therefore, the orange's diameter is approximately 0.65 * 16.8 cm = 10.92 cm. The radius is half of this, 5.46 cm. Using the formula for the volume of a sphere, V = (4/3) * \u03c0 * r^3, the volume is calculated as (4/3) * \u03c0 * (5.46 cm)^3 \u2248 681.8 cm^3.",
+      "volume_cm3": 681.8,
+      "selected_image": "2.JPG"
+    },
+    "view_3": {
+      "reasoning": "The plate's diameter of 16.8 cm is used as the scale reference. Assuming the visible bowl's outer rim diameter is approximately 16.8 cm. The bowl has a thick rim, estimated to be about 1 cm on each side, making the inner diameter approximately 16.8 cm - 2 cm = 14.8 cm. The tangerine is visually estimated to be roughly spherical and its diameter appears to be about 65% of the bowl's inner diameter. Therefore, the estimated tangerine diameter is 0.65 * 14.8 cm = 9.62 cm. The radius (r) is half of the diameter, so r = 4.81 cm. The volume of a sphere is calculated using the formula V = (4/3) * \u03c0 * r^3. V = (4/3) * \u03c0 * (4.81 cm)^3 \u2248 466.6 cm^3.",
+      "volume_cm3": 466.6,
+      "selected_image": "3.JPG"
+    },
+    "view_4": {
+      "reasoning": "The diameter of the plate is given as 16.8 cm. Using the main image, the diameter of the tangerine was estimated relative to the plate's diameter. By measuring pixels, the tangerine's diameter was found to be approximately 0.375 times the plate's diameter. Therefore, the tangerine's diameter is estimated as 0.375 * 16.8 cm = 6.3 cm. Assuming the tangerine is a sphere, its volume is calculated using the formula V = (4/3)\u03c0r\u00b3, where r is the radius (half of the diameter). With a diameter of 6.3 cm, the radius is 3.15 cm. Plugging this into the formula: V = (4/3) * \u03c0 * (3.15 cm)\u00b3 \u2248 130.9 cm\u00b3.",
+      "volume_cm3": 130.9,
+      "selected_image": "4.JPG"
+    },
+    "view_5": {
+      "reasoning": "The food item is an orange (or mandarin). Given that 'the plate has a known diameter of 16.8 cm', and observing the image, it is most plausible that this refers to the outer diameter of the bowl containing the orange, as the flat plate in the background appears larger than 16.8 cm for a typical dinner plate. Using the bowl's outer diameter of 16.8 cm as a scale reference, I visually estimated the orange's diameter. The orange appears to be approximately 40-45% of the bowl's outer diameter. Taking an average, I estimate the orange's diameter to be around 7 cm. Treating the orange as a sphere, its radius is 3.5 cm. The volume of a sphere is calculated using the formula (4/3) * pi * r^3. Therefore, Volume = (4/3) * 3.14159 * (3.5 cm)^3 = (4/3) * 3.14159 * 42.875 cm^3 = 179.59 cm^3. Rounded to a reasonable precision, the volume is approximately 180 cm^3.",
+      "volume_cm3": 180.0,
+      "selected_image": "5.JPG"
+    }
+  }
+}

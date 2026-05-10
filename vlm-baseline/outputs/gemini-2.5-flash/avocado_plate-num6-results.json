@@ -1,0 +1,24 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/avocado_plate/images",
+  "num_views": 6,
+  "mode": "multi_view_repeats",
+  "model": "gemini-2.5-flash",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "repeats": 1,
+  "results": {
+    "volume_estimations": [
+      168.0
+    ],
+    "volume_mean": 168.0,
+    "volume_std": 0.0,
+    "volume_error_mean": 0.11999999731779099,
+    "volume_error_std": 0.0
+  },
+  "raw_results": {
+    "trial_0": {
+      "reasoning": "The avocado's volume was estimated by modeling it as an ellipsoid. First, the plate's known diameter of 20.5 cm was used as a scale reference. From the top-down images (2 and 4), the average length (L) and width (W) of the avocado were measured in pixels relative to the plate's diameter. The plate diameter was measured to be approximately 690 pixels, giving a scale factor of 20.5 cm / 690 pixels = 0.02971 cm/pixel. The avocado's length (L) was measured at approximately 340 pixels, resulting in L = 10.10 cm. The avocado's width (W) was measured at approximately 200 pixels, resulting in W = 5.94 cm. From the side-view images (1, 3, 5, 6), the height (H) of the avocado was estimated. Due to perspective distortion in side views, H was estimated relative to W. In image 1, the avocado's height appeared to be approximately 0.9 times its width. Therefore, H = 0.9 * 5.94 cm = 5.346 cm. Using the formula for the volume of an ellipsoid, V = (pi/6) * L * W * H, the volume was calculated as (pi/6) * 10.10 cm * 5.94 cm * 5.346 cm = 168.0 cm^3.",
+      "volume_cm3": 168.0
+    }
+  }
+}

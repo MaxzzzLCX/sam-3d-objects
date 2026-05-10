@@ -1,0 +1,55 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/real_dataset/real_data_multiview_volume_vggt/avocado_plate/images",
+  "num_views": 1,
+  "mode": "single_view_all_views_once",
+  "n_views_used": 6,
+  "model": "gemini-3.1-pro-preview",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "results": {
+    "volume_estimations": [
+      140.0,
+      149.7,
+      210.0,
+      170.0,
+      143.0,
+      140.0
+    ],
+    "volume_mean": 158.78334045410156,
+    "volume_std": 25.120405197143555,
+    "volume_error_mean": 0.1192222312092781,
+    "volume_error_std": 0.1313803791999817
+  },
+  "raw_results": {
+    "view_0": {
+      "reasoning": "The plate has a known diameter of 20.5 cm. By comparing the avocado to the plate, its length is estimated to be about 40% of the plate's diameter (8.2 cm), and its width and height are estimated to be about 28% (5.7 cm). Modeling the avocado as an ellipsoid, the volume is approximately (4/3) * pi * (8.2/2) * (5.7/2) * (5.7/2).",
+      "volume_cm3": 140.0,
+      "selected_image": "0.png"
+    },
+    "view_1": {
+      "reasoning": "The plate has a known diameter of 20.5 cm. Visually, the avocado's length spans about 40% of the plate's diameter, giving an estimated length of 8.5 cm. The width appears to be roughly 5.8 cm. Assuming the avocado is roughly ellipsoidal and its height is similar to its width, the volume can be calculated as (pi/6) * length * width * height, which is approximately (3.14159/6) * 8.5 * 5.8 * 5.8.",
+      "volume_cm3": 149.7,
+      "selected_image": "1.png"
+    },
+    "view_2": {
+      "reasoning": "The plate has a known diameter of 20.5 cm. Visually, the avocado's length is slightly less than half the plate's diameter, estimated at approximately 9.5 cm. Its maximum width and height are estimated to be around 6.5 cm. Modeling the avocado's shape as an ellipsoid, the volume can be calculated using the formula V = (pi/6) * length * width * height, which gives (3.14159 / 6) * 9.5 * 6.5 * 6.5.",
+      "volume_cm3": 210.0,
+      "selected_image": "2.png"
+    },
+    "view_3": {
+      "reasoning": "The plate has a known diameter of 20.5 cm. By visually comparing the avocado to the plate, the avocado's length is estimated to be slightly less than half the plate's diameter, about 9 cm. Its width appears to be roughly 6 cm. Assuming the avocado is roughly symmetrical in its cross-section, its depth is also about 6 cm. Modeling the avocado as an ellipsoid with radii of 4.5 cm, 3 cm, and 3 cm, the volume is calculated as (4/3) * \u03c0 * 4.5 * 3 * 3 \u2248 170 cm\u00b3.",
+      "volume_cm3": 170.0,
+      "selected_image": "3.png"
+    },
+    "view_4": {
+      "reasoning": "First, I determined the scale by measuring the plate's major axis in the image, which is roughly vertical and spans about 448 pixels. This corresponds to the known diameter of 20.5 cm, giving a scale of approximately 0.0458 cm/pixel. Next, I measured the food item. Its extent along the unforeshortened vertical axis is about 148 pixels, which translates to an equatorial diameter of 6.77 cm (radius = 3.385 cm). Its extent along the foreshortened horizontal axis is about 136 pixels. By modeling the food item as an oblate spheroid and using the viewing angle derived from the plate's minor-to-major axis ratio (252/448), I calculated its polar radius to be approximately 2.97 cm. Finally, applying the volume formula for an oblate spheroid (4/3 * pi * a^2 * c), the estimated volume is roughly 143 cm^3.",
+      "volume_cm3": 143.0,
+      "selected_image": "4.png"
+    },
+    "view_5": {
+      "reasoning": "The plate has a known diameter of 20.5 cm. Based on visual proportions, the avocado's length is approximately 40% of the plate's diameter, which is about 8.2 cm. Its width appears to be roughly 28% of the plate's diameter, or about 5.7 cm. Assuming the avocado is roughly a prolate spheroid (ellipsoid with circular cross-section), its volume can be estimated using the formula V = (4/3) * pi * (length/2) * (width/2)^2. Plugging in the estimated dimensions gives V = (4/3) * 3.14159 * 4.1 * 2.85^2 \u2248 140 cm^3.",
+      "volume_cm3": 140.0,
+      "selected_image": "5.png"
+    }
+  }
+}

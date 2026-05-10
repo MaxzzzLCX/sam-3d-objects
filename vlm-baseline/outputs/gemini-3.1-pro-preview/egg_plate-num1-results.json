@@ -1,0 +1,55 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/egg_plate/images",
+  "num_views": 1,
+  "mode": "single_view_all_views_once",
+  "n_views_used": 6,
+  "model": "gemini-3.1-pro-preview",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "results": {
+    "volume_estimations": [
+      52.0,
+      50.0,
+      50.0,
+      42.0,
+      55.0,
+      44.0
+    ],
+    "volume_mean": 48.83333206176758,
+    "volume_std": 4.487637519836426,
+    "volume_error_mean": 0.07000000029802322,
+    "volume_error_std": 0.060827624052762985
+  },
+  "raw_results": {
+    "view_0": {
+      "reasoning": "The image shows a single egg on a plate. Using the plate's known diameter of 20.5 cm as a reference scale, the egg's length is estimated to be approximately 5.4 cm and its width about 4.3 cm. By modeling the egg as a prolate spheroid, the volume can be calculated using the formula V = (4/3) * \u03c0 * (length/2) * (width/2)^2.",
+      "volume_cm3": 52.0,
+      "selected_image": "0.jpeg"
+    },
+    "view_1": {
+      "reasoning": "The image shows a single egg on a plate. The plate has a known diameter of 20.5 cm. By visually comparing the egg to the plate, the egg's length appears to be roughly 1/4 of the plate's diameter, which is about 5.1 to 5.5 cm. The width of the egg appears to be about 1/5 of the plate's diameter, or roughly 4.0 to 4.3 cm. Modeling the egg as a prolate spheroid with a length of 5.3 cm and a width/height of 4.2 cm, the volume can be calculated using the formula V = (4/3) * \u03c0 * (length/2) * (width/2)^2. This gives approximately (4/3) * 3.14 * 2.65 * 2.1^2 \u2248 49 cm\u00b3. This aligns well with the typical volume of a standard large egg, which is around 50 cm\u00b3.",
+      "volume_cm3": 50.0,
+      "selected_image": "1.jpeg"
+    },
+    "view_2": {
+      "reasoning": "The plate has a known diameter of 20.5 cm. Visually, the length of the egg is approximately one-quarter of the plate's diameter, which is about 5.1 to 5.5 cm. The width of the egg appears to be around 4 to 4.2 cm. Modeling the egg as a prolate spheroid, the volume can be estimated using the formula V = (pi/6) * length * width^2. Using estimated dimensions of 5.5 cm for length and 4.2 cm for width, the volume is calculated to be approximately 50 cm^3. This aligns with the typical volume of a standard large egg.",
+      "volume_cm3": 50.0,
+      "selected_image": "2.jpeg"
+    },
+    "view_3": {
+      "reasoning": "The image shows a single egg on a plate. The plate has a known diameter of 20.5 cm. By comparing the egg to the plate, the egg's length is approximately 1/4 of the plate's diameter (about 5 cm), and its width is about 1/5 of the plate's diameter (about 4 cm). Modeling the egg as an ellipsoid with these dimensions, the volume is calculated as (4/3) * \u03c0 * (5/2) * (4/2)^2 \u2248 42 cm\u00b3. This is consistent with the typical volume of a medium-sized egg.",
+      "volume_cm3": 42.0,
+      "selected_image": "3.jpeg"
+    },
+    "view_4": {
+      "reasoning": "The image shows a single egg on a plate. The plate has a known diameter of 20.5 cm. By visually comparing the egg to the plate, the egg's width is estimated to be about 1/4.5 of the plate's diameter (approximately 4.5 cm) and its length about 1/3.8 of the diameter (approximately 5.4 cm). Approximating the egg's shape as a prolate spheroid, the volume can be calculated. This estimated size corresponds to a standard large chicken egg, which typically has a volume of around 50 to 60 cubic centimeters.",
+      "volume_cm3": 55.0,
+      "selected_image": "4.jpeg"
+    },
+    "view_5": {
+      "reasoning": "The plate has a known diameter of 20.5 cm. By comparing the horizontal pixel width of the plate (approximately 610 pixels) to the horizontal pixel length of the egg (approximately 155 pixels), the egg's length is estimated to be about 5.2 cm. Assuming a typical egg proportion, its width is estimated at 4.0 cm. Modeling the egg as a prolate spheroid, the volume is calculated as (4/3) * \u03c0 * (5.2/2) * (4.0/2)^2.",
+      "volume_cm3": 44.0,
+      "selected_image": "5.jpeg"
+    }
+  }
+}

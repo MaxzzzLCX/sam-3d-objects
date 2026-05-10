@@ -1,0 +1,24 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/strawberry_plate/images",
+  "num_views": 6,
+  "mode": "multi_view_repeats",
+  "model": "gemini-2.5-flash",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "repeats": 1,
+  "results": {
+    "volume_estimations": [
+      26.84
+    ],
+    "volume_mean": 26.84000015258789,
+    "volume_std": 0.0,
+    "volume_error_mean": 0.07360000908374786,
+    "volume_error_std": 0.0
+  },
+  "raw_results": {
+    "trial_0": {
+      "reasoning": "To estimate the volume of the strawberry, I first established a scale using the known plate diameter of 20.5 cm. From the top-down image (Image 4), the plate's outer diameter was measured to be approximately 1000 pixels. This gives a scale factor of 0.0205 cm/pixel (20.5 cm / 1000 pixels).\n\nNext, I measured the dimensions of the strawberry in pixels from the images:\n-   Length (longest dimension, from Image 4): Approximately 220 pixels.\n-   Width (widest dimension perpendicular to length, from Image 4): Approximately 180 pixels.\n-   Height (from a side view, Image 1): Approximately 150 pixels.\n\nConverting these pixel measurements to centimeters using the scale factor:\n-   Length (L) = 220 pixels * 0.0205 cm/pixel = 4.51 cm\n-   Width (W) = 180 pixels * 0.0205 cm/pixel = 3.69 cm\n-   Height (H) = 150 pixels * 0.0205 cm/pixel = 3.075 cm\n\nGiven the rounded and somewhat elongated shape of the strawberry, I approximated its volume using the formula for an ellipsoid, which is V = (4/3) * \u03c0 * (L/2) * (W/2) * (H/2), where L, W, and H are the lengths of the three principal axes.\n\nPlugging in the calculated dimensions:\n-   V = (4/3) * \u03c0 * (4.51/2) * (3.69/2) * (3.075/2)\n-   V = (4/3) * \u03c0 * 2.255 * 1.845 * 1.5375\n-   V = (4/3) * \u03c0 * 6.39609375\n-   V \u2248 26.84 cm\u00b3\n\nThis volume is consistent with a medium-large strawberry.",
+      "volume_cm3": 26.84
+    }
+  }
+}

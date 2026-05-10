@@ -1,0 +1,24 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/real_dataset/real_data_multiview_volume_vggt/avocado_plate/images",
+  "num_views": 6,
+  "mode": "multi_view_repeats",
+  "model": "gemini-3.1-pro-preview",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "repeats": 1,
+  "results": {
+    "volume_estimations": [
+      180.0
+    ],
+    "volume_mean": 180.0,
+    "volume_std": 0.0,
+    "volume_error_mean": 0.20000000298023224,
+    "volume_error_std": 0.0
+  },
+  "raw_results": {
+    "trial_0": {
+      "reasoning": "Using the plate's known diameter of 20.5 cm as a reference, I estimated the scale from the top-down images (e.g., Image 5). The plate measures approximately 424 pixels across, giving a scale of ~0.048 cm/pixel. The avocado's length and width in the same image are roughly 190 pixels (9.2 cm) and 140 pixels (6.8 cm), respectively. From the side views (e.g., Image 4), the plate's major axis is about 450 pixels (scale ~0.045 cm/pixel), and the avocado's height is about 140 pixels (6.4 cm). Modeling the avocado as an ellipsoid with dimensions 9.2 cm x 6.8 cm x 6.4 cm yields a volume of approximately 209 cm\u00b3. To account for the avocado's tapered, pear-like shape which has less volume than a perfect ellipsoid, I applied a reduction factor of roughly 0.85, resulting in a final estimated volume of about 178 cm\u00b3, which I rounded to 180 cm\u00b3.",
+      "volume_cm3": 180.0
+    }
+  }
+}

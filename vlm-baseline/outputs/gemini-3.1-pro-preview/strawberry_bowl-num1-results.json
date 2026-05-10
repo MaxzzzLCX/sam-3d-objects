@@ -1,0 +1,49 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/real_dataset/real_data_multiview_volume_vggt/strawberry_bowl/images",
+  "num_views": 1,
+  "mode": "single_view_all_views_once",
+  "n_views_used": 5,
+  "model": "gemini-3.1-pro-preview",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "results": {
+    "volume_estimations": [
+      8.4,
+      8.3,
+      8.0,
+      13.0,
+      14.6
+    ],
+    "volume_mean": 10.460000991821289,
+    "volume_std": 2.7767608165740967,
+    "volume_error_mean": 0.58160001039505,
+    "volume_error_std": 0.11107044667005539
+  },
+  "raw_results": {
+    "view_0": {
+      "reasoning": "The bowl has a known diameter of 16.8 cm. Visually, the length of the strawberry is approximately 1/5th (20%) of the bowl's diameter, which is about 3.36 cm. Its width is roughly 15% of the bowl's diameter, or about 2.52 cm. Assuming the strawberry has a roughly paraboloid shape, the volume can be calculated as V = 1/2 * pi * r^2 * h. Using a radius of 1.26 cm and a height of 3.36 cm, the estimated volume is approximately 8.4 cm^3.",
+      "volume_cm3": 8.4,
+      "selected_image": "0.JPG"
+    },
+    "view_1": {
+      "reasoning": "The bowl has a known diameter of 16.8 cm. By comparing the strawberry to the bowl, the strawberry's length appears to be about 1/5th of the bowl's diameter, which is approximately 3.3 cm. The width and height of the strawberry seem to be about 2.2 cm. Assuming the strawberry has a roughly ellipsoidal shape, the volume can be estimated using the formula V = (4/3) * \u03c0 * (length/2) * (width/2) * (height/2). Plugging in the estimated dimensions: V = (4/3) * 3.14 * (3.3/2) * (2.2/2) * (2.2/2) \u2248 8.3 cm\u00b3.",
+      "volume_cm3": 8.3,
+      "selected_image": "1.JPG"
+    },
+    "view_2": {
+      "reasoning": "The bowl has a known diameter of 16.8 cm. By comparing the strawberry to the bowl's diameter in the image, the strawberry's length is approximately 1/5th to 1/6th of the bowl's diameter, which is about 3.0 cm. The width of the strawberry appears to be about 2.2 cm. Assuming the strawberry has a roughly ellipsoidal or conical shape with a circular cross-section, we can estimate its volume using the formula for an ellipsoid (V = \u03c0/6 * length * width * height). Assuming height is similar to width (2.2 cm), the volume is approximately \u03c0/6 * 3.0 * 2.2 * 2.2 \u2248 7.6 cm\u00b3. Rounding slightly to account for the irregular shape gives an estimate of about 8 cm\u00b3.",
+      "volume_cm3": 8.0,
+      "selected_image": "2.JPG"
+    },
+    "view_3": {
+      "reasoning": "The bowl has a known diameter of 16.8 cm. By comparing the horizontal width of the bowl to the strawberry in the image, the strawberry's width is approximately 18.5% of the bowl's diameter, which translates to about 3.1 cm. Visually, the height of the strawberry is slightly less than its width, estimated at around 2.5 cm. Assuming the depth is similar to the width, we can model the strawberry as a truncated ellipsoid. Calculating the volume with these dimensions (radius ~1.55 cm, height ~2.5 cm) yields approximately 12.5 cm\u00b3. Rounding to a reasonable whole number gives 13 cm\u00b3.",
+      "volume_cm3": 13.0,
+      "selected_image": "3.JPG"
+    },
+    "view_4": {
+      "reasoning": "The bowl (referred to as a plate) has a known outer diameter of 16.8 cm. In the image, the horizontal major axis of the bowl's rim measures approximately 600 pixels, providing a scale factor of about 0.028 cm per pixel. The strawberry measures roughly 170 pixels in length (from stem to tip) and 100 pixels in width at its widest point. Converting these to physical dimensions gives a length of about 4.76 cm and a width of 2.8 cm. Modeling the strawberry's shape as a paraboloid (Volume = 1/2 * pi * r^2 * h), with a radius of 1.4 cm and a height of 4.76 cm, the estimated volume is approximately 14.6 cm\u00b3.",
+      "volume_cm3": 14.6,
+      "selected_image": "4.JPG"
+    }
+  }
+}

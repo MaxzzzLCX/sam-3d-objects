@@ -1,0 +1,24 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/orange_bowl/images",
+  "num_views": 6,
+  "mode": "multi_view_repeats",
+  "model": "gemini-2.5-pro",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "repeats": 1,
+  "results": {
+    "volume_estimations": [
+      204.4
+    ],
+    "volume_mean": 204.39999389648438,
+    "volume_std": 0.0,
+    "volume_error_mean": 0.6351999640464783,
+    "volume_error_std": 0.0
+  },
+  "raw_results": {
+    "trial_0": {
+      "reasoning": "The food item is a single tangerine, which is modeled as an oblate spheroid. The provided scale reference is a bowl with a diameter of 16.8 cm. By comparing the pixel dimensions of the tangerine to the bowl's diameter in the images, the tangerine's equatorial (horizontal) diameter is estimated to be approximately 7.6 cm. Its polar (vertical) diameter appears slightly smaller, estimated at around 6.8 cm. Using the formula for the volume of an oblate spheroid, V = (4/3) * \u03c0 * a^2 * c, where 'a' is the equatorial radius (3.8 cm) and 'c' is the polar radius (3.4 cm), the volume is calculated.",
+      "volume_cm3": 204.4
+    }
+  }
+}

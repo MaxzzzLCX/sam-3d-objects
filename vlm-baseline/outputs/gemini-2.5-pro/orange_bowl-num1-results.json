@@ -1,0 +1,55 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/orange_bowl/images",
+  "num_views": 1,
+  "mode": "single_view_all_views_once",
+  "n_views_used": 6,
+  "model": "gemini-2.5-pro",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "results": {
+    "volume_estimations": [
+      155.2,
+      197.8,
+      177.3,
+      81.0,
+      137.3,
+      120.65
+    ],
+    "volume_mean": 144.875,
+    "volume_std": 38.042274475097656,
+    "volume_error_mean": 0.2879333198070526,
+    "volume_error_std": 0.18707524240016937
+  },
+  "raw_results": {
+    "view_0": {
+      "reasoning": "The food item is a single citrus fruit, which can be approximated as a sphere. The provided diameter of the bowl is 16.8 cm, which is used as a scale reference. By comparing the pixel diameter of the fruit to the pixel diameter of the bowl in the image, the real-world diameter of the fruit is estimated. The fruit's diameter is estimated to be approximately 6.7 cm. The volume is then calculated using the formula for the volume of a sphere (V = 4/3 * \u03c0 * r\u00b3).",
+      "volume_cm3": 155.2,
+      "selected_image": "0.JPG"
+    },
+    "view_1": {
+      "reasoning": "The food item is a single orange, which can be approximated as a sphere. The provided scale reference is the diameter of the bowl, which is 16.8 cm. By visually comparing the orange to the bowl's diameter in the image, the orange's diameter is estimated to be about 43% of the bowl's diameter. This results in an estimated orange diameter of 16.8 cm * 0.43 = 7.224 cm. The radius is half of this, which is 3.612 cm. The volume of a sphere is calculated using the formula V = (4/3) * \u03c0 * r\u00b3. Plugging in the estimated radius, the volume is (4/3) * \u03c0 * (3.612)^3 \u2248 197.8 cubic centimeters.",
+      "volume_cm3": 197.8,
+      "selected_image": "1.JPG"
+    },
+    "view_2": {
+      "reasoning": "The food item is a single orange, which is modeled as an oblate spheroid. The provided plate diameter of 16.8 cm is used as a scale reference. By comparing the pixel dimensions of the orange to the plate in the image, the orange's equatorial diameter is estimated to be approximately 7.2 cm, and its polar (vertical) diameter is estimated to be slightly less, around 6.5 cm, due to its shape. The volume is calculated using the formula for an oblate spheroid: V = (4/3) * \u03c0 * a^2 * c, where 'a' is the equatorial radius (3.6 cm) and 'c' is the polar radius (3.25 cm).",
+      "volume_cm3": 177.3,
+      "selected_image": "2.JPG"
+    },
+    "view_3": {
+      "reasoning": "The food item is identified as a single tangerine. The volume is estimated by modeling the tangerine as an oblate spheroid. The dimensions of the tangerine are determined by comparing its size in pixels to the size of the bowl, which has a known diameter of 16.8 cm. In the image, the bowl's outer rim diameter is measured to be approximately 2850 pixels. The tangerine's horizontal (equatorial) diameter is measured as 960 pixels, and its vertical (polar) diameter is measured as 820 pixels. This translates to real-world dimensions of approximately 5.66 cm (equatorial diameter) and 4.83 cm (polar diameter). Using the formula for the volume of an oblate spheroid, V = (4/3) * pi * a^2 * c, where 'a' is the equatorial radius (2.83 cm) and 'c' is the polar radius (2.415 cm), the calculated volume is approximately 81.0 cm\u00b3.",
+      "volume_cm3": 81.0,
+      "selected_image": "3.JPG"
+    },
+    "view_4": {
+      "reasoning": "The food item is identified as a single tangerine, which is modeled as a sphere for volume estimation. The provided bowl diameter of 16.8 cm is used as a scale reference. By measuring the pixel dimensions in the image, the ratio of the tangerine's diameter to the bowl's diameter was determined. The bowl's diameter in the image is approximately 2050 pixels, and the tangerine's diameter is about 780 pixels. This gives the tangerine a real-world diameter of (780 / 2050) * 16.8 cm \u2248 6.4 cm. Using the formula for the volume of a sphere, V = (4/3) * \u03c0 * r\u00b3, with a radius of 3.2 cm, the volume is calculated to be approximately 137.3 cubic centimeters.",
+      "volume_cm3": 137.3,
+      "selected_image": "4.JPG"
+    },
+    "view_5": {
+      "reasoning": "The food item is identified as a single tangerine. The flat plate in the background, with a known diameter of 16.8 cm, is used as a scale reference. The plate's diameter was measured to be approximately 1260 pixels in the image, while the tangerine's horizontal diameter was measured at 560 pixels. This yields an apparent diameter for the tangerine of 7.47 cm. A perspective correction is necessary because the tangerine is closer to the camera than the reference plate. A correction factor of 0.85 is applied to account for this, resulting in an estimated actual diameter of 6.35 cm. The tangerine is modeled as an oblate spheroid, with the vertical (polar) radius assumed to be 90% of the horizontal (equatorial) radius. Using the formula for the volume of an oblate spheroid, V = (4/3) * \u03c0 * a\u00b2 * c, with equatorial radius a = 3.175 cm and polar radius c = 2.858 cm, the volume is calculated.",
+      "volume_cm3": 120.65,
+      "selected_image": "5.JPG"
+    }
+  }
+}

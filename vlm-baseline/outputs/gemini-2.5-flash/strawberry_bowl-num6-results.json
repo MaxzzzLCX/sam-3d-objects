@@ -1,0 +1,24 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/strawberry_bowl/images",
+  "num_views": 6,
+  "mode": "multi_view_repeats",
+  "model": "gemini-2.5-flash",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "repeats": 1,
+  "results": {
+    "volume_estimations": [
+      11.6
+    ],
+    "volume_mean": 11.600000381469727,
+    "volume_std": 0.0,
+    "volume_error_mean": 0.5360000133514404,
+    "volume_error_std": 0.0
+  },
+  "raw_results": {
+    "trial_0": {
+      "reasoning": "The outer diameter of the bowl (16.8 cm) was used as a scale reference. From the top-down image, the strawberry's length (from tip to the bite mark) was estimated to be approximately 3.7 cm, and its maximum width was estimated to be 3.0 cm. From the side-view images, the maximum height of the strawberry was estimated to be 2.5 cm. Approximating the strawberry's original shape as an ellipsoid, its volume would be (pi/6) * Length * Width * Height. This yields (3.14159 / 6) * 3.7 cm * 3.0 cm * 2.5 cm = 14.53 cm\u00b3. Considering the visible bite mark, an estimated 20% of the strawberry's original volume is missing. Therefore, the current volume is approximately 14.53 cm\u00b3 * (1 - 0.20) = 11.624 cm\u00b3.",
+      "volume_cm3": 11.6
+    }
+  }
+}

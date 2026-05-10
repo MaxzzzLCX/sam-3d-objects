@@ -1,0 +1,24 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/potato_bowl/images",
+  "num_views": 6,
+  "mode": "multi_view_repeats",
+  "model": "gemini-2.5-flash",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "repeats": 1,
+  "results": {
+    "volume_estimations": [
+      160.0
+    ],
+    "volume_mean": 160.0,
+    "volume_std": 0.0,
+    "volume_error_mean": 0.08571428805589676,
+    "volume_error_std": 0.0
+  },
+  "raw_results": {
+    "trial_0": {
+      "reasoning": "The outer diameter of the bowl is given as 16.8 cm. Using Image 5 (top-down view), the potato's longest dimension (length) was estimated to be approximately 10.1 cm, and its widest dimension (width) was estimated to be approximately 7.6 cm. From side views (e.g., Image 6), the bowl's height was estimated to be about 5.9 cm, and the potato's height was estimated to be approximately 4.0 cm. Approximating the potato as an ellipsoid with semi-axes of 5.05 cm (length/2), 3.8 cm (width/2), and 2.0 cm (height/2), the volume is calculated using the formula V = (4/3) * pi * a * b * c. This yields a volume of approximately 160 cm^3.",
+      "volume_cm3": 160.0
+    }
+  }
+}

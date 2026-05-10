@@ -1,0 +1,55 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/orange_plate/images",
+  "num_views": 1,
+  "mode": "single_view_all_views_once",
+  "n_views_used": 6,
+  "model": "gemini-2.5-pro",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "results": {
+    "volume_estimations": [
+      111.5,
+      101.8,
+      115.0,
+      140.6,
+      96.6,
+      112.2
+    ],
+    "volume_mean": 112.95000457763672,
+    "volume_std": 13.922616004943848,
+    "volume_error_mean": 0.1380000114440918,
+    "volume_error_std": 0.05152345448732376
+  },
+  "raw_results": {
+    "view_0": {
+      "reasoning": "The volume of the food item, which appears to be a tangerine or mandarin orange, was estimated by first determining its size relative to the known diameter of the plate (20.5 cm). By measuring the pixel dimensions in the image, the diameter of the tangerine was calculated to be approximately 6.2 cm. The tangerine was modeled as an oblate spheroid, a shape more accurate than a perfect sphere for this type of fruit, with its height assumed to be slightly less than its width (around 90%). The volume of this oblate spheroid was then calculated using the formula V = (4/3) * \u03c0 * a^2 * c, where 'a' is the equatorial radius and 'c' is the polar radius. This resulted in an estimated volume.",
+      "volume_cm3": 111.5,
+      "selected_image": "0.JPG"
+    },
+    "view_1": {
+      "reasoning": "The food item is identified as a single tangerine. The plate's diameter of 20.5 cm is used as a scale reference. By comparing the pixel dimensions of the tangerine to the plate in the provided image, the tangerine's diameter is estimated to be approximately 6.0 cm. Tangerines are generally oblate spheroids, so its height is estimated to be slightly less than its diameter, around 5.4 cm. Using the formula for the volume of an oblate spheroid, V = (4/3) * \u03c0 * a^2 * c (where 'a' is the equatorial radius and 'c' is the polar radius), the volume is calculated to be approximately 101.8 cm\u00b3.",
+      "volume_cm3": 101.8,
+      "selected_image": "1.JPG"
+    },
+    "view_2": {
+      "reasoning": "The food item is identified as a single tangerine. The plate's diameter of 20.5 cm is used as a scale reference. By comparing the pixel dimensions of the plate and the tangerine in the provided image, the tangerine's diameter is estimated. The ratio of the tangerine's pixel diameter to the plate's pixel diameter is approximately 0.305. This gives an estimated real-world diameter for the tangerine of 0.305 * 20.5 cm = 6.25 cm. The tangerine is modeled as an oblate spheroid, a common shape for this fruit, with its height assumed to be 90% of its width. The volume is calculated using the formula for an oblate spheroid, V = (4/3) * \u03c0 * a\u00b2 * c, where 'a' is the equatorial radius (3.125 cm) and 'c' is the polar radius (2.8125 cm). This calculation results in an estimated volume of approximately 115.0 cm\u00b3.",
+      "volume_cm3": 115.0,
+      "selected_image": "2.JPG"
+    },
+    "view_3": {
+      "reasoning": "The food item is identified as a single tangerine, which is best modeled as an oblate spheroid. The provided plate diameter of 20.5 cm is used as a scale reference. In the image, the major axis of the elliptical plate is measured to be approximately 2620 pixels. The tangerine's horizontal (equatorial) diameter is measured as approximately 860 pixels, and its vertical (polar) diameter is measured as approximately 760 pixels. Using the plate as a scale, the tangerine's real-world dimensions are calculated: equatorial diameter = (860 / 2620) * 20.5 cm \u2248 6.73 cm, and polar diameter = (760 / 2620) * 20.5 cm \u2248 5.95 cm. The volume is then calculated using the formula for an oblate spheroid, V = (4/3) * \u03c0 * a\u00b2 * c, where 'a' is the equatorial radius (3.365 cm) and 'c' is the polar radius (2.975 cm). The resulting volume is approximately 140.6 cm\u00b3.",
+      "volume_cm3": 140.6,
+      "selected_image": "3.JPG"
+    },
+    "view_4": {
+      "reasoning": "The food item is a single tangerine, which is modeled as an oblate spheroid for volume estimation. The plate's known diameter of 20.5 cm serves as a scale reference. By comparing the pixel dimensions of the tangerine to the plate in the image, the tangerine's equatorial diameter is estimated to be approximately 5.9 cm. Its height (polar diameter) is estimated to be slightly less, around 5.3 cm, due to the typical flattened shape of a tangerine. Using the formula for the volume of an oblate spheroid, V = (4/3) * \u03c0 * a\u00b2 * c, where 'a' is the equatorial radius (2.95 cm) and 'c' is the polar radius (2.65 cm), the volume is calculated.",
+      "volume_cm3": 96.6,
+      "selected_image": "4.JPG"
+    },
+    "view_5": {
+      "reasoning": "The food item is identified as a single mandarin orange. The plate's diameter of 20.5 cm is used as a scale reference. By comparing the mandarin's diameter to the plate's diameter in the image, the mandarin's equatorial diameter is estimated to be approximately 6.2 cm. The mandarin is modeled as an oblate spheroid, with its height (polar diameter) estimated to be about 90% of its equatorial diameter, which is approximately 5.6 cm. Using the formula for the volume of an oblate spheroid, V = (4/3) * pi * a^2 * c, where 'a' is the equatorial radius (3.1 cm) and 'c' is the polar radius (2.8 cm), the volume is calculated.",
+      "volume_cm3": 112.2,
+      "selected_image": "5.JPG"
+    }
+  }
+}

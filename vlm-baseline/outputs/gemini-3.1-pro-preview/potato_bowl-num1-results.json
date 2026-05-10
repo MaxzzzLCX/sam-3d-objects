@@ -1,0 +1,55 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/potato_bowl/images",
+  "num_views": 1,
+  "mode": "single_view_all_views_once",
+  "n_views_used": 6,
+  "model": "gemini-3.1-pro-preview",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "results": {
+    "volume_estimations": [
+      121.0,
+      110.0,
+      86.0,
+      83.0,
+      90.0,
+      160.0
+    ],
+    "volume_mean": 108.33333587646484,
+    "volume_std": 26.799667358398438,
+    "volume_error_mean": 0.380952388048172,
+    "volume_error_std": 0.15314096212387085
+  },
+  "raw_results": {
+    "view_0": {
+      "reasoning": "The bowl has a known diameter of 16.8 cm. Based on the image, the potato's length is approximately half of the bowl's diameter, or about 8.4 cm. Its width is roughly one-third of the bowl's diameter, about 5.5 cm. Assuming the height is slightly less than the width, around 5.0 cm, we can model the potato as an ellipsoid. The volume is calculated as (4/3) * pi * (8.4/2) * (5.5/2) * (5.0/2) \u2248 121 cm\u00b3.",
+      "volume_cm3": 121.0,
+      "selected_image": "0.jpeg"
+    },
+    "view_1": {
+      "reasoning": "The bowl has a known diameter of 16.8 cm. By comparing the potato to the bowl, its length is estimated to be about half the bowl's diameter (8.4 cm), and its width about one-third (5.6 cm). Assuming a height of roughly 4.5 cm, we can model the potato as an ellipsoid. The volume is calculated as (4/3) * pi * (8.4/2) * (5.6/2) * (4.5/2) \u2248 110 cm\u00b3.",
+      "volume_cm3": 110.0,
+      "selected_image": "1.jpeg"
+    },
+    "view_2": {
+      "reasoning": "The bowl has a known diameter of 16.8 cm. In the image, the bowl's horizontal diameter spans approximately 600 pixels. The potato's longest dimension (length) is about 260 pixels, which translates to roughly 7.3 cm. The potato's width is estimated to be about 5.0 cm, and its height about 4.5 cm based on typical potato proportions and visual inspection. Modeling the potato as an ellipsoid, the volume is calculated as (4/3) * \u03c0 * (7.3/2) * (5.0/2) * (4.5/2) \u2248 86 cm\u00b3.",
+      "volume_cm3": 86.0,
+      "selected_image": "2.jpeg"
+    },
+    "view_3": {
+      "reasoning": "The bowl has a known diameter of 16.8 cm. In the image, the bowl's diameter is approximately 470 pixels. The potato has a length of about 205 pixels and a width of about 135 pixels. Using the bowl as a scale reference, the potato's length is roughly 7.3 cm and its width is roughly 4.8 cm. Assuming the potato is an ellipsoid with a height of approximately 4.5 cm, the volume can be calculated as (4/3) * pi * (7.3/2) * (4.8/2) * (4.5/2) cm^3, which is approximately 83 cm^3.",
+      "volume_cm3": 83.0,
+      "selected_image": "3.jpeg"
+    },
+    "view_4": {
+      "reasoning": "The bowl has a known diameter of 16.8 cm. In the image, the potato's length occupies approximately 40% of the bowl's diameter, which translates to about 6.7 cm. Its width and height appear to be roughly 30% of the bowl's diameter, or about 5.0 cm. Modeling the potato as an ellipsoid with axes of 6.7 cm, 5.0 cm, and 5.0 cm, the volume is calculated as (4/3) * pi * (6.7/2) * (5.0/2) * (5.0/2) \u2248 88 cm\u00b3. Rounding slightly to account for its irregular shape gives an estimate of 90 cm\u00b3.",
+      "volume_cm3": 90.0,
+      "selected_image": "4.jpeg"
+    },
+    "view_5": {
+      "reasoning": "The bowl (referred to as a plate in the prompt) has a known diameter of 16.8 cm. By comparing the potato to the bowl, the potato's width spans approximately half the diameter of the bowl, making it about 8.4 cm long. The depth of the potato appears slightly smaller, estimated at 6.5 cm, and its height is estimated at around 5.5 cm. Assuming the potato has an roughly ellipsoidal shape, the volume can be calculated as V = (4/3) * \u03c0 * (length/2) * (width/2) * (height/2). Plugging in the estimates: V = (4/3) * 3.14 * 4.2 * 3.25 * 2.75 \u2248 157 cm\u00b3. Rounding to a reasonable estimate gives 160 cm\u00b3.",
+      "volume_cm3": 160.0,
+      "selected_image": "5.jpeg"
+    }
+  }
+}

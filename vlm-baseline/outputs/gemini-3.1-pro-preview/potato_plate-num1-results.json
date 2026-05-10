@@ -1,0 +1,55 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/potato_plate/images",
+  "num_views": 1,
+  "mode": "single_view_all_views_once",
+  "n_views_used": 6,
+  "model": "gemini-3.1-pro-preview",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "results": {
+    "volume_estimations": [
+      105.0,
+      115.0,
+      120.0,
+      125.0,
+      94.0,
+      100.0
+    ],
+    "volume_mean": 109.83333587646484,
+    "volume_std": 11.036555290222168,
+    "volume_error_mean": 0.37238094210624695,
+    "volume_error_std": 0.0630660280585289
+  },
+  "raw_results": {
+    "view_0": {
+      "reasoning": "The plate has a known diameter of 20.5 cm. By measuring the plate's diameter in the image (approximately 520 pixels) and comparing it to the potato's dimensions (length ~222 pixels, width ~130 pixels), we can estimate the potato's real-world size. The estimated length is about 8.8 cm and the width is about 5.1 cm. Assuming the potato has an ellipsoidal shape with a height slightly less than its width (approximately 4.5 cm), the volume can be calculated using the formula for an ellipsoid: V = (4/3) * \u03c0 * (length/2) * (width/2) * (height/2). This yields roughly 105 cm\u00b3.",
+      "volume_cm3": 105.0,
+      "selected_image": "0.jpeg"
+    },
+    "view_1": {
+      "reasoning": "The plate has a known diameter of 20.5 cm. By comparing the potato to the plate, the potato's length is estimated to be roughly 8 cm, its width about 5.5 cm, and its height about 5 cm. Modeling the potato as an ellipsoid, the volume is calculated as V = (4/3) * \u03c0 * (8/2) * (5.5/2) * (5/2) \u2248 115 cm\u00b3.",
+      "volume_cm3": 115.0,
+      "selected_image": "1.jpeg"
+    },
+    "view_2": {
+      "reasoning": "The plate has a known diameter of 20.5 cm. In the image, the plate's horizontal width is about 540 pixels, while the potato's horizontal length is about 220 pixels. This gives a ratio of approximately 0.4, meaning the potato is about 8.4 cm long. Visually, the potato's width is about two-thirds of its length (approx. 5.5 cm), and its height appears slightly less than its width (approx. 5.0 cm). Modeling the potato as an ellipsoid, the volume is calculated as (pi/6) * length * width * height, which is roughly 0.523 * 8.4 * 5.5 * 5.0.",
+      "volume_cm3": 120.0,
+      "selected_image": "2.jpeg"
+    },
+    "view_3": {
+      "reasoning": "The plate has a known diameter of 20.5 cm. By comparing the potato to the plate, the potato's length spans about 40% of the plate's diameter, giving an estimated length of roughly 8 cm. The width of the potato appears to be about 6 cm, and its height is estimated to be around 5 cm. Assuming the potato's shape is roughly an ellipsoid, the volume can be calculated using the formula V = (\u03c0/6) * length * width * height. Plugging in the estimated dimensions: V \u2248 0.5236 * 8 cm * 6 cm * 5 cm \u2248 125 cm\u00b3.",
+      "volume_cm3": 125.0,
+      "selected_image": "3.jpeg"
+    },
+    "view_4": {
+      "reasoning": "Using the plate's known diameter of 20.5 cm as a scale reference, the potato's dimensions are estimated to be approximately 7.2 cm in length, 5.2 cm in width, and 4.8 cm in height. Approximating the potato's shape as an ellipsoid, the volume is calculated using the formula V = (4/3) * \u03c0 * (length/2) * (width/2) * (height/2).",
+      "volume_cm3": 94.0,
+      "selected_image": "4.jpeg"
+    },
+    "view_5": {
+      "reasoning": "The plate has a known diameter of 20.5 cm. By comparing the potato to the plate in the image, the potato's length spans about 37% of the plate's diameter, which equates to approximately 7.6 cm. The visible height of the potato is roughly 22% of the plate's diameter, or about 4.5 cm. Assuming the depth of the potato is slightly larger than its height, around 5.5 cm, we can model its shape as an ellipsoid. The volume is calculated using the formula for an ellipsoid: (4/3) * \u03c0 * (length/2) * (depth/2) * (height/2), which gives (4/3) * \u03c0 * 3.8 * 2.75 * 2.25 \u2248 99 cm\u00b3. Rounding to a reasonable estimate gives 100 cm\u00b3.",
+      "volume_cm3": 100.0,
+      "selected_image": "5.jpeg"
+    }
+  }
+}

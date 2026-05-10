@@ -1,0 +1,24 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/orange_plate/images",
+  "num_views": 6,
+  "mode": "multi_view_repeats",
+  "model": "gemini-2.5-pro",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "repeats": 1,
+  "results": {
+    "volume_estimations": [
+      148.1
+    ],
+    "volume_mean": 148.10000610351562,
+    "volume_std": 0.0,
+    "volume_error_mean": 0.18480004370212555,
+    "volume_error_std": 0.0
+  },
+  "raw_results": {
+    "trial_0": {
+      "reasoning": "The food item is a single tangerine, which can be modeled as an oblate spheroid. The plate's diameter of 20.5 cm is used as a scale reference. By comparing the tangerine's diameter to the plate's diameter in the images, the tangerine's equatorial diameter is estimated to be approximately 6.9 cm. The height (polar diameter) is visually estimated to be slightly less, around 85% of the width, which is approximately 5.9 cm. The volume of an oblate spheroid is calculated using the formula V = (4/3) * \u03c0 * a\u00b2 * c, where 'a' is the equatorial radius (3.45 cm) and 'c' is the polar radius (2.95 cm). This calculation yields a volume of approximately 148.1 cm\u00b3.",
+      "volume_cm3": 148.1
+    }
+  }
+}

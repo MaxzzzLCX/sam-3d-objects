@@ -1,0 +1,24 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/egg_plate/images",
+  "num_views": 6,
+  "mode": "multi_view_repeats",
+  "model": "gemini-2.5-pro",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "repeats": 1,
+  "results": {
+    "volume_estimations": [
+      55.2
+    ],
+    "volume_mean": 55.20000076293945,
+    "volume_std": 0.0,
+    "volume_error_mean": 0.1040000170469284,
+    "volume_error_std": 0.0
+  },
+  "raw_results": {
+    "trial_0": {
+      "reasoning": "The food item is identified as a single egg. Its dimensions were estimated by comparing its size to the known diameter of the plate (20.5 cm) across the multiple images provided. The egg is modeled as a prolate spheroid. The major axis (length) was estimated to be approximately 5.7 cm and the minor axis (width) to be approximately 4.3 cm. The volume was then calculated using the formula for a prolate spheroid, V = (4/3) * \u03c0 * a * b^2, where 'a' is the semi-major axis and 'b' is the semi-minor axis. This calculation yields a volume consistent with that of a standard large chicken egg.",
+      "volume_cm3": 55.2
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/orange_plate/images",
+  "num_views": 1,
+  "mode": "single_view_all_views_once",
+  "n_views_used": 6,
+  "model": "gemini-3.1-pro-preview",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "results": {
+    "volume_estimations": [
+      130.0,
+      109.0,
+      110.0,
+      120.0,
+      110.0,
+      113.0
+    ],
+    "volume_mean": 115.33333587646484,
+    "volume_std": 7.520342826843262,
+    "volume_error_mean": 0.09066667407751083,
+    "volume_error_std": 0.03714236989617348
+  },
+  "raw_results": {
+    "view_0": {
+      "reasoning": "The plate has a known diameter of 20.5 cm. By comparing the horizontal width of the mandarin to the plate in the image, the mandarin's diameter is approximately one-third of the plate's diameter, or about 6.7 cm. Mandarins are generally oblate spheroids. Assuming its height is roughly 80-85% of its diameter (around 5.5 cm), the volume can be estimated using the formula for an ellipsoid (V = 4/3 * pi * r_equatorial^2 * r_polar).",
+      "volume_cm3": 130.0,
+      "selected_image": "0.JPG"
+    },
+    "view_1": {
+      "reasoning": "The plate has a known diameter of 20.5 cm. By comparing the mandarin orange to the plate in the image, the mandarin's diameter occupies approximately 30% of the plate's width, which corresponds to an estimated diameter of about 6.15 cm. Mandarin oranges are typically slightly flattened, so its height is estimated to be around 5.5 cm. Modeling the mandarin as an oblate spheroid with an equatorial radius of 3.075 cm and a polar radius of 2.75 cm, the volume is calculated using the formula V = (4/3) * \u03c0 * r_equatorial^2 * r_polar.",
+      "volume_cm3": 109.0,
+      "selected_image": "1.JPG"
+    },
+    "view_2": {
+      "reasoning": "The plate has a known diameter of 20.5 cm. By comparing the mandarin to the plate, its diameter appears to be approximately 30% of the plate's diameter, or about 6.15 cm. Mandarins are typically oblate spheroids, so assuming a slightly smaller height of about 5.5 cm, we can calculate the volume using the formula for an ellipsoid: V = (4/3) * pi * r_equatorial^2 * r_polar. Using an equatorial radius of ~3.075 cm and a polar radius of ~2.75 cm, the volume is approximately 110 cm^3.",
+      "volume_cm3": 110.0,
+      "selected_image": "2.JPG"
+    },
+    "view_3": {
+      "reasoning": "Based on the plate's known diameter of 20.5 cm, we can establish a scale. In the image, the plate's major axis (width) is approximately 710 pixels, and the mandarin's horizontal diameter is about 220 pixels. This yields a physical diameter for the mandarin of roughly (220 / 710) * 20.5 cm \u2248 6.35 cm. Mandarins are typically oblate spheroids, meaning they are slightly flattened at the poles. Assuming a height of about 5.6 cm (which is typical for a mandarin of this width), the volume can be calculated using the formula for an oblate spheroid: V = (4/3) * \u03c0 * r_equatorial^2 * r_polar. Plugging in the values, V = (4/3) * \u03c0 * (3.175 cm)^2 * (2.8 cm) \u2248 118 cm\u00b3. Rounding to a reasonable estimate gives 120 cm\u00b3.",
+      "volume_cm3": 120.0,
+      "selected_image": "3.JPG"
+    },
+    "view_4": {
+      "reasoning": "The plate has a known diameter of 20.5 cm. In the image, the plate's horizontal width is approximately 750 pixels, and the mandarin's horizontal width is about 230 pixels. This gives a scale ratio, making the mandarin's diameter approximately (230/750) * 20.5 cm \u2248 6.3 cm. Mandarins are typically oblate spheroids. Estimating its height to be slightly less than its diameter, around 5.3 cm, we can calculate the volume using the formula for an oblate spheroid: V = (4/3) * \u03c0 * r_equatorial^2 * r_polar. With an equatorial radius of 3.15 cm and a polar radius of 2.65 cm, the volume is approximately (4/3) * \u03c0 * 3.15^2 * 2.65 \u2248 110 cm\u00b3.",
+      "volume_cm3": 110.0,
+      "selected_image": "4.JPG"
+    },
+    "view_5": {
+      "reasoning": "Using the plate's known diameter of 20.5 cm as a reference, the horizontal width of the plate in the image is compared to the width of the mandarin. The plate spans approximately 860 pixels and the mandarin spans about 260 pixels, giving a diameter estimate of roughly 6.2 cm for the mandarin. Modeling the fruit as an oblate spheroid with an equatorial radius of 3.1 cm and a slightly smaller polar radius of about 2.8 cm (to account for its characteristic flattened shape), the volume is calculated as (4/3) * pi * 3.1^2 * 2.8, which is approximately 113 cm^3.",
+      "volume_cm3": 113.0,
+      "selected_image": "5.JPG"
+    }
+  }
+}

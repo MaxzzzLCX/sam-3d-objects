@@ -1,0 +1,55 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/egg_plate/images",
+  "num_views": 1,
+  "mode": "single_view_all_views_once",
+  "n_views_used": 6,
+  "model": "gemini-2.5-pro",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "results": {
+    "volume_estimations": [
+      43.2,
+      58.0,
+      50.8,
+      46.9,
+      50.5,
+      55.6
+    ],
+    "volume_mean": 50.83333206176758,
+    "volume_std": 4.96543550491333,
+    "volume_error_mean": 0.08266664296388626,
+    "volume_error_std": 0.057499758899211884
+  },
+  "raw_results": {
+    "view_0": {
+      "reasoning": "The food item is identified as a single hard-boiled egg. The volume is estimated by modeling the egg as a prolate spheroid. The dimensions of the egg are determined by using the known plate diameter of 20.5 cm as a scale reference. By measuring the pixel dimensions in the image, the plate's diameter is found to be approximately 2580 pixels, while the egg's major and minor axes are approximately 675 pixels and 495 pixels, respectively. This translates to a real-world length of approximately 5.36 cm and a width of 3.93 cm. Applying the volume formula for a prolate spheroid, V = (4/3) * \u03c0 * a * b^2, where 'a' is the semi-major axis (half the length) and 'b' is the semi-minor axis (half the width), the resulting volume is calculated.",
+      "volume_cm3": 43.2,
+      "selected_image": "0.jpeg"
+    },
+    "view_1": {
+      "reasoning": "The food item is a single egg, which is modeled as a prolate spheroid. The plate's diameter of 20.5 cm is used as a scale reference. By comparing the egg to the plate, the egg's dimensions are estimated to be approximately 5.7 cm in length and 4.4 cm in width. Using the formula for the volume of a prolate spheroid (V = 4/3 * \u03c0 * a * b^2), with semi-axes a=2.85 cm and b=2.2 cm, the calculated volume is approximately 58.0 cm\u00b3. This volume is consistent with a standard extra-large chicken egg.",
+      "volume_cm3": 58.0,
+      "selected_image": "1.jpeg"
+    },
+    "view_2": {
+      "reasoning": "The food item is identified as a single, whole, hard-boiled egg. The volume is estimated by modeling the egg as a prolate spheroid. The plate's known diameter of 20.5 cm is used as a scale reference to estimate the dimensions of the egg. The length of the egg is estimated to be approximately 5.5 cm and its width to be approximately 4.2 cm. Using the formula for the volume of a prolate spheroid, V = (4/3) * \u03c0 * a * b^2, where 'a' is the semi-major axis (half the length, 2.75 cm) and 'b' is the semi-minor axis (half the width, 2.1 cm), the volume is calculated. This results in a volume that is consistent with that of a standard large chicken egg.",
+      "volume_cm3": 50.8,
+      "selected_image": "2.jpeg"
+    },
+    "view_3": {
+      "reasoning": "The food item is identified as a single object resembling a medium-sized egg, which is modeled as a prolate spheroid. The provided plate diameter of 20.5 cm is used as a scale reference. By comparing the pixel dimensions of the object to the plate in the image, the object's dimensions are estimated. The width (minor axis) is estimated to be approximately 4.1 cm by taking a ratio along a horizontal line to minimize perspective distortion. The length (major axis) is estimated to be 5.3 cm, consistent with the proportions of an egg. The volume is then calculated using the formula for a prolate spheroid: V = (4/3) * \u03c0 * a * b^2, where 'a' is the semi-major axis (2.65 cm) and 'b' is the semi-minor axis (2.05 cm).",
+      "volume_cm3": 46.9,
+      "selected_image": "3.jpeg"
+    },
+    "view_4": {
+      "reasoning": "The food item is identified as a single, standard chicken egg. The volume is estimated by modeling the egg as a prolate spheroid. The dimensions of the egg were determined by comparing its size in pixels to the size of the plate in pixels, using the known plate diameter of 20.5 cm as a scale reference. From the image, the egg's height (major axis) is estimated to be approximately 5.5 cm and its width (minor axis) is estimated to be 4.2 cm. The volume of a prolate spheroid is calculated using the formula V = (4/3) * \u03c0 * a * b^2, where 'a' is half the height and 'b' is half the width. This calculation yields a volume consistent with that of a standard large chicken egg.",
+      "volume_cm3": 50.5,
+      "selected_image": "4.jpeg"
+    },
+    "view_5": {
+      "reasoning": "The food item is identified as a single, standard-sized egg. The plate's diameter of 20.5 cm is used as a scale reference. By visually comparing the egg's dimensions to the plate's diameter, the egg's length is estimated to be approximately 5.7 cm and its width to be about 4.3 cm. The volume of the egg is then calculated by approximating its shape as a prolate spheroid using the formula V = (4/3) * \u03c0 * a * b^2, where 'a' is the semi-major axis (half the length) and 'b' is the semi-minor axis (half the width). This results in a volume that is consistent with the typical volume of a large chicken egg.",
+      "volume_cm3": 55.6,
+      "selected_image": "5.jpeg"
+    }
+  }
+}

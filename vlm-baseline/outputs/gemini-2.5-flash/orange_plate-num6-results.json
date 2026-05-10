@@ -1,0 +1,24 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/orange_plate/images",
+  "num_views": 6,
+  "mode": "multi_view_repeats",
+  "model": "gemini-2.5-flash",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "repeats": 1,
+  "results": {
+    "volume_estimations": [
+      239.1
+    ],
+    "volume_mean": 239.10000610351562,
+    "volume_std": 0.0,
+    "volume_error_mean": 0.9128000736236572,
+    "volume_error_std": 0.0
+  },
+  "raw_results": {
+    "trial_0": {
+      "reasoning": "The plate has a known diameter of 20.5 cm. By visually comparing the tangerine's size to the plate in multiple images, especially those taken from a top-down perspective, the tangerine's diameter is estimated to be approximately 37.5% of the plate's diameter. This gives a tangerine diameter of 0.375 * 20.5 cm = 7.6875 cm. Approximating the tangerine as a sphere with a diameter of 7.7 cm (radius = 3.85 cm), the volume can be calculated using the formula V = (4/3) * \u03c0 * r^3. V = (4/3) * \u03c0 * (3.85 cm)^3 \u2248 239.1 cm^3.",
+      "volume_cm3": 239.1
+    }
+  }
+}

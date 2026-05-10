@@ -1,0 +1,55 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/egg_plate/images",
+  "num_views": 1,
+  "mode": "single_view_all_views_once",
+  "n_views_used": 6,
+  "model": "gemini-2.5-flash",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "results": {
+    "volume_estimations": [
+      65.54,
+      63.4,
+      55.66,
+      51.3,
+      60.0,
+      65.5
+    ],
+    "volume_mean": 60.23333740234375,
+    "volume_std": 5.270998477935791,
+    "volume_error_mean": 0.20466667413711548,
+    "volume_error_std": 0.10541997104883194
+  },
+  "raw_results": {
+    "view_0": {
+      "reasoning": "The plate has a known diameter of 20.5 cm. From the provided image, the plate's diameter was measured to be approximately 1000 pixels. This establishes a scale factor of 20.5 cm / 1000 pixels = 0.0205 cm/pixel. The egg's major axis (length) was measured to be approximately 300 pixels, and its minor axis (width) was measured to be approximately 220 pixels. Converting these to centimeters: Length (L) = 300 * 0.0205 = 6.15 cm. Width (W) = 220 * 0.0205 = 4.51 cm. Assuming the egg is lying on its side, its height (H) is approximately equal to its width, so H = 4.51 cm. Approximating the egg's shape as an ellipsoid, the volume (V) can be calculated using the formula V = (\u03c0/6) * L * W * H. Therefore, V = (\u03c0/6) * 6.15 cm * 4.51 cm * 4.51 cm = (\u03c0/6) * 6.15 * 20.3401 \u2248 65.54 cm^3.",
+      "volume_cm3": 65.54,
+      "selected_image": "0.jpeg"
+    },
+    "view_1": {
+      "reasoning": "The food item is a single egg. The plate has a known diameter of 20.5 cm, which is used as a scale reference. By measuring the plate's diameter in pixels (approximately 990 pixels) and the egg's length (approximately 295 pixels) and width (approximately 215 pixels) from the main image, a pixel-to-centimeter conversion factor was established (20.5 cm / 990 pixels = 0.020707 cm/pixel). The egg's dimensions were estimated as approximately 6.11 cm in length (major axis) and 4.45 cm in width/height (minor axes). Approximating the egg as a prolate spheroid (an ellipsoid with two equal minor axes), its volume was calculated using the formula V = (4/3) * \u03c0 * (semi-major axis) * (semi-minor axis)^2. With a semi-major axis of 3.055 cm and semi-minor axes of 2.225 cm, the estimated volume is approximately 63.4 cm\u00b3.",
+      "volume_cm3": 63.4,
+      "selected_image": "1.jpeg"
+    },
+    "view_2": {
+      "reasoning": "The food item is identified as a single egg. The plate has a known diameter of 20.5 cm, which is used as a scale reference. By measuring the dimensions of the egg relative to the plate in the main image, the egg's length was estimated to be approximately 5.74 cm and its maximum width/height approximately 4.31 cm. The egg's shape is approximated as a prolate spheroid (an ellipsoid with two equal semi-axes). Using the formula for the volume of an ellipsoid, V = (4/3) * \u03c0 * a * b * c, where 'a' is half the length (2.87 cm) and 'b' and 'c' are half the width/height (2.155 cm), the volume is calculated.",
+      "volume_cm3": 55.66,
+      "selected_image": "2.jpeg"
+    },
+    "view_3": {
+      "reasoning": "The food item is identified as a single egg. The plate's known diameter of 20.5 cm is used as a scale reference. By analyzing the main image and the close-up crops, the egg's dimensions are estimated relative to the plate. The egg's length (major axis) is approximately 28.5% of the plate's visible diameter, and its width (minor axis) is approximately 20% of the plate's visible diameter. This yields an estimated egg length of 0.285 * 20.5 cm = 5.84 cm and an estimated egg width of 0.20 * 20.5 cm = 4.1 cm. The egg is approximated as a prolate spheroid (an ellipsoid with two equal minor axes). The volume is calculated using the formula V = (4/3) * \u03c0 * (length/2) * (width/2)^2. \nV = (4/3) * \u03c0 * (5.84/2) * (4.1/2)^2 \nV = (4/3) * \u03c0 * 2.92 * (2.05)^2 \nV = (4/3) * \u03c0 * 2.92 * 4.2025 \nV \u2248 51.3 cm\u00b3.",
+      "volume_cm3": 51.3,
+      "selected_image": "3.jpeg"
+    },
+    "view_4": {
+      "reasoning": "The plate's known diameter of 20.5 cm was used as a scale reference. From the main image, the plate's diameter was measured to be approximately 600 pixels. The egg's length was measured at approximately 170 pixels and its width at approximately 130 pixels. This translates to an egg length of about 5.8 cm and a width of about 4.4 cm. The egg was modeled as a prolate spheroid (an ellipsoid with two equal minor axes and one longer major axis). Using the formula for the volume of a prolate spheroid V = (4/3) * \u03c0 * a * b^2, where 'a' is half the length (2.9 cm) and 'b' is half the width (2.2 cm), the volume was calculated.",
+      "volume_cm3": 60.0,
+      "selected_image": "4.jpeg"
+    },
+    "view_5": {
+      "reasoning": "The food item is a single chicken egg. The plate has a known diameter of 20.5 cm, which is used as a scale reference. By analyzing the main image, the plate's diameter measures approximately 1000 pixels. This gives a scale of 0.0205 cm/pixel. The egg's major axis (length) measures approximately 300 pixels, translating to 300 * 0.0205 = 6.15 cm. The egg's minor axis (width/height) measures approximately 220 pixels, translating to 220 * 0.0205 = 4.51 cm. Approximating the egg's shape as a prolate spheroid (an ellipsoid with two equal minor axes), the volume can be calculated using the formula V = (\u03c0/6) * L * W^2, where L is the length and W is the width. Plugging in the estimated dimensions: V = (\u03c0/6) * 6.15 cm * (4.51 cm)^2 = (\u03c0/6) * 6.15 * 20.3401 \u2248 65.5 cm^3. This volume is consistent with that of a large chicken egg.",
+      "volume_cm3": 65.5,
+      "selected_image": "5.jpeg"
+    }
+  }
+}

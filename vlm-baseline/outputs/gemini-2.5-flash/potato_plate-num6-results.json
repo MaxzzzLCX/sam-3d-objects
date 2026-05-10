@@ -1,0 +1,24 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/potato_plate/images",
+  "num_views": 6,
+  "mode": "multi_view_repeats",
+  "model": "gemini-2.5-flash",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "repeats": 1,
+  "results": {
+    "volume_estimations": [
+      163.6
+    ],
+    "volume_mean": 163.60000610351562,
+    "volume_std": 0.0,
+    "volume_error_mean": 0.06514282524585724,
+    "volume_error_std": 0.0
+  },
+  "raw_results": {
+    "trial_0": {
+      "reasoning": "The plate diameter of 20.5 cm was used as a scale reference. From the top-down view (Image 2), the potato's length was estimated to be approximately 10 cm and its width approximately 6.25 cm. From side views (e.g., Image 5), the potato's height was estimated to be approximately 5 cm. Approximating the potato as an ellipsoid, its volume was calculated using the formula V = (4/3) * pi * (length/2) * (width/2) * (height/2). This yields V = (4/3) * pi * (10/2) * (6.25/2) * (5/2) = 163.6 cm^3.",
+      "volume_cm3": 163.6
+    }
+  }
+}

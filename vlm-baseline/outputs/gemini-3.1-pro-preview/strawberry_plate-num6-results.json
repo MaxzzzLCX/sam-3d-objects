@@ -1,0 +1,24 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/real_dataset/real_data_multiview_volume_vggt/strawberry_plate/images",
+  "num_views": 6,
+  "mode": "multi_view_repeats",
+  "model": "gemini-3.1-pro-preview",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "repeats": 1,
+  "results": {
+    "volume_estimations": [
+      14.0
+    ],
+    "volume_mean": 14.0,
+    "volume_std": 0.0,
+    "volume_error_mean": 0.4399999976158142,
+    "volume_error_std": 0.0
+  },
+  "raw_results": {
+    "trial_0": {
+      "reasoning": "To estimate the volume of the strawberry, I used the plate's known diameter of 20.5 cm as a scale reference. From the top-down view (Image 4), the plate's diameter is approximately 770 pixels, while the strawberry's length is about 180 pixels and its width is about 102 pixels. This translates to a length of ~4.8 cm and a width of ~2.7 cm. From the side view (Image 1), the horizontal diameter of the plate is about 750 pixels, and the strawberry's height is about 90 pixels, giving a height of ~2.5 cm. Modeling the strawberry's shape as a paraboloid (which has half the volume of its bounding elliptical cylinder), the volume is calculated as 0.5 * (\u03c0/4) * length * width * height. Plugging in the dimensions: 0.5 * 0.7854 * 4.8 cm * 2.7 cm * 2.5 cm \u2248 13.7 cm\u00b3. Rounding slightly to account for the plumpness of the strawberry yields an estimate of 14 cm\u00b3.",
+      "volume_cm3": 14.0
+    }
+  }
+}

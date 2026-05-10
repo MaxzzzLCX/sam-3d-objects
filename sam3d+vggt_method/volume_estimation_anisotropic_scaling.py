@@ -155,7 +155,7 @@ class VGGTScaleExtractor:
         self.plate_diameter = plate_diameter
         self.conversion_factor = None
 
-    def extract_plate_plane(self):
+    def extract_plate_plane(self, visualize=True):
         """
         Load the VGGT pointcloud of the plate. Extract the plane of the plate using RANSAC.
         Returns the plane equation coefficients [a, b, c, d] where ax + by + cz + d = 0
@@ -190,9 +190,10 @@ class VGGTScaleExtractor:
         outlier_cloud.paint_uniform_color([1, 0, 0])  # Red for outliers
         
         # Save visualization
-        vis_path = os.path.join(self.scene_folder, "plate_plane_fit_visualization.ply")
-        o3d.io.write_point_cloud(vis_path, inlier_cloud + outlier_cloud)
-        print(f"Saved plane fit visualization to {vis_path}")
+        if visualize:
+            vis_path = os.path.join(self.scene_folder, "plate_plane_fit_visualization.ply")
+            o3d.io.write_point_cloud(vis_path, inlier_cloud + outlier_cloud)
+            print(f"Saved plane fit visualization to {vis_path}")
         
         return plane_model, inliers
 

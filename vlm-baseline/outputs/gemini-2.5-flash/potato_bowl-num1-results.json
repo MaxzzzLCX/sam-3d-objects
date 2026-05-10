@@ -1,0 +1,55 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/potato_bowl/images",
+  "num_views": 1,
+  "mode": "single_view_all_views_once",
+  "n_views_used": 6,
+  "model": "gemini-2.5-flash",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "results": {
+    "volume_estimations": [
+      221.7,
+      100.35,
+      124.19,
+      179.0,
+      251.6,
+      432.95
+    ],
+    "volume_mean": 218.29833984375,
+    "volume_std": 109.1699447631836,
+    "volume_error_mean": 0.48639050126075745,
+    "volume_error_std": 0.4623875319957733
+  },
+  "raw_results": {
+    "view_0": {
+      "reasoning": "The outer diameter of the plate was measured in pixels from the provided image, yielding approximately 950 pixels. Using the given real-world diameter of 16.8 cm, a pixel-to-centimeter conversion factor was calculated as 56.5476 pixels/cm. The potato's maximum length and width were measured in pixels as approximately 600 pixels and 400 pixels, respectively. Converting these to centimeters: Length (L) = 10.61 cm and Width (W) = 7.07 cm. The potato's height (H) was estimated based on its visual appearance and typical potato proportions, assuming it to be approximately 80% of its width, resulting in H = 5.656 cm. Approximating the potato as an ellipsoid, its volume was calculated using the formula V = (1/6) * pi * L * W * H, which gives V = (1/6) * 3.14159 * 10.61 * 7.07 * 5.656 = 221.7 cm^3.",
+      "volume_cm3": 221.7,
+      "selected_image": "0.jpeg"
+    },
+    "view_1": {
+      "reasoning": "The diameter of the bowl (16.8 cm) was used as a scale reference. By measuring the bowl's outer rim diameter and the potato's dimensions (length, width, and height) in pixels from the main image, a scale factor was established. The potato's approximate dimensions were estimated as: length ~8.32 cm, width ~4.96 cm, and height ~4.64 cm. The potato was modeled as an ellipsoid, and its volume was calculated using the formula V = (4/3) * \u03c0 * (length/2) * (width/2) * (height/2). Substituting the estimated dimensions, V = (4/3) * \u03c0 * (8.32/2) * (4.96/2) * (4.64/2) = (4/3) * \u03c0 * 4.16 * 2.48 * 2.32, which resulted in approximately 100.35 cm\u00b3.",
+      "volume_cm3": 100.35,
+      "selected_image": "1.jpeg"
+    },
+    "view_2": {
+      "reasoning": "The volume of the potato was estimated by first establishing a scale from the main image. The outer diameter of the bowl was measured in pixels (approximately 600 pixels). Given the bowl's diameter is 16.8 cm, the scale was determined to be 1 cm = 600 pixels / 16.8 cm = 35.714 pixels/cm. Next, the potato's dimensions (length, width, and height) were estimated in pixels from the close-up image of the potato (image 8) and converted to centimeters using the established scale. The potato's shape was approximated as an ellipsoid. The estimated dimensions were: length \u2248 300 pixels (8.4 cm), width \u2248 200 pixels (5.6 cm), and height \u2248 180 pixels (5.04 cm). The volume of an ellipsoid is calculated as (4/3) * pi * (length/2) * (width/2) * (height/2). Using these values, the volume was calculated.",
+      "volume_cm3": 124.19,
+      "selected_image": "2.jpeg"
+    },
+    "view_3": {
+      "reasoning": "The volume of the potato was estimated by first establishing a scale from the image. The outer diameter of the bowl is given as 16.8 cm. By measuring the bowl's outer diameter in pixels from the main image (approximately 600 pixels), a scale of 0.028 cm/pixel was determined (16.8 cm / 600 pixels). The potato's dimensions were then measured in pixels: maximum length (L) approximately 315 pixels, maximum width (W) approximately 215 pixels, and maximum height (H) approximately 230 pixels. Converting these to centimeters: L = 315 * 0.028 = 8.82 cm, W = 215 * 0.028 = 6.02 cm, H = 230 * 0.028 = 6.44 cm. The potato's shape was approximated as an ellipsoid, and its volume was calculated using the formula V = (4/3) * \u03c0 * (L/2) * (W/2) * (H/2). This yields V = (4/3) * \u03c0 * (8.82/2) * (6.02/2) * (6.44/2) = (4/3) * \u03c0 * 4.41 * 3.01 * 3.22 \u2248 179.0 cm^3. This volume is consistent with the size of a medium potato.",
+      "volume_cm3": 179.0,
+      "selected_image": "3.jpeg"
+    },
+    "view_4": {
+      "reasoning": "The potato is approximated as an ellipsoid. The bowl's outer diameter of 16.8 cm is used as a scale reference. By measuring pixels in the main image, the bowl's outer diameter is approximately 600 pixels. This establishes a scale of 16.8 cm / 600 pixels = 0.028 cm/pixel. The potato's longest dimension (length) measures approximately 350 pixels, resulting in L = 350 * 0.028 = 9.8 cm. The potato's height measures approximately 250 pixels, resulting in H = 250 * 0.028 = 7.0 cm. Assuming the potato's width (W) is similar to its height due to its typical shape, W = 7.0 cm. The volume of an ellipsoid is calculated using the formula (pi/6) * L * W * H. Plugging in the values: (3.14159 / 6) * 9.8 cm * 7.0 cm * 7.0 cm = 0.523598 * 480.2 cm^3 = 251.56 cm^3. Rounded to one decimal place, the estimated volume is 251.6 cm^3.",
+      "volume_cm3": 251.6,
+      "selected_image": "4.jpeg"
+    },
+    "view_5": {
+      "reasoning": "The object is a potato in a bowl. The bowl's top rim diameter is used as the scale reference, assumed to be the 'plate diameter' of 16.8 cm. From the image, the potato's maximum width is estimated to be approximately 10.5 cm (about 62.5% of the bowl's diameter) and its maximum height is estimated to be approximately 7.5 cm (about 45% of the bowl's diameter). The potato is approximated as an oblate spheroid (an ellipsoid with two equal major axes and one shorter minor axis). The semi-axes are therefore a = b = 10.5 cm / 2 = 5.25 cm and c = 7.5 cm / 2 = 3.75 cm. The volume of an ellipsoid is calculated using the formula V = (4/3) * pi * a * b * c. Plugging in the estimated values: V = (4/3) * pi * (5.25 cm) * (5.25 cm) * (3.75 cm) = 432.95 cm^3.",
+      "volume_cm3": 432.95,
+      "selected_image": "5.jpeg"
+    }
+  }
+}

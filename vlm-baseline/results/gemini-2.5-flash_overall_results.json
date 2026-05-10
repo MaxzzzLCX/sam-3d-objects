@@ -1,0 +1,12 @@
+{
+  "1": {
+    "average_volume_error": 0.571762709154023,
+    "std_volume_error": 0.5385373070448449,
+    "total_samples": 52
+  },
+  "6": {
+    "average_volume_error": 0.3008952471945021,
+    "std_volume_error": 0.262663657075025,
+    "total_samples": 9
+  }
+}

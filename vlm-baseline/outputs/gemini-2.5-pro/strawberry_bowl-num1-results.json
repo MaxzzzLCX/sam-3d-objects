@@ -1,0 +1,49 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/strawberry_bowl/images",
+  "num_views": 1,
+  "mode": "single_view_all_views_once",
+  "n_views_used": 5,
+  "model": "gemini-2.5-pro",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "results": {
+    "volume_estimations": [
+      13.4,
+      16.3,
+      7.84,
+      10.46,
+      6.45
+    ],
+    "volume_mean": 10.890000343322754,
+    "volume_std": 3.5991439819335938,
+    "volume_error_mean": 0.5644000172615051,
+    "volume_error_std": 0.14396576583385468
+  },
+  "raw_results": {
+    "view_0": {
+      "reasoning": "The volume of the strawberry was estimated by first determining its dimensions using the provided bowl diameter of 16.8 cm as a scale reference. The top-down image was used to measure the length and width of the strawberry relative to the bowl's diameter. The strawberry's length was measured to be approximately 4.0 cm and its width to be 2.8 cm. The height was assumed to be similar to the width, as no side view was available. The strawberry was modeled as a prolate spheroid (V = 4/3 * pi * a * b^2), where 'a' is half the length and 'b' is half the width. This initial calculation yielded a volume of approximately 16.8 cm^3. A reduction of about 20% was then applied to account for the removed calyx (top) and the visible bite mark, resulting in the final estimated volume.",
+      "volume_cm3": 13.4,
+      "selected_image": "0.JPG"
+    },
+    "view_1": {
+      "reasoning": "The volume of the strawberry was estimated by modeling its shape and using the provided bowl diameter as a scale reference. The bowl's diameter of 16.8 cm was measured in the image to establish a pixel-to-cm scale. The strawberry's dimensions were then measured in pixels and converted to real-world units, resulting in an approximate length of 3.6 cm and a maximum width of 3.4 cm. The strawberry's shape was approximated as a paraboloid of revolution. Using the formula V = 0.5 * \u03c0 * r\u00b2 * h, with height (h) = 3.6 cm and radius (r) = 1.7 cm, the volume was calculated.",
+      "volume_cm3": 16.3,
+      "selected_image": "1.JPG"
+    },
+    "view_2": {
+      "reasoning": "The food item is a single strawberry with a small piece missing from the top. The plate's diameter of 16.8 cm is used as a scale reference. By visually comparing the strawberry to the plate's diameter, the strawberry's dimensions are estimated. Its length appears to be approximately 3.0 cm, and its width and height are about 2.5 cm. The volume of a whole strawberry of this size can be approximated using the formula for an ellipsoid (V = 4/3 * \u03c0 * a * b * c), where a, b, and c are the semi-axes (1.5 cm, 1.25 cm, 1.25 cm). This calculation yields a volume of approximately 9.8 cm\u00b3. To account for the missing piece, which is estimated to be about 20% of the total volume, this value is reduced. The final estimated volume is 9.8 cm\u00b3 * 0.8 = 7.84 cm\u00b3.",
+      "volume_cm3": 7.84,
+      "selected_image": "2.JPG"
+    },
+    "view_3": {
+      "reasoning": "The volume of the strawberry was estimated by first determining its size relative to the known diameter of the bowl (16.8 cm). By visual comparison, the strawberry's largest dimension (width) is estimated to be approximately 3.0 cm, and its height is about 2.5 cm. The shape of a whole strawberry of this size can be approximated by an ellipsoid. The volume of such a whole strawberry would be around 12.3 cm\u00b3. The image shows that a small portion of the strawberry has been bitten off from the top. This removed volume is estimated to be approximately 15% of the total volume. Therefore, the remaining volume is calculated as 85% of the estimated full volume, resulting in approximately 10.5 cm\u00b3.",
+      "volume_cm3": 10.46,
+      "selected_image": "3.JPG"
+    },
+    "view_4": {
+      "reasoning": "The food item is a single strawberry in a bowl with a known diameter of 16.8 cm, which serves as a scale reference. By visually comparing the strawberry to the bowl's diameter, the strawberry's dimensions are estimated. Its length appears to be approximately 1/6th of the bowl's diameter, leading to an estimated length of 2.8 cm. The width is estimated to be around 2.2 cm, and the height around 2.0 cm. Modeling the strawberry as an ellipsoid, the volume is calculated using the formula V = (4/3) * \u03c0 * a * b * c, where a, b, and c are the semi-axes (1.4 cm, 1.1 cm, and 1.0 cm respectively). This calculation results in an estimated volume for the single strawberry.",
+      "volume_cm3": 6.45,
+      "selected_image": "4.JPG"
+    }
+  }
+}

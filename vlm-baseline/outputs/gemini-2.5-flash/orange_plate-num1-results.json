@@ -1,0 +1,55 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/orange_plate/images",
+  "num_views": 1,
+  "mode": "single_view_all_views_once",
+  "n_views_used": 6,
+  "model": "gemini-2.5-flash",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "results": {
+    "volume_estimations": [
+      193.7,
+      195.43,
+      116.7,
+      202.0,
+      121.67,
+      138.4
+    ],
+    "volume_mean": 161.31666564941406,
+    "volume_std": 36.412479400634766,
+    "volume_error_mean": 0.32154664397239685,
+    "volume_error_std": 0.25665727257728577
+  },
+  "raw_results": {
+    "view_0": {
+      "reasoning": "The plate has a known diameter of 20.5 cm, which is used as a scale reference. By analyzing the main image, the diameter of the tangerine was estimated relative to the plate's diameter. The plate's diameter in pixels is approximately 1000, and the tangerine's diameter in pixels is approximately 350. Therefore, the tangerine's diameter is estimated as (350 / 1000) * 20.5 cm = 7.175 cm. Assuming the tangerine is approximately spherical, its radius is half of its diameter, which is 3.5875 cm. Using the formula for the volume of a sphere, V = (4/3) * \u03c0 * r^3, the volume is calculated as (4/3) * \u03c0 * (3.5875 cm)^3 \u2248 193.7 cm^3.",
+      "volume_cm3": 193.7,
+      "selected_image": "0.JPG"
+    },
+    "view_1": {
+      "reasoning": "The plate's diameter of 20.5 cm was used as a scale reference. By visually comparing the tangerine's diameter to the plate's diameter in the main image, the tangerine's diameter was estimated to be approximately 7.2 cm. Assuming the tangerine is a sphere, its volume was calculated using the formula V = (4/3) * pi * r^3, where r is the radius (3.6 cm).",
+      "volume_cm3": 195.43,
+      "selected_image": "1.JPG"
+    },
+    "view_2": {
+      "reasoning": "The food item is identified as a tangerine. The plate's diameter of 20.5 cm is used as a scale reference. By visually comparing the tangerine to the plate in the main image, the tangerine's maximum diameter is estimated to be approximately 6.2 cm, and its height is estimated to be approximately 5.8 cm. The tangerine is modeled as an oblate spheroid. The volume is calculated using the formula V = (4/3) * \u03c0 * a^2 * b, where 'a' is the semi-major axis (half of the diameter) and 'b' is the semi-minor axis (half of the height). Thus, a = 6.2 cm / 2 = 3.1 cm and b = 5.8 cm / 2 = 2.9 cm. Plugging these values into the formula: V = (4/3) * \u03c0 * (3.1 cm)^2 * (2.9 cm) = (4/3) * \u03c0 * 9.61 cm^2 * 2.9 cm \u2248 116.7 cm^3.",
+      "volume_cm3": 116.7,
+      "selected_image": "2.JPG"
+    },
+    "view_3": {
+      "reasoning": "The food item is a tangerine. The plate has a known diameter of 20.5 cm, which was used as a scale reference. By visually comparing the tangerine's dimensions to the plate's diameter in the main image, the tangerine's equatorial diameter (width) was estimated to be approximately 7.51 cm and its polar diameter (height) was estimated to be approximately 6.83 cm. Given its slightly flattened appearance, the tangerine was modeled as an oblate spheroid. The volume was calculated using the formula V = (4/3) * \u03c0 * a^2 * b, where 'a' is the equatorial radius (7.51 cm / 2 = 3.755 cm) and 'b' is the polar radius (6.83 cm / 2 = 3.415 cm). This calculation yields a volume of approximately 202.0 cm^3.",
+      "volume_cm3": 202.0,
+      "selected_image": "3.JPG"
+    },
+    "view_4": {
+      "reasoning": "The plate has a known diameter of 20.5 cm. By visually comparing the tangerine's diameter to the plate's diameter in the main image, the tangerine's diameter is estimated to be approximately 0.3 times the plate's diameter. This gives an estimated tangerine diameter of 0.3 * 20.5 cm = 6.15 cm. Assuming the tangerine is roughly spherical, its radius is 6.15 cm / 2 = 3.075 cm. Using the formula for the volume of a sphere, V = (4/3) * \u03c0 * r^3, the volume is calculated as V = (4/3) * \u03c0 * (3.075 cm)^3 \u2248 121.67 cm^3.",
+      "volume_cm3": 121.67,
+      "selected_image": "4.JPG"
+    },
+    "view_5": {
+      "reasoning": "The plate has a known diameter of 20.5 cm. From the main image, the plate's horizontal diameter was measured to be approximately 1000 pixels. This establishes a scale of 0.0205 cm/pixel (20.5 cm / 1000 pixels). The tangerine's horizontal diameter was measured at approximately 320 pixels, and its vertical diameter (height) at approximately 300 pixels. Converting these to centimeters: equatorial diameter = 320 * 0.0205 cm = 6.56 cm, and polar diameter (height) = 300 * 0.0205 cm = 6.15 cm. Approximating the tangerine as an oblate spheroid with equatorial radius (a) = 6.56/2 = 3.28 cm and polar radius (b) = 6.15/2 = 3.075 cm, the volume is calculated using the formula V = (4/3) * \u03c0 * a^2 * b. V = (4/3) * \u03c0 * (3.28 cm)^2 * (3.075 cm) = 138.4 cm^3.",
+      "volume_cm3": 138.4,
+      "selected_image": "5.JPG"
+    }
+  }
+}

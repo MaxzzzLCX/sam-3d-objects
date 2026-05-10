@@ -1,0 +1,24 @@
+{
+  "image_folder_dir": "/scratch/cl927/sam-3d-objects/scripts_volume/real_data_multiview_volume_vggt/potato_bowl/images",
+  "num_views": 6,
+  "mode": "multi_view_repeats",
+  "model": "gemini-2.5-pro",
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "repeats": 1,
+  "results": {
+    "volume_estimations": [
+      127.0
+    ],
+    "volume_mean": 127.0,
+    "volume_std": 0.0,
+    "volume_error_mean": 0.2742857038974762,
+    "volume_error_std": 0.0
+  },
+  "raw_results": {
+    "trial_0": {
+      "reasoning": "The food item is a single potato. Its volume was estimated by modeling it as an ellipsoid (V = \u03c0/6 * l * w * h). The bowl's diameter of 16.8 cm was used as a scale reference. From the top-down and side-view images, the potato's dimensions were estimated. The length was estimated from the top-down view to be approximately 8.2 cm (about 49% of the bowl's diameter). The width was estimated to be 5.7 cm (about 34% of the bowl's diameter). The height was estimated from the side views to be slightly less than the width, around 5.2 cm. These dimensions result in a calculated volume of approximately 127 cm\u00b3.",
+      "volume_cm3": 127.0
+    }
+  }
+}
