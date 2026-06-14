@@ -22,51 +22,140 @@ Baselines evaluated include Apple ObjectCapture (dense multiview), VGGT + Poisso
 
 ---
 
+## Strategies
+
+### 1. VGGT Point Map Conditioning
+
+SAM3D's default pipeline uses MoGe — a monocular depth estimator — to produce a per-pixel 3D point map from a single image, which conditions the diffusion process. The relevant section of [`checkpoints/hf/pipeline.yaml`](checkpoints/hf/pipeline.yaml) is:
+
+```yaml
+depth_model:
+  _target_: sam3d_objects.pipeline.depth_models.moge.MoGe
+  model:
+    _target_: moge.model.v1.MoGeModel.from_pretrained
+    pretrained_model_name_or_path: Ruicheng/moge-vitl
+```
+
+This strategy replaces MoGe with point maps produced by VGGT from sparse multiview images. VGGT runs over a small set of input views ([`sam3d+vggt_method/vggt_inference.py`](sam3d+vggt_method/vggt_inference.py)) and outputs per-pixel 3D point maps (`point_map_{i}.npy`, shape `(518, 518, 3)`). These are then passed directly into SAM3D's conditioning pipeline by switching to [`checkpoints/hf/pipeline_no_depth.yaml`](checkpoints/hf/pipeline_no_depth.yaml), which sets:
+
+```yaml
+depth_model: null
+```
+
+This disables MoGe entirely; the externally-computed VGGT point map is fed in its place. The motivation is that VGGT's multi-view geometry should provide a more metrically-grounded depth prior than single-image MoGe.
+
+**To run:**
+```bash
+# Step 1: Run VGGT on multiview images to produce per-view point maps
+bash sam3d+vggt_method/vggt_reconstruction.sh   # calls vggt_inference.py --generation
+
+# Step 2: Generate SAM3D meshes conditioned on VGGT point maps
+#         (uses pipeline_no_depth.yaml; see volume_estimation_vanilla_sam3d.py)
+python sam3d+vggt_method/volume_estimation_vanilla_sam3d.py  # set with_pointmaps=True
+```
+
+---
+
+### 2. Anisotropic Scaling
+
+Single-view generative models like SAM3D produce watertight meshes but frequently distort the aspect ratio of the reconstructed object — the mesh may be correctly shaped but squashed or stretched along one or more axes. This strategy corrects those distortions post-generation without any model retraining.
+
+The approach ([`sam3d+vggt_method/volume_estimation_anisotropic_scaling.py`](sam3d+vggt_method/volume_estimation_anisotropic_scaling.py)):
+
+1. Run VGGT on sparse multiview images to obtain a metric point cloud of the target object.
+2. Compute the object's physical extents along each axis by projecting the point cloud onto PCA-derived orthogonal axes.
+3. Compute per-axis scaling factors as the ratio between the VGGT-derived physical dimensions and the corresponding span of the generated mesh (`scaling_factors = target_dimensions / mesh_span`).
+4. Apply independent scale factors along each axis (`mesh.apply_scale(scaling_factors)`), then voxelize the corrected mesh to estimate volume.
+
+A permutation step aligns the ordering of the VGGT dimensions to the mesh axes before scaling, so that the largest VGGT extent is matched to the largest mesh axis, etc. This reduced the baseline SAM3D volume estimation error from **24.58% → 15.21%** on RealFoodScenes.
+
+**To run (4-step pipeline):**
+```bash
+# Step 1: Run VGGT per-view inference to produce dense point maps
+bash sam3d+vggt_method/vggt_reconstruction.sh       # vggt_inference.py --generation
+#   Output: <scene_dir>/pointmaps/point_map_{i}.npy
+
+# Step 2: Construct sparse COLMAP scenes from point maps (separate food + plate point clouds)
+bash sam3d+vggt_method/vggt_construct_scene.sh      # vggt_inference.py --mask --construct_scenes
+#   Output: <scene_dir>/sparse_food_only_sam_unscaled_conf0.0/points.ply
+#           <scene_dir>/sparse_plate_only_sam_unscaled_conf0.0/points.ply
+
+# Step 3: Generate SAM3D meshes for each view (vanilla or with VGGT pointmap conditioning)
+python sam3d+vggt_method/volume_estimation_vanilla_sam3d.py
+#   Output: <scene_dir>/generations_no_pointmaps/  or  generations_with_pointmaps/
+
+# Step 4: Apply anisotropic scaling and estimate volume
+python sam3d+vggt_method/volume_estimation_anisotropic_scaling.py
+#   - VGGTScaleExtractor reads the food + plate point clouds from Step 2
+#   - Uses the known plate diameter to convert VGGT units → real-world cm
+#   - RescalingVolumeEstimator applies per-axis scaling to SAM3D meshes from Step 3
+#   Output: results JSON with per-scene volume predictions and errors
+```
+
+---
+
+### 3. Alternating Conditions (TRELLIS)
+
+This strategy targets TRELLIS, a rectified flow-based 3D generative model. TRELLIS conditions its flow on a single reference image, which means geometric information from other viewpoints is ignored. The Alternating Conditions mechanism injects sparse multi-view constraints directly into the sampling process without any retraining.
+
+During flow sampling, the reference conditioning image is alternated across different viewpoints at each denoising step rather than being fixed to a single view. This forces the flow trajectory to remain consistent with geometry observed from multiple angles, improving cross-view structural coherence. The result on the synthetic Toys4k dataset was a volume estimation error reduction from **37.78% → 30.27%** and nearly halved Chamfer Distance.
+
+This strategy is implemented in the [`trellis/`](trellis/) submodule (mirrored from [github.com/MaxzzzLCX/TRELLIS](https://github.com/MaxzzzLCX/TRELLIS)). After cloning this repo, run:
+
+```bash
+git submodule update --init
+```
+
+Note: `trellis/scripts_generation/` imports utilities from `scripts_evaluation/` in this repo. Both must be present at the same parent path for cross-repo imports to resolve correctly.
+
+---
+
 ## Repository Structure
+
+The active code lives in four directories. `scripts/` and `deprecated_scripts_benchmarking/` are legacy and no longer in use.
 
 ```
 sam-3d-objects/
 │
-├── sam3d+vggt_method/          # Core method: Anisotropic Scaling + VGGT integration
-│   ├── vggt_inference.py           # Run VGGT to produce point clouds from multiview images
-│   ├── vggt_reconstruction.sh      # Shell script for VGGT reconstruction pipeline
-│   ├── vggt_construct_scene.sh     # Scene construction from VGGT outputs
-│   ├── segmentation.py             # Object segmentation utilities
-│   ├── volume_estimation_vanilla_sam3d.py      # Baseline SAM3D volume estimation
-│   ├── volume_estimation_anisotropic_scaling.py # Anisotropic Scaling volume estimation
-│   └── evaluation.py / evaluation_utils.py     # Evaluation metrics
+├── sam3d+vggt_method/              # Core method implementations (start here)
+│   ├── vggt_inference.py               # ENTRY POINT: run VGGT on multiview images to produce point maps
+│   ├── vggt_reconstruction.sh          # Shell wrapper: runs vggt_inference.py (generation step)
+│   ├── vggt_construct_scene.sh         # Shell wrapper: runs vggt_inference.py (scene construction step)
+│   ├── volume_estimation_vanilla_sam3d.py       # ENTRY POINT: baseline SAM3D volume estimation (no scaling)
+│   ├── volume_estimation_anisotropic_scaling.py # ENTRY POINT: anisotropic scaling volume estimation
+│   ├── evaluation.py                   # ENTRY POINT: Chamfer distance + ICP alignment evaluation
+│   ├── evaluation_utils.py             # Aggregates JSON evaluation results across scenes
+│   └── segmentation.py                 # SAM-based object segmentation utilities
 │
-├── scripts_evaluation/         # Batch evaluation pipeline
-│   ├── batch_generation_and_evaluation.py  # End-to-end batch generation + eval
-│   ├── batch_fusion_and_evaluation.py      # Mesh fusion and evaluation
-│   ├── volume_evaluation.py                # Volume metric computation
-│   ├── chamfer_distance_evaluation.py      # Chamfer Distance metric
-│   ├── vggt_preprocessing.py               # Preprocessing for VGGT inputs
-│   ├── vggt_runner.py                      # VGGT inference runner
-│   └── align.py / align_without_vggt.py   # Mesh alignment utilities
+├── scripts_evaluation/             # Batch generation and evaluation pipeline
+│   ├── batch_generation_and_evaluation.py  # ENTRY POINT: end-to-end SAM3D generation + evaluation
+│   ├── batch_evaluation.py              # ENTRY POINT: evaluate pre-generated SAM3D outputs
+│   ├── volume_evaluation.py             # ENTRY POINT: compute volume metrics from meshes
+│   ├── vggt_runner.py                   # VGGTRunner class — isolated subprocess wrapper for VGGT
+│   ├── vggt_preprocessing.py            # Resize images to 518×518 before VGGT inference
+│   ├── generate_sam3d_multiview.py      # generate_sam3d_outputs() — called by batch scripts
+│   ├── chamfer_distance_evaluation.py   # Chamfer distance metric (PyTorch3D)
+│   └── align_without_vggt.py            # two_view_fusion() — called by batch_fusion_and_evaluation.py
 │
-├── scripts_volume/             # Volume and projection evaluation utilities
-│   ├── multiview_consistency.py    # Cross-view consistency measurement
-│   ├── evaluate_projection.py      # Reprojection IoU evaluation
-│   └── render_from_poses.py        # Render meshes from camera poses
+├── scripts_volume/                 # Volume and reprojection analysis
+│   ├── render_from_poses.py             # ENTRY POINT: render mesh from camera poses, compute reprojection IoU
+│   ├── multiview_consistency.py         # ENTRY POINT: measure cross-view consistency of SAM3D outputs
+│   └── evaluate_projection.py           # IoU computation — imported by render_from_poses.py
 │
-├── vlm-baseline/               # Gemini 2.5 Pro VLM baseline
-│   ├── gemini_minimal_multimodal.py    # Zero-shot volume estimation via Gemini
-│   └── utils.py
+├── vlm-baseline/                   # Gemini 2.5 Pro zero-shot baseline
+│   └── gemini_minimal_multimodal.py     # ENTRY POINT: query Gemini for volume estimates
 │
-├── real_dataset/               # RealFoodScenes dataset
-│   └── real_data_multiview_volume_vggt/    # Multiview captures with GT volumes
+├── real_dataset/                   # RealFoodScenes — custom dataset of real-world food scenes
+│   └── real_data_multiview_volume_vggt/ # Multiview captures with ground-truth volumes
 │
-├── results/                    # Evaluation results and outputs
+├── checkpoints/hf/                 # SAM3D model weights and pipeline configs
+│   ├── pipeline.yaml                    # Default config: uses MoGe as depth model
+│   └── pipeline_no_depth.yaml           # Config for VGGT conditioning: depth_model set to null
 │
-├── notebook/                   # Original SAM3D demo notebooks
-│   ├── demo_single_object.ipynb
-│   ├── demo_multi_object.ipynb
-│   └── multi_object_food.ipynb     # Food-specific multi-object demo
+├── notebook/                       # SAM3D demo notebooks (upstream + food-specific)
+│   └── multi_object_food.ipynb          # Multi-object food reconstruction demo
 │
-├── sam3d_objects/              # SAM3D model source (upstream, with patches)
-├── patching/                   # Patches applied to upstream SAM3D
-└── deprecated_scripts_benchmarking/  # Early-stage scripts (superseded)
+└── sam3d_objects/                  # Upstream SAM3D model source (with patches from patching/)
 ```
 
 ---
