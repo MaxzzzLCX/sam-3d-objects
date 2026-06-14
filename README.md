@@ -1,152 +1,95 @@
-# SAM 3D
+# Robust 3D Food Volume Estimation using Generative and Multiview Computer Vision
 
-SAM 3D Objects is one part of SAM 3D, a pair of models for object and human mesh reconstruction.  If you’re looking for SAM 3D Body, [click here](https://github.com/facebookresearch/sam-3d-body).
+**Chenxu (Max) Lyu**, Christ's College, University of Cambridge  
+Supervisor: Prof. Roberto Cipolla  
+May 2026
 
-# SAM 3D Objects
+> This repository is forked from [SAM 3D Objects](https://github.com/facebookresearch/sam-3d-objects) (Meta). See [SAM3D_README.md](SAM3D_README.md) for the original documentation.
 
-**SAM 3D Team**, [Xingyu Chen](https://scholar.google.com/citations?user=gjSHr6YAAAAJ&hl=en&oi=sra)\*, [Fu-Jen Chu](https://fujenchu.github.io/)\*, [Pierre Gleize](https://scholar.google.com/citations?user=4imOcw4AAAAJ&hl=en&oi=ao)\*, [Kevin J Liang](https://kevinjliang.github.io/)\*, [Alexander Sax](https://alexsax.github.io/)\*, [Hao Tang](https://scholar.google.com/citations?user=XY6Nh9YAAAAJ&hl=en&oi=sra)\*, [Weiyao Wang](https://sites.google.com/view/weiyaowang/home)\*, [Michelle Guo](https://scholar.google.com/citations?user=lyjjpNMAAAAJ&hl=en&oi=ao), [Thibaut Hardin](https://github.com/Thibaut-H), [Xiang Li](https://ryanxli.github.io/)⚬, [Aohan Lin](https://github.com/linaohan), [Jia-Wei Liu](https://jia-wei-liu.github.io/), [Ziqi Ma](https://ziqi-ma.github.io/)⚬, [Anushka Sagar](https://www.linkedin.com/in/anushkasagar/), [Bowen Song](https://scholar.google.com/citations?user=QQKVkfcAAAAJ&hl=en&oi=sra)⚬, [Xiaodong Wang](https://scholar.google.com/citations?authuser=2&user=rMpcFYgAAAAJ), [Jianing Yang](https://jedyang.com/)⚬, [Bowen Zhang](http://home.ustc.edu.cn/~zhangbowen/)⚬, [Piotr Dollár](https://pdollar.github.io/)†, [Georgia Gkioxari](https://georgiagkioxari.com/)†, [Matt Feiszli](https://scholar.google.com/citations?user=A-wA73gAAAAJ&hl=en&oi=ao)†§, [Jitendra Malik](https://people.eecs.berkeley.edu/~malik/)†§
+---
 
-***Meta Superintelligence Labs***
+## Overview
 
-*Core contributor (Alphabetical, Equal Contribution), ⚬Intern, †Project leads, §Equal Contribution
+Dietary tracking is a highly effective behavioral intervention for nutritional assessments and health monitoring, yet manual portion size estimation remains fundamentally unreliable. While computer vision has largely solved 2D food recognition, **3D metric volume estimation** remains a critical challenge.
 
-[[`Paper`](https://ai.meta.com/research/publications/sam-3d-3dfy-anything-in-images/)] [[`Code`](https://github.com/facebookresearch/sam-3d-objects)] [[`Website`](https://ai.meta.com/sam3d/)] [[`Demo`](https://www.aidemos.meta.com/segment-anything/editor/convert-image-to-3d)] [[`Blog`](https://ai.meta.com/blog/sam-3d/)] [[`BibTeX`](#citing-sam-3d-objects)] [[`Roboflow`](https://blog.roboflow.com/sam-3d/)]
+This project addresses the inherent trade-off between the strict reliability of explicit multi-view reconstruction and the robust, watertight shape priors of implicit 3D generative models. The core contributions are three novel, lightweight strategies for injecting sparse multi-view geometric constraints into single-view 3D generation pipelines:
 
-**SAM 3D Objects** is a foundation model that reconstructs full 3D shape geometry, texture, and layout from a single image, excelling in real-world scenarios with occlusion and clutter by using progressive training and a data engine with human feedback. It outperforms prior 3D generation models in human preference tests on real-world objects and scenes. We released code, weights, online demo, and a new challenging benchmark.
+1. **VGGT Point Map Conditioning** — replaces the default monocular depth prior (MoGe) in SAM3D with multi-view VGGT point maps.
+2. **Anisotropic Scaling** — corrects aspect-ratio distortions in generated meshes by independently scaling along orthogonal PCA-derived axes using sparse-view VGGT point clouds. Reduced SAM3D volume estimation error from **24.58% → 15.21%**.
+3. **Alternating Conditions** — alternates reference viewpoints during the rectified flow sampling process in TRELLIS. Reduced volume estimation error on Toys4k from **37.78% → 30.27%** and nearly halved Chamfer Distance.
 
+Baselines evaluated include Apple ObjectCapture (dense multiview), VGGT + Poisson Surface Reconstruction (sparse multiview), and Gemini 2.5 Pro (zero-shot VLM reasoning, >42% error).
 
-<p align="center"><img src="doc/intro.png"/></p>
+---
 
------
-
-<p align="center"><img src="doc/arch.png"/></p>
-
-## Latest updates
-
-**11/19/2025** - Checkpoints Launched, Web Demo and Paper are out.
-
-## Installation
-
-Follow the [setup](doc/setup.md) steps before running the following.
-
-## Single or Multi-Object 3D Generation
-
-SAM 3D Objects can convert masked objects in an image, into 3D models with pose, shape, texture, and layout. SAM 3D is designed to be robust in challenging natural images, handling small objects and occlusions, unusual poses, and difficult situations encountered in uncurated natural scenes like this kidsroom:
-
-<p align="center">
-  <img src="notebook/images/shutterstock_stylish_kidsroom_1640806567/image.png" width="55%"/>
-  <img src="doc/kidsroom_transparent.gif" width="40%"/>
-</p>
-
-For a quick start, run `python demo.py` or use the the following lines of code:
-
-```python
-import sys
-
-# import inference code
-sys.path.append("notebook")
-from inference import Inference, load_image, load_single_mask
-
-# load model
-tag = "hf"
-config_path = f"checkpoints/{tag}/pipeline.yaml"
-inference = Inference(config_path, compile=False)
-
-# load image and mask
-image = load_image("notebook/images/shutterstock_stylish_kidsroom_1640806567/image.png")
-mask = load_single_mask("notebook/images/shutterstock_stylish_kidsroom_1640806567", index=14)
-
-# run model
-output = inference(image, mask, seed=42)
-
-# export gaussian splat
-output["gs"].save_ply(f"splat.ply")
-```
-
-For  more details and multi-object reconstruction, please take a look at out two jupyter notebooks:
-* [single object](notebook/demo_single_object.ipynb)
-* [multi object](notebook/demo_multi_object.ipynb)
-
-
-## SAM 3D Body
-
-[SAM 3D Body (3DB)](https://github.com/facebookresearch/sam-3d-body) is a robust promptable foundation model for single-image 3D human mesh recovery (HMR).
-
-As a way to combine the strengths of both **SAM 3D Objects** and **SAM 3D Body**, we provide an example notebook that demonstrates how to combine the results of both models such that they are aligned in the same frame of reference. Check it out [here](notebook/demo_3db_mesh_alignment.ipynb).
-
-## License
-
-The SAM 3D Objects model checkpoints and code are licensed under [SAM License](./LICENSE).
-
-## Contributing
-
-See [contributing](CONTRIBUTING.md) and the [code of conduct](CODE_OF_CONDUCT.md).
-
-## Contributors
-
-The SAM 3D Objects project was made possible with the help of many contributors.
-
-Robbie Adkins,
-Paris Baptiste,
-Karen Bergan,
-Kai Brown,
-Michelle Chan,
-Ida Cheng,
-Khadijat Durojaiye,
-Patrick Edwards,
-Daniella Factor,
-Facundo Figueroa,
-Rene  de la Fuente,
-Eva Galper,
-Cem Gokmen,
-Alex He,
-Enmanuel Hernandez,
-Dex Honsa,
-Leonna Jones,
-Arpit Kalla,
-Kris Kitani,
-Helen Klein,
-Kei Koyama,
-Robert Kuo,
-Vivian Lee,
-Alex Lende,
-Jonny Li,
-Kehan Lyu,
-Faye Ma,
-Mallika Malhotra,
-Sasha Mitts,
-William Ngan,
-George Orlin,
-Peter Park,
-Don Pinkus,
-Roman Radle,
-Nikhila Ravi,
-Azita Shokrpour,
-Jasmine Shone,
-Zayida Suber,
-Phillip Thomas,
-Tatum Turner,
-Joseph Walker,
-Meng Wang,
-Claudette Ward,
-Andrew Westbury,
-Lea Wilken,
-Nan Yang,
-Yael Yungster
-
-
-## Citing SAM 3D Objects
-
-If you use SAM 3D Objects in your research, please use the following BibTeX entry.
+## Repository Structure
 
 ```
+sam-3d-objects/
+│
+├── sam3d+vggt_method/          # Core method: Anisotropic Scaling + VGGT integration
+│   ├── vggt_inference.py           # Run VGGT to produce point clouds from multiview images
+│   ├── vggt_reconstruction.sh      # Shell script for VGGT reconstruction pipeline
+│   ├── vggt_construct_scene.sh     # Scene construction from VGGT outputs
+│   ├── segmentation.py             # Object segmentation utilities
+│   ├── volume_estimation_vanilla_sam3d.py      # Baseline SAM3D volume estimation
+│   ├── volume_estimation_anisotropic_scaling.py # Anisotropic Scaling volume estimation
+│   └── evaluation.py / evaluation_utils.py     # Evaluation metrics
+│
+├── scripts_evaluation/         # Batch evaluation pipeline
+│   ├── batch_generation_and_evaluation.py  # End-to-end batch generation + eval
+│   ├── batch_fusion_and_evaluation.py      # Mesh fusion and evaluation
+│   ├── volume_evaluation.py                # Volume metric computation
+│   ├── chamfer_distance_evaluation.py      # Chamfer Distance metric
+│   ├── vggt_preprocessing.py               # Preprocessing for VGGT inputs
+│   ├── vggt_runner.py                      # VGGT inference runner
+│   └── align.py / align_without_vggt.py   # Mesh alignment utilities
+│
+├── scripts_volume/             # Volume and projection evaluation utilities
+│   ├── multiview_consistency.py    # Cross-view consistency measurement
+│   ├── evaluate_projection.py      # Reprojection IoU evaluation
+│   └── render_from_poses.py        # Render meshes from camera poses
+│
+├── vlm-baseline/               # Gemini 2.5 Pro VLM baseline
+│   ├── gemini_minimal_multimodal.py    # Zero-shot volume estimation via Gemini
+│   └── utils.py
+│
+├── real_dataset/               # RealFoodScenes dataset
+│   └── real_data_multiview_volume_vggt/    # Multiview captures with GT volumes
+│
+├── results/                    # Evaluation results and outputs
+│
+├── notebook/                   # Original SAM3D demo notebooks
+│   ├── demo_single_object.ipynb
+│   ├── demo_multi_object.ipynb
+│   └── multi_object_food.ipynb     # Food-specific multi-object demo
+│
+├── sam3d_objects/              # SAM3D model source (upstream, with patches)
+├── patching/                   # Patches applied to upstream SAM3D
+└── deprecated_scripts_benchmarking/  # Early-stage scripts (superseded)
+```
+
+---
+
+## Setup
+
+Follow the upstream SAM3D setup instructions in [doc/setup.md](doc/setup.md) to install dependencies and download model checkpoints.
+
+Additional dependencies for the VGGT integration are managed in the [`/scratch/cl927/vggt`](../vggt/) directory.
+
+---
+
+## Citing
+
+If you use this work, please also cite the upstream SAM 3D Objects paper:
+
+```bibtex
 @article{sam3dteam2025sam3d3dfyimages,
-      title={SAM 3D: 3Dfy Anything in Images}, 
-      author={SAM 3D Team and Xingyu Chen and Fu-Jen Chu and Pierre Gleize and Kevin J Liang and Alexander Sax and Hao Tang and Weiyao Wang and Michelle Guo and Thibaut Hardin and Xiang Li and Aohan Lin and Jiawei Liu and Ziqi Ma and Anushka Sagar and Bowen Song and Xiaodong Wang and Jianing Yang and Bowen Zhang and Piotr Dollár and Georgia Gkioxari and Matt Feiszli and Jitendra Malik},
-      year={2025},
-      eprint={2511.16624},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV},
-      url={https://arxiv.org/abs/2511.16624}, 
+  title={SAM 3D: 3Dfy Anything in Images},
+  author={SAM 3D Team and Xingyu Chen and Fu-Jen Chu and Pierre Gleize and Kevin J Liang and Alexander Sax and Hao Tang and Weiyao Wang and others},
+  year={2025},
+  eprint={2511.16624},
+  archivePrefix={arXiv},
+  primaryClass={cs.CV},
 }
 ```
