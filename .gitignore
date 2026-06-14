@@ -7,7 +7,7 @@ apple/
 *.npz
 
 # Dataset
-real_dataset/
+real_dataset
 scripts_volume/real_dataset/
 scripts_volume/real_data_multiview/
 scripts_volume/real_data_multiview_new/

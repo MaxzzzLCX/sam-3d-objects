@@ -145,7 +145,7 @@ sam-3d-objects/
 ├── vlm-baseline/                   # Gemini 2.5 Pro zero-shot baseline
 │   └── gemini_minimal_multimodal.py     # ENTRY POINT: query Gemini for volume estimates
 │
-├── real_dataset/                   # RealFoodScenes — custom dataset of real-world food scenes
+├── real_dataset/                   # RealFoodScenes — see dataset section below
 │   └── real_data_multiview_volume_vggt/ # Multiview captures with ground-truth volumes
 │
 ├── checkpoints/hf/                 # SAM3D model weights and pipeline configs
@@ -155,7 +155,24 @@ sam-3d-objects/
 ├── notebook/                       # SAM3D demo notebooks (upstream + food-specific)
 │   └── multi_object_food.ipynb          # Multi-object food reconstruction demo
 │
-└── sam3d_objects/                  # Upstream SAM3D model source (with patches from patching/)
+├── sam3d_objects/                  # Upstream SAM3D model source (with patches from patching/)
+│
+├── vggt/                           # Submodule: MaxzzzLCX/vggt (editable VGGT package)
+│
+└── trellis/                        # Submodule: MaxzzzLCX/TRELLIS (Alternating Conditions)
+```
+
+---
+
+## Dataset
+
+**RealFoodScenes** is a custom dataset of real-world food scenes captured for this project, with ground-truth volumes measured by water displacement. It contains multiview RGB images of 9 food items (potato, egg, orange, avocado, strawberry) each photographed on a standard plate and bowl.
+
+The dataset is hosted on Hugging Face: [huggingface.co/datasets/Max-Lyu/RealFoodScenes](https://huggingface.co/datasets/Max-Lyu/RealFoodScenes)
+
+```python
+from huggingface_hub import snapshot_download
+snapshot_download(repo_id="Max-Lyu/RealFoodScenes", repo_type="dataset", local_dir="real_dataset/RealFoodScenes")
 ```
 
 ---
@@ -164,7 +181,18 @@ sam-3d-objects/
 
 Follow the upstream SAM3D setup instructions in [doc/setup.md](doc/setup.md) to install dependencies and download model checkpoints.
 
-Additional dependencies for the VGGT integration are managed in the [`/scratch/cl927/vggt`](../vggt/) directory.
+After cloning, initialise the submodules to pull in the VGGT and TRELLIS repos:
+
+```bash
+git submodule update --init
+```
+
+Then install VGGT as an editable package into the `vggt` conda environment:
+
+```bash
+conda activate vggt
+pip install -e vggt/
+```
 
 ---
 
